@@ -4,7 +4,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.api.distmarker.Dist;
-import dev.dixmk.minepreggo.client.model.ZombieGirlP0Model;
 import dev.dixmk.minepreggo.client.model.armor.BellyShieldP4Model;
 import dev.dixmk.minepreggo.client.model.armor.BellyShieldP5Model;
 import dev.dixmk.minepreggo.client.model.armor.BellyShieldP6Model;
@@ -14,6 +13,8 @@ import dev.dixmk.minepreggo.client.model.armor.FemaleChestPlateP1Model;
 import dev.dixmk.minepreggo.client.model.armor.FemaleChestPlateP2Model;
 import dev.dixmk.minepreggo.client.model.armor.FemaleChestPlateP3Model;
 import dev.dixmk.minepreggo.client.model.armor.KneeBraceModel;
+import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractAnimatedZombieGirlP0;
+import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractZombieGirlModel;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = {Dist.CLIENT})
 public class MinepreggoModModels {
@@ -22,9 +23,9 @@ public class MinepreggoModModels {
 	
 	@SubscribeEvent
 	public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
-		event.registerLayerDefinition(ZombieGirlP0Model.LAYER_LOCATION, ZombieGirlP0Model::createMainBodyLayer);
-		event.registerLayerDefinition(ZombieGirlP0Model.LAYER_INNER_ARMOR_LOCATION, ZombieGirlP0Model::createInnerLayer);
-		event.registerLayerDefinition(ZombieGirlP0Model.LAYER_OUTER_ARMOR_LOCATION, ZombieGirlP0Model::createOuterLayer);
+		event.registerLayerDefinition(AbstractAnimatedZombieGirlP0.LAYER_LOCATION, AbstractAnimatedZombieGirlP0::createBodyLayer);
+		event.registerLayerDefinition(AbstractZombieGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractZombieGirlModel::createInnerLayer);
+		event.registerLayerDefinition(AbstractZombieGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractZombieGirlModel::createOuterLayer);
 		event.registerLayerDefinition(BellyShieldP4Model.LAYER_LOCATION, BellyShieldP4Model::createBodyLayer);
 		event.registerLayerDefinition(BellyShieldP5Model.LAYER_LOCATION, BellyShieldP5Model::createBodyLayer);
 		event.registerLayerDefinition(BellyShieldP6Model.LAYER_LOCATION, BellyShieldP6Model::createBodyLayer);

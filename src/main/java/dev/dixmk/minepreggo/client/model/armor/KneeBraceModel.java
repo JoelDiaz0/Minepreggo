@@ -20,13 +20,13 @@ import net.minecraft.world.entity.LivingEntity;
 public class KneeBraceModel<T extends LivingEntity> extends EntityModel<T> {
 
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "knee_brace_model"), "main");
-	private final ModelPart body;
-	private final ModelPart righLeg;
-	private final ModelPart leftLeg;
+	public final ModelPart body;
+	public final ModelPart rightLeg;
+	public final ModelPart leftLeg;
 
 	public KneeBraceModel(ModelPart root) {
 		this.body = root.getChild("body");
-		this.righLeg = root.getChild("right_leg");
+		this.rightLeg = root.getChild("right_leg");
 		this.leftLeg = root.getChild("left_leg");
 	}
 
@@ -51,7 +51,7 @@ public class KneeBraceModel<T extends LivingEntity> extends EntityModel<T> {
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		body.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		righLeg.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		rightLeg.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		leftLeg.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 }

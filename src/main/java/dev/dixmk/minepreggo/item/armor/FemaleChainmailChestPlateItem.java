@@ -21,7 +21,7 @@ import net.minecraft.client.model.HumanoidModel;
 
 import java.util.function.Consumer;
 
-import dev.dixmk.minepreggo.utils.PreggoArmorHelper;
+import dev.dixmk.minepreggo.utils.PreggoModelHelper;
 
 public abstract class FemaleChainmailChestPlateItem extends ArmorItem {
 	protected FemaleChainmailChestPlateItem(ArmorItem.Type type, Item.Properties properties) {
@@ -79,7 +79,7 @@ public abstract class FemaleChainmailChestPlateItem extends ArmorItem {
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return PreggoArmorHelper.getMaternalP0HumanoidArmorModel(living, stack, slot, defaultModel);
+					return PreggoModelHelper.getMaternalP0HumanoidArmorModel(living, stack, slot, defaultModel);
 				}
 			});
 		}

@@ -19,14 +19,6 @@ public class PregnantFemaleHumanoidModel<E extends LivingEntity> extends Humanoi
 		this.belly = this.body.getChild("belly");
 	}
 	
-	public void setVisibleBoobs(boolean value) {
-		this.boobs.visible = value;
-	}
-	
-	public void setVisibleBelly(boolean value) {
-		this.belly.visible = value;
-	}
-	
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		head.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
@@ -35,7 +27,7 @@ public class PregnantFemaleHumanoidModel<E extends LivingEntity> extends Humanoi
 		rightArm.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		leftArm.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		rightLeg.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		leftLeg.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);		belly.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		leftLeg.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 	
 	protected void moveHead(E entity, float netHeadYaw, float headPitch) {
@@ -56,6 +48,4 @@ public class PregnantFemaleHumanoidModel<E extends LivingEntity> extends Humanoi
 		
 		this.hat.copyFrom(this.head);
 	}
-	
-	
 }

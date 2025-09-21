@@ -22,7 +22,7 @@ import net.minecraft.client.model.HumanoidModel;
 import java.util.function.Consumer;
 
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
-import dev.dixmk.minepreggo.utils.PreggoArmorHelper;
+import dev.dixmk.minepreggo.utils.PreggoModelHelper;
 
 public abstract class FemaleIronChestplateP3Item extends ArmorItem {
 	protected FemaleIronChestplateP3Item(ArmorItem.Type type, Item.Properties properties) {
@@ -81,7 +81,7 @@ public abstract class FemaleIronChestplateP3Item extends ArmorItem {
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return PreggoArmorHelper.getMaternalP3HumanoidArmorModel(living, stack, slot, defaultModel);
+					return PreggoModelHelper.getMaternalP3HumanoidArmorModel(living, stack, slot, defaultModel);
 				}
 			});
 		}

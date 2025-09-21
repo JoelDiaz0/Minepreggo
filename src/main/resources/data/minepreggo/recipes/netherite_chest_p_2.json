@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:netherite_scrap"
+    },
+    {
+      "item": "minecraft:netherite_chestplate"
+    },
+    {
+      "item": "minecraft:netherite_scrap"
+    },
+    {
+      "item": "minecraft:netherite_scrap"
+    },
+    {
+      "item": "minecraft:netherite_scrap"
+    }
+  ],
+  "result": {
+    "item": "minepreggo:female_netherite_chest_plate_p2_chestplate",
+    "count": 1
+  }
+}

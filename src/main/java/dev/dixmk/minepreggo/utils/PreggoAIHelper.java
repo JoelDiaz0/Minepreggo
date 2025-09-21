@@ -1,0 +1,362 @@
+package dev.dixmk.minepreggo.utils;
+
+import dev.dixmk.minepreggo.entity.preggo.IImpregnable;
+import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractTamableCreeperGirl;
+import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractTamableZombieGirl;
+
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
+import net.minecraft.world.entity.ai.goal.FleeSunGoal;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.FollowOwnerGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.RestrictSunGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.OwnerHurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.OwnerHurtTargetGoal;
+import net.minecraft.world.entity.animal.Cat;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.animal.Ocelot;
+import net.minecraft.world.entity.animal.Turtle;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+
+public class PreggoAIHelper {
+
+	private PreggoAIHelper() {}
+	
+	public static<T extends AbstractTamableZombieGirl> void setTamableZombieGirlGoals(T zombieGirl) {
+		setBasicPreggoMobGoals(zombieGirl);
+		
+		zombieGirl.goalSelector.addGoal(3, new RestrictSunGoal(zombieGirl) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !zombieGirl.isIncapacitated();			
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() 
+				&& !zombieGirl.isIncapacitated();	
+			}
+		});
+
+		zombieGirl.goalSelector.addGoal(3, new FleeSunGoal(zombieGirl, 1.1D) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !zombieGirl.isIncapacitated();			
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() 
+				&& !zombieGirl.isIncapacitated();	
+			}
+		});
+	
+		zombieGirl.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(zombieGirl, AbstractVillager.class, false, false) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& (zombieGirl.isSavage() || !zombieGirl.isTame())
+				&& !zombieGirl.isIncapacitated();
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() 
+				&& !zombieGirl.isIncapacitated();
+			}
+		});
+		zombieGirl.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(zombieGirl, IronGolem.class, false, false){
+
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !zombieGirl.isIncapacitated()
+				&& !zombieGirl.isWaiting();
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() 
+				&& !zombieGirl.isIncapacitated();
+			}
+		});
+	
+		zombieGirl.targetSelector.addGoal(8, new NearestAttackableTargetGoal<>(zombieGirl, Turtle.class, 10, true, false, Turtle.BABY_ON_LAND_SELECTOR){
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !zombieGirl.isIncapacitated()
+				&& !zombieGirl.isWaiting();
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() 
+				&& !zombieGirl.isIncapacitated();
+			}
+		});
+
+		zombieGirl.goalSelector.addGoal(2, new PreggMobOwnerHurtByTargetGoal<>(zombieGirl) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !zombieGirl.isOnFire();				
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse()
+				&& !zombieGirl.isOnFire();	
+			}
+		});
+		zombieGirl.targetSelector.addGoal(2, new PreggoMobOwnerHurtTargetGoal<>(zombieGirl) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !zombieGirl.isOnFire();				
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse()
+				&& !zombieGirl.isOnFire();	
+			}
+		});
+		zombieGirl.goalSelector.addGoal(6, new PreggoMobFollowOwnerGoal<>(zombieGirl, 1.1D, 6F, 2F, false) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !zombieGirl.isOnFire();				
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse()
+				&& !zombieGirl.isOnFire();	
+			}
+		});	
+	}
+	
+	public static<T extends AbstractTamableCreeperGirl> void setTamableCreeperGirlGoals(T creeperGirl) {
+		setBasicPreggoMobGoals(creeperGirl);
+		
+		creeperGirl.goalSelector.addGoal(3, new AvoidEntityGoal<>(creeperGirl, Ocelot.class, 6F, 1, 1.2) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !creeperGirl.isIncapacitated();
+			}
+					
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() 
+				&& !creeperGirl.isIncapacitated();
+			}	
+		});
+		creeperGirl.goalSelector.addGoal(3, new AvoidEntityGoal<>(creeperGirl, Cat.class, 6F, 1, 1.2) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !creeperGirl.isIncapacitated();
+			}
+					
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() 
+				&& !creeperGirl.isIncapacitated();
+			}	
+		});
+		
+		creeperGirl.goalSelector.addGoal(2, new PreggMobOwnerHurtByTargetGoal<>(creeperGirl));
+		creeperGirl.targetSelector.addGoal(2, new PreggoMobOwnerHurtTargetGoal<>(creeperGirl));
+		creeperGirl.goalSelector.addGoal(6, new PreggoMobFollowOwnerGoal<>(creeperGirl, 1.1D, 6F, 2F, false));	
+	}	
+	
+	
+	private static<T extends TamableAnimal & IImpregnable> void setBasicPreggoMobGoals(T preggoMob) {	
+		preggoMob.targetSelector.addGoal(3, new HurtByTargetGoal(preggoMob) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !preggoMob.isIncapacitated();
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() 
+				&& !preggoMob.isIncapacitated();
+			}
+		});	
+		
+		preggoMob.goalSelector.addGoal(5, new MeleeAttackGoal(preggoMob, 1.1D, false){
+			@Override
+			protected double getAttackReachSqr(LivingEntity entity) {
+				return this.mob.getBbWidth() * this.mob.getBbWidth() + entity.getBbWidth();
+			}
+
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !preggoMob.isIncapacitated();
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse()
+				&& !preggoMob.isIncapacitated();
+			}
+		});
+		
+		preggoMob.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(preggoMob, 1.0D) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& (preggoMob.isSavage() || !preggoMob.isTame())		
+				&& !preggoMob.isIncapacitated();
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() 
+				&& !preggoMob.isIncapacitated();
+			}
+		});
+		
+		preggoMob.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(preggoMob, Player.class, false, false) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& (preggoMob.isSavage() || !preggoMob.isTame())		
+				&& !preggoMob.isIncapacitated();
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() 
+				&& !preggoMob.isIncapacitated();
+			}
+		});	
+		
+		preggoMob.goalSelector.addGoal(9, new LookAtPlayerGoal(preggoMob, Player.class, 6F) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !PreggoMobHelper.hasValidTarget(preggoMob)
+				&& !preggoMob.isIncapacitated();
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() 
+				&& !PreggoMobHelper.isTargetStillValid(preggoMob)	
+				&& !preggoMob.isIncapacitated();
+			}
+		});			
+		
+		preggoMob.goalSelector.addGoal(10, new RandomLookAroundGoal(preggoMob) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& (preggoMob.isSavage() || !preggoMob.isTame())		
+				&& !preggoMob.isIncapacitated();
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() 
+				&& !preggoMob.isIncapacitated();
+			}
+		});
+		
+		preggoMob.goalSelector.addGoal(11, new FloatGoal(preggoMob) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !preggoMob.isIncapacitated();
+			}
+		});
+	}
+	
+	private static class PreggMobOwnerHurtByTargetGoal<T extends TamableAnimal & IImpregnable> extends OwnerHurtByTargetGoal {
+
+		private final T preggoMob;
+		
+		public PreggMobOwnerHurtByTargetGoal(T p_26107_) {
+			super(p_26107_);
+			this.preggoMob = p_26107_;
+		}
+		
+		@Override
+		public boolean canUse() {
+			return super.canUse() 
+			&& !preggoMob.isIncapacitated()
+			&& !preggoMob.isWaiting()
+			&& !preggoMob.isSavage();
+		}
+		@Override
+		public boolean canContinueToUse() {
+			return super.canContinueToUse() 
+			&& !preggoMob.isIncapacitated();
+		}	
+	}
+	
+	private static class PreggoMobOwnerHurtTargetGoal<T extends TamableAnimal & IImpregnable> extends OwnerHurtTargetGoal {
+		private final T preggoMob;
+		
+		public PreggoMobOwnerHurtTargetGoal(T p_26107_) {
+			super(p_26107_);
+			this.preggoMob = p_26107_;
+		}
+
+		@Override
+		public boolean canUse() {
+			return super.canUse() 
+			&& !preggoMob.isIncapacitated()
+			&& !preggoMob.isWaiting()
+			&& !preggoMob.isSavage();
+		}
+
+		@Override
+		public boolean canContinueToUse() {
+			return super.canContinueToUse()
+			&& !preggoMob.isIncapacitated();	
+		}
+	}
+
+	private static class PreggoMobFollowOwnerGoal<T extends TamableAnimal & IImpregnable> extends FollowOwnerGoal {
+		private final T preggoMob;
+		
+		public PreggoMobFollowOwnerGoal(T p_25294_, double p_25295_, float p_25296_, float p_25297_, boolean p_25298_) {
+			super(p_25294_, p_25295_, p_25296_, p_25297_, p_25298_);
+			this.preggoMob = p_25294_;	
+		}
+		
+		@Override
+		public boolean canUse() {
+			return super.canUse() 
+			&& !PreggoMobHelper.hasValidTarget(preggoMob)
+			&& !preggoMob.isIncapacitated()
+			&& !preggoMob.isWaiting()
+			&& !preggoMob.isSavage();
+		}
+
+		@Override
+		public boolean canContinueToUse() {
+			return super.canContinueToUse()
+			&& !PreggoMobHelper.isTargetStillValid(preggoMob)	
+			&& !preggoMob.isIncapacitated();
+		}	
+	}
+}
+
+

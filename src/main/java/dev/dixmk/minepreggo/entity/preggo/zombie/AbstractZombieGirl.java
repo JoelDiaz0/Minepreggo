@@ -29,11 +29,13 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -42,9 +44,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class AbstractZombieGirl extends TamableAnimal {
 	
-	public final AnimationState idleAnimationState = new AnimationState();
+	public final AnimationState loopAnimationState = new AnimationState();
 	public final AnimationState attackAnimationState = new AnimationState();
-	
 	
 	protected AbstractZombieGirl(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_) {
 	      super(p_21803_, p_21804_);
@@ -84,6 +85,16 @@ public abstract class AbstractZombieGirl extends TamableAnimal {
 		return List.of(MinepreggoModItems.VILLAGER_BRAIN.get()).contains(stack.getItem());
 	}	
 	
+    @Override
+    public void handleEntityEvent(byte id) {
+        if (id == 4) { // vanilla "swing/attack" animation event
+            this.attackAnimationState.start(this.tickCount); 
+        }
+        else {
+            super.handleEntityEvent(id);
+        }
+    }
+	
 	@Override
    	public void aiStep() {
       super.aiStep();
@@ -101,6 +112,18 @@ public abstract class AbstractZombieGirl extends TamableAnimal {
       }
    }
 
+    public boolean isAttacking() {
+        return this.attackAnimationState.isStarted();
+    }
+	
+	@Override
+	public void tick() {
+		super.tick();	
+		if (this.level().isClientSide() && !this.loopAnimationState.isStarted()) {
+			this.loopAnimationState.start(this.tickCount);
+		}		
+	}
+	
     @Override
     public boolean doHurtTarget(Entity target) {
         boolean result = super.doHurtTarget(target);
@@ -108,33 +131,6 @@ public abstract class AbstractZombieGirl extends TamableAnimal {
             this.level().broadcastEntityEvent(this, (byte)4); // triggers handleEntityEvent client-side     
         return result;
     }
-	
-	
-    @Override
-    public void handleEntityEvent(byte id) {
-        if (id == 4) { // vanilla "swing/attack" animation event
-            this.attackAnimationState.start(this.tickCount); 
-        }
-        super.handleEntityEvent(id);
-    }
-	
-	@Override
-	public void tick() {
-		super.tick();
-		
-		/*
-		if (this.level().isClientSide()) {
-			this.idleAnimationState.animateWhen(true, this.tickCount);
-		}
-		*/
-		
-		if (!this.idleAnimationState.isStarted()) {
-		    this.idleAnimationState.start(this.tickCount);
-		}
-	}
-	
-	
-	
 	
 	@Override
 	public boolean killedEntity(ServerLevel p_219160_, LivingEntity p_219161_) {
@@ -219,6 +215,11 @@ public abstract class AbstractZombieGirl extends TamableAnimal {
 	@Override
 	public boolean wantsToPickUp(ItemStack p_182400_) {
 		return !p_182400_.is(Items.GLOW_INK_SAC) && super.wantsToPickUp(p_182400_);
+	}
+	
+	@Override
+	public EntityDimensions getDimensions(Pose p_33597_) {
+		return super.getDimensions(p_33597_).scale(1F);
 	}
 	
 	@Override

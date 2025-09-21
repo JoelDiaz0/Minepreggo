@@ -78,8 +78,13 @@ public class MinepreggoModItems {
 	
 	public static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, MinepreggoMod.MODID);
 	
-	public static final RegistryObject<Item> ZOMBIE_GIRL_SPAWN_EGG = REGISTRY.register("zombie_girl_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P0, -16724839, -16738048, new Item.Properties()));
+	public static final RegistryObject<Item> MONSTER_ZOMBIE_GIRL_SPAWN_EGG = REGISTRY.register("monster_zombie_girl_p0_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P0, -16724839, -16738048, new Item.Properties()));
+	public static final RegistryObject<Item> TAMABLE_ZOMBIE_GIRL_SPAWN_EGG = REGISTRY.register("tamable_zombie_girl_p0_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0, -16724839, -16738048, new Item.Properties()));
 
+	public static final RegistryObject<Item> MONSTER_CREEPER_GIRL_P0_SPAWN_EGG = REGISTRY.register("monster_creeper_girl_p0_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_CREEPER_GIRL_P0, -16738048, -26368, new Item.Properties()));
+	public static final RegistryObject<Item> TAMABLE_CREEPER_GIRL_P0_SPAWN_EGG = REGISTRY.register("tamable_creeper_girl_p0_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P0, -16738048, -26368, new Item.Properties()));
+
+	
 	
 	/*
 	 

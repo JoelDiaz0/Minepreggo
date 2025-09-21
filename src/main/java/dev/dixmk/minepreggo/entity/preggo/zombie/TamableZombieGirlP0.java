@@ -6,17 +6,29 @@ import net.minecraftforge.network.NetworkHooks;
 import net.minecraft.world.level.Level;
 
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.AgeableMob;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
+
 import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.utils.PreggoAIHelper;
+import dev.dixmk.minepreggo.utils.PreggoGUIHelper;
+import dev.dixmk.minepreggo.utils.PreggoMobHelper;
+import dev.dixmk.minepreggo.utils.PreggoTags;
+import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlP0InventaryGUIMenu;
+import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlP0MainGUIMenu;
+import io.netty.buffer.Unpooled;
 
 public class TamableZombieGirlP0 extends AbstractTamableZombieGirl {
 
@@ -39,75 +51,29 @@ public class TamableZombieGirlP0 extends AbstractTamableZombieGirl {
 	@Override
 	protected void registerGoals() {
 		super.registerGoals();
-		//PreggoMobAI.setTamableZombieGirlGoals(this);
-		//AbstractZombieGirlP0Entity.setZombieGirlSpecialGoal(this);
+		PreggoAIHelper.setTamableZombieGirlGoals(this);
 	}
 
 	@Override
 	public boolean hurt(DamageSource damagesource, float amount) {			
 		boolean success = super.hurt(damagesource, amount);	
-		if(!success) return false;
-		Entity entity = this;
+		
+		if (!success) return false;
+
+		
 		//ZombieGirlP0EntityIsHurtProcedure.execute(damagesource, entity);
 		return true;
 	}
 
-	/*
-	@Override
-	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {
-	
-		InteractionResult retval = super.mobInteract(sourceentity, hand);
-
-		if (sourceentity instanceof ServerPlayer serverPlayer		
-				&& sourceentity.isShiftKeyDown()
-				&& this.isOwnedBy(sourceentity)	
-				&& !this.entityData.get(DATA_IS_INCAPACITATED)
-				&& !this.entityData.get(DATA_IS_SAVAGE)
-				&& !sourceentity.getMainHandItem().is(ItemTags.create(new ResourceLocation("minepreggo:zombie_all_food")))) {
-			
-			NetworkHooks.openScreen(serverPlayer, new MenuProvider() {
-				@Override
-				public Component getDisplayName() {
-					return Component.literal("Zombie Girl (P0)");
-				}
-
-				@Override
-				public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-					FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
-					packetBuffer.writeBlockPos(sourceentity.blockPosition());
-					packetBuffer.writeByte(0);
-					packetBuffer.writeVarInt(ZombieGirlP0Entity.this.getId());
-					return new ZombieGirlP0InventaryGUIMenu(id, inventory, packetBuffer);
-				}
-			}, buf -> {
-				buf.writeBlockPos(sourceentity.blockPosition());
-				buf.writeByte(0);
-				buf.writeVarInt(this.getId());
-			});
-		}
-		else if (this.isOwnedBy(sourceentity)) {
-			double x = this.getX();
-			double y = this.getY();
-			double z = this.getZ();
-			Entity entity = this;
-			Level world = this.level();
-			ZombieGirlP0RightClickedOnEntityProcedure.execute(world, x, y, z, entity, sourceentity);
-		}
-
-		return retval;
-	}
-	*/
-
 	@Override
 	public void baseTick() {
 		super.baseTick();
-		// ZombieGirlP0OnEntityTickUpdateProcedure.execute(this.level(), this.getX(), this.getY(), this.getZ(), this);
-		this.refreshDimensions();
-	}
-
-	@Override
-	public EntityDimensions getDimensions(Pose p_33597_) {
-		return super.getDimensions(p_33597_).scale(1F);
+		this.refreshDimensions();	
+		
+		if (PreggoMobHelper.evaluatePreggoMobPregnancyBeginning(this)) {
+			return;
+		}
+		PreggoMobHelper.evaluatePreggoMobHungryTimer(this);	
 	}
 
 	@Override
@@ -116,15 +82,72 @@ public class TamableZombieGirlP0 extends AbstractTamableZombieGirl {
 		this.updateSwingTime();
 	}
 
+	@Override
+	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {
+	
+		InteractionResult retval = super.mobInteract(sourceentity, hand);
+
+		if (sourceentity instanceof ServerPlayer serverPlayer) {
+						
+			if (PreggoGUIHelper.canOwnerAccessGUI(serverPlayer, this, PreggoTags.ZOMBIE_GIRL_FOOD) ) {	
+				
+				final var entityId = this.getId();
+				final var blockPos = serverPlayer.blockPosition();
+				
+				if (serverPlayer.isShiftKeyDown()) {
+					NetworkHooks.openScreen(serverPlayer, new MenuProvider() {
+						@Override
+						public Component getDisplayName() {
+							return Component.literal("ZombieGirlInventaryGUI");
+						}
+
+						@Override
+						public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
+							FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
+							packetBuffer.writeBlockPos(serverPlayer.blockPosition());
+							packetBuffer.writeVarInt(entityId);			
+							return new ZombieGirlP0InventaryGUIMenu(id, inventory, packetBuffer);
+						}
+					}, buf -> {
+						buf.writeBlockPos(blockPos);
+						buf.writeVarInt(entityId);
+					});
+				}
+				else {				
+					NetworkHooks.openScreen(serverPlayer, new MenuProvider() {		
+						@Override
+						public Component getDisplayName() {
+							return Component.literal("ZombieGirlMainGUI");
+						}
+						@Override
+						public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
+							FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+							buf.writeBlockPos(blockPos);
+							buf.writeVarInt(entityId);										
+							return new ZombieGirlP0MainGUIMenu(id, inventory, buf);				
+						}
+					}, buf -> {
+					    buf.writeBlockPos(blockPos);         
+					    buf.writeVarInt(entityId);
+					});
+				
+				}		
+			}	
+			else {
+				this.spawnTamingParticles(PreggoMobHelper.evaluatePreggoMobHungry(this, serverPlayer, PreggoTags.ZOMBIE_GIRL_FOOD));
+			}
+		}
+			
+		return retval;
+	}
+	
 	public static void init() {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
 		return AbstractTamableZombieGirl.getBasicAttributes(0.235);
 	}
-
-
-
+	
 	@Override
 	public PregnancyStage getCurrentPregnancyStage() {
 		return PregnancyStage.P0;

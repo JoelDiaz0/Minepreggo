@@ -8,7 +8,13 @@ public interface IImpregnable {
 	PregnancyStage getMaxPregnancyStage();
 	void setMaxPregnancyStage(PregnancyStage stage);
 
+	PreggoMobAnimationState getAnimationState();
+	void setAnimationState(PreggoMobAnimationState state);
+	
+	
 	PregnancyStage getCurrentPregnancyStage();
+	
+	boolean isIncapacitated();
 	
 	PregnancyIllness getPregnancyIllness();
 	void setPregnancyIllness(PregnancyIllness illness);

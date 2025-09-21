@@ -7,6 +7,9 @@ import net.minecraft.client.animation.AnimationChannel;
 
 
 public class ZombieGirlP0Animation {
+	
+	private ZombieGirlP0Animation() {}	
+	
 	public static final AnimationDefinition IDLE = AnimationDefinition.Builder.withLength(4.0F).looping()
 		.addAnimation("right_arm", new AnimationChannel(AnimationChannel.Targets.ROTATION, 
 			new Keyframe(0.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),

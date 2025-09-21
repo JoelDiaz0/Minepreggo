@@ -9,7 +9,6 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -21,7 +20,6 @@ import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.Difficulty;
@@ -49,7 +47,6 @@ public class MonsterZombieGirlP0 extends AbstractMonsterZombieGirl {
 	private static final AttributeModifier SPEED_MODIFIER_BABY = new AttributeModifier(SPEED_MODIFIER_BABY_UUID, "Baby speed boost", 0.2D, AttributeModifier.Operation.MULTIPLY_BASE);
 	private static final EntityDataAccessor<Boolean> DATA_BABY_ID = SynchedEntityData.defineId(MonsterZombieGirlP0.class, EntityDataSerializers.BOOLEAN);
 	
-
 	public MonsterZombieGirlP0(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P0.get(), world);
 	}
@@ -59,10 +56,6 @@ public class MonsterZombieGirlP0 extends AbstractMonsterZombieGirl {
 		xpReward = 10;
 		setNoAi(false);
 		setMaxUpStep(0.6f);
-		this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
-		this.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.IRON_LEGGINGS));
-		this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.IRON_CHESTPLATE));
-		this.setItemSlot(EquipmentSlot.FEET, new ItemStack(Items.IRON_BOOTS));
 	}
 
 	@Override

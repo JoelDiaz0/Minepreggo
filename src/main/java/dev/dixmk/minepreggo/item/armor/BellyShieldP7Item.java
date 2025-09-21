@@ -20,7 +20,7 @@ import net.minecraft.client.model.HumanoidModel;
 
 import java.util.function.Consumer;
 
-import dev.dixmk.minepreggo.utils.PreggoArmorHelper;
+import dev.dixmk.minepreggo.utils.PreggoModelHelper;
 
 
 public abstract class BellyShieldP7Item extends ArmorItem {
@@ -79,7 +79,7 @@ public abstract class BellyShieldP7Item extends ArmorItem {
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return PreggoArmorHelper.getMaternalP7HumanoidArmorModel(living, stack, slot, defaultModel);
+					return PreggoModelHelper.getMaternalP7HumanoidArmorModel(living, stack, slot, defaultModel);
 
 				}
 			});

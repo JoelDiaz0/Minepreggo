@@ -11,9 +11,10 @@ import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.entity.preggo.BabyType;
 import dev.dixmk.minepreggo.entity.preggo.IImpregnable;
+import dev.dixmk.minepreggo.entity.preggo.PreggoMobAnimationState;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyIllness;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
-import dev.dixmk.minepreggo.serializer.MinepreggoModSerializers;
+import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -27,7 +28,6 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
-import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -51,8 +51,8 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	public static final EntityDataAccessor<Integer> DATA_HUNGRY_TIMER = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.INT);
 	
 	public static final EntityDataAccessor<Integer> DATA_PREGNANCY_TIMER = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.INT);	
-	public static final EntityDataAccessor<PregnancyStage> DATA_MAX_PREGNANCY_STAGE = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, MinepreggoModSerializers.PREGNANCY_STAGE);
-	public static final EntityDataAccessor<PregnancyIllness> DATA_PREGNANCY_ILLNESS = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, MinepreggoModSerializers.PREGNANCY_ILLNESS);
+	public static final EntityDataAccessor<PregnancyStage> DATA_MAX_PREGNANCY_STAGE = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, MinepreggoModEntityDataSerializers.PREGNANCY_STAGE);
+	public static final EntityDataAccessor<PregnancyIllness> DATA_PREGNANCY_ILLNESS = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, MinepreggoModEntityDataSerializers.PREGNANCY_ILLNESS);
 	public static final EntityDataAccessor<Integer> DATA_PREGNANCY_ILLNESS_TIMER = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.INT);
 	
 	public static final EntityDataAccessor<Boolean> DATA_IS_PREGNANT = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
@@ -60,6 +60,7 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	public static final EntityDataAccessor<Boolean> DATA_IS_ANGRY = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
 	public static final EntityDataAccessor<Boolean> DATA_IS_WAITING = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
 
+	public static final EntityDataAccessor<PreggoMobAnimationState> DATA_ANIMATION_STATE = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, MinepreggoModEntityDataSerializers.ANIMATION_STATE);
 	
 	/*
 	public static final EntityDataAccessor<Integer> DATA_PREGNANCY_HEALTH = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.INT);	
@@ -67,8 +68,6 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	public static final EntityDataAccessor<Integer> DATA_DAYS_PASSED = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.INT);
 	public static final EntityDataAccessor<Integer> DATA_DAYS_TO_GIVE_BIRTH = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.INT);
 	*/
-
-	public final AnimationState waitAnimationState = new AnimationState();
 
 	protected final ItemStackHandler inventory;
 	protected final CombinedInvWrapper combined;
@@ -81,40 +80,6 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	      this.combined = new CombinedInvWrapper(inventory, new EntityHandsInvWrapper(this), new EntityArmorInvWrapper(this));
 	}
 		
-	@Override
-	public void tick() {
-		super.tick();
-		
-		/*
-		if (this.level().isClientSide()) {
-			this.idleAnimationState.animateWhen(true, this.tickCount);
-		}
-		*/
-		
-		if (!this.idleAnimationState.isStarted()) {
-		    this.idleAnimationState.start(this.tickCount);
-		}
-	}
-	
-	
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-		if (this.isAlive() && capability == ForgeCapabilities.ITEM_HANDLER && side == null)
-			return LazyOptional.of(() -> combined).cast();
-		return super.getCapability(capability, side);
-	}
-
-	@Override
-	protected void dropEquipment() {
-		super.dropEquipment();
-		for (int i = 0; i < inventory.getSlots(); ++i) {
-			ItemStack itemstack = inventory.getStackInSlot(i);
-			if (!itemstack.isEmpty() && !EnchantmentHelper.hasVanishingCurse(itemstack)) {
-				this.spawnAtLocation(itemstack);
-			}
-		}
-	}	
-	
 	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();
@@ -130,6 +95,8 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 		this.entityData.define(DATA_MAX_PREGNANCY_STAGE, PregnancyStage.P0);
 		this.entityData.define(DATA_PREGNANCY_ILLNESS, PregnancyIllness.NONE);
 		this.entityData.define(DATA_PREGNANCY_ILLNESS_TIMER, 0);
+		
+		this.entityData.define(DATA_ANIMATION_STATE, PreggoMobAnimationState.IDLE);
 	}
 	
 	@Override
@@ -155,6 +122,8 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 		compound.putInt("DataMaxPregnancyStage", this.entityData.get(DATA_MAX_PREGNANCY_STAGE).ordinal());
 		compound.putInt("DataPregnancyIllness", this.entityData.get(DATA_PREGNANCY_ILLNESS).ordinal());	
 		compound.putInt("DataPregnancyIllnessTimer", this.entityData.get(DATA_PREGNANCY_ILLNESS_TIMER));	
+	
+		compound.putInt("DataAnimationStage", this.entityData.get(DATA_ANIMATION_STATE).ordinal());
 	}
 	
 	@Override
@@ -185,8 +154,30 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 			this.entityData.set(DATA_PREGNANCY_ILLNESS_TIMER, compound.getInt("DataPregnancyIllnessTimer"));
 		if (compound.contains("DataMaxPregnancyStage"))
 			this.entityData.set(DATA_MAX_PREGNANCY_STAGE, PregnancyStage.values()[compound.getInt("DataMaxPregnancyStage")]);
-	}
 	
+		if (compound.contains("DataAnimationStage"))
+			this.entityData.set(DATA_ANIMATION_STATE, PreggoMobAnimationState.values()[compound.getInt("DataAnimationStage")]);
+	
+	}
+
+	@Override
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
+		if (this.isAlive() && capability == ForgeCapabilities.ITEM_HANDLER && side == null)
+			return LazyOptional.of(() -> combined).cast();
+		return super.getCapability(capability, side);
+	}
+
+	@Override
+	protected void dropEquipment() {
+		super.dropEquipment();
+		for (int i = 0; i < inventory.getSlots(); ++i) {
+			ItemStack itemstack = inventory.getStackInSlot(i);
+			if (!itemstack.isEmpty() && !EnchantmentHelper.hasVanishingCurse(itemstack)) {
+				this.spawnAtLocation(itemstack);
+			}
+		}
+	}	
+   
 	@Override
 	protected void populateDefaultEquipmentSlots(RandomSource p_219165_, DifficultyInstance p_219166_) {
 		super.populateDefaultEquipmentSlots(p_219165_, p_219166_);
@@ -216,6 +207,24 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	}
 	
 	@Override
+	protected void registerGoals() {
+		super.registerGoals();
+		this.goalSelector.addGoal(8, new AbstractZombieGirl.ZombieGirlAttackTurtleEggGoal(this, 1.0D, 3){
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !isIncapacitated()
+				&& !isWaiting();
+			}
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() 
+				&& !isIncapacitated();
+			}	
+		});	
+	}
+	
+	@Override
 	public ItemStackHandler getInventary() {
 		return this.inventory;
 	}
@@ -231,55 +240,15 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	}
 	
 	@Override
-	public boolean wantsToAttack(LivingEntity target, LivingEntity owner) {
-		
+	public boolean wantsToAttack(LivingEntity target, LivingEntity owner) {		
 		if ((target instanceof TamableAnimal tamableTarget && tamableTarget.isOwnedBy(owner))
 				|| (target instanceof AbstractHorse houseTarget && houseTarget.isTamed())
 				|| (target instanceof Player pTarget && owner instanceof Player pOwmer && !(pOwmer).canHarmPlayer(pTarget)))
 			return false;
-
-		
+	
 		return true;
 	}
-	
-	
-	/*
-	protected static<T extends AbstractZombieGirlP0Entity & PreggoP0> void setZombieGirlSpecialGoal(T zombieGirl) {
-		zombieGirl.goalSelector.addGoal(8, new AbstractZombieGirlP0Entity.ZombieGirlAttackTurtleEggGoal(zombieGirl, 1.0D, 3){
-			@Override
-			public boolean canUse() {
-				return super.canUse() 
-				&& !zombieGirl.isIncapacitated()
-				&& !zombieGirl.isWaiting();
-			}
-			@Override
-			public boolean canContinueToUse() {
-				return super.canContinueToUse() 
-				&& !zombieGirl.isIncapacitated();
-			}	
-		});	
-	}
-	
-	
-	protected static<T extends AbstractZombieGirlP0Entity & PreggoP1> void setAngryZombieGirlSpecialGoal(T zombieGirl) {
-		zombieGirl.goalSelector.addGoal(8, new AbstractZombieGirlP0Entity.ZombieGirlAttackTurtleEggGoal(zombieGirl, 1.0D, 3){
-			@Override
-			public boolean canUse() {
-				return super.canUse() 
-				&& !zombieGirl.isIncapacitated()
-				&& !zombieGirl.isAngerEventActive()
-				&& !zombieGirl.isWaiting();
-			}
-			@Override
-			public boolean canContinueToUse() {
-				return super.canContinueToUse() 
-				&& !zombieGirl.isIncapacitated()
-				&& !zombieGirl.isAngerEventActive();
-			}	
-		});	
-	}
-	*/
-	
+		
 	protected static AttributeSupplier.Builder getBasicAttributes(double movementSpeed) {
 		return Mob.createMobAttributes()
 				.add(Attributes.MAX_HEALTH, 26D)
@@ -372,6 +341,21 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	@Override
 	public void setPregnancyIllnessTimer(int ticks) {
 		this.entityData.set(DATA_PREGNANCY_ILLNESS_TIMER, ticks);
+	}
+	
+	@Override
+	public boolean isIncapacitated() {
+		return getPregnancyIllness() != PregnancyIllness.NONE;
+	}
+	
+	@Override
+	public PreggoMobAnimationState getAnimationState() {
+		return this.entityData.get(DATA_ANIMATION_STATE);
+	}
+
+	@Override
+	public void setAnimationState(PreggoMobAnimationState state) {
+		this.entityData.set(DATA_ANIMATION_STATE, state);
 	}
 	
 	@Override

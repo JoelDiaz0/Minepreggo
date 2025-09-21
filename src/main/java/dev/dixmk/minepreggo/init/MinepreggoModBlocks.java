@@ -21,7 +21,7 @@ public class MinepreggoModBlocks {
 	public static final DeferredRegister<Block> REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCKS, MinepreggoMod.MODID);
 	
 	public static final RegistryObject<Block> MEDICAL_TABLE = REGISTRY.register("medical_table", MedicalTableBlock::new);
-	public static final RegistryObject<Block> CHILIPEPPERS = REGISTRY.register("chilipeppers", () -> new ChilipepperBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().randomTicks().instabreak().sound(SoundType.CROP).pushReaction(PushReaction.DESTROY)));
+	public static final RegistryObject<Block> CHILIPEPPERS = REGISTRY.register("chili_peppers", () -> new ChilipepperBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().randomTicks().instabreak().sound(SoundType.CROP).pushReaction(PushReaction.DESTROY)));
 	public static final RegistryObject<Block> CUCUMBERS = REGISTRY.register("cucumbers", () -> new CucumberBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().randomTicks().instabreak().sound(SoundType.CROP).pushReaction(PushReaction.DESTROY)));
 
 

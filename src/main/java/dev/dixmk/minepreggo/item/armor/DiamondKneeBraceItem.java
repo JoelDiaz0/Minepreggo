@@ -21,7 +21,7 @@ import net.minecraft.client.model.HumanoidModel;
 
 import java.util.function.Consumer;
 
-import dev.dixmk.minepreggo.utils.PreggoArmorHelper;
+import dev.dixmk.minepreggo.utils.PreggoModelHelper;
 
 public abstract class DiamondKneeBraceItem extends ArmorItem {
 	protected DiamondKneeBraceItem(ArmorItem.Type type, Item.Properties properties) {
@@ -79,7 +79,7 @@ public abstract class DiamondKneeBraceItem extends ArmorItem {
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return PreggoArmorHelper.getHumanoidKneeBraceArmorModel(living, stack, slot, defaultModel);
+					return PreggoModelHelper.getHumanoidKneeBraceArmorModel(living, stack, slot, defaultModel);
 				}
 			});
 		}

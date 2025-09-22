@@ -3,11 +3,10 @@ package dev.dixmk.minepreggo.entity.preggo.creeper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import dev.dixmk.minepreggo.entity.preggo.BabyType;
-import dev.dixmk.minepreggo.entity.preggo.IImpregnable;
-import dev.dixmk.minepreggo.entity.preggo.PreggoMobAnimationState;
-import dev.dixmk.minepreggo.entity.preggo.PregnancyIllness;
+import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
+import dev.dixmk.minepreggo.entity.preggo.PreggoMobState;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
+import dev.dixmk.minepreggo.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
 import net.minecraft.core.Direction;
@@ -41,24 +40,23 @@ import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.EntityArmorInvWrapper;
 import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
 
-public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl implements IImpregnable {
+public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl implements IPreggoMob {
 
-	public static final EntityDataAccessor<Integer> DATA_HUNGRY = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.INT);
-	public static final EntityDataAccessor<Integer> DATA_HUNGRY_TIMER = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.INT);
+	protected static final EntityDataAccessor<Integer> DATA_HUNGRY = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.INT);
+	protected static final EntityDataAccessor<Integer> DATA_HUNGRY_TIMER = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.INT);
+	protected static final EntityDataAccessor<Integer> DATA_PREGNANCY_TIMER = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.INT);	
+	protected static final EntityDataAccessor<PregnancyStage> DATA_MAX_PREGNANCY_STAGE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.PREGNANCY_STAGE);
+	protected static final EntityDataAccessor<PregnancySymptom> DATA_PREGNANCY_SYMPTOM = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.PREGNANCY_SYMPTOM);
+	protected static final EntityDataAccessor<Integer> DATA_PREGNANCY_ILLNESS_TIMER = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.INT);
+	protected static final EntityDataAccessor<Boolean> DATA_PREGNANT = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
+	protected static final EntityDataAccessor<Boolean> DATA_SAVAGE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
+	protected static final EntityDataAccessor<Boolean> DATA_ANGRY = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
+	protected static final EntityDataAccessor<Boolean> DATA_WAITING = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
+	protected static final EntityDataAccessor<PreggoMobState> DATA_STATE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.STATE);
+	protected static final EntityDataAccessor<CombatMode> DATA_COMBAT_MODE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.COMBAT_MODE);
+
 	
-	public static final EntityDataAccessor<Integer> DATA_PREGNANCY_TIMER = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.INT);	
-	public static final EntityDataAccessor<PregnancyStage> DATA_MAX_PREGNANCY_STAGE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.PREGNANCY_STAGE);
-	public static final EntityDataAccessor<PregnancyIllness> DATA_PREGNANCY_ILLNESS = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.PREGNANCY_ILLNESS);
-	public static final EntityDataAccessor<Integer> DATA_PREGNANCY_ILLNESS_TIMER = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.INT);
 	
-	public static final EntityDataAccessor<Boolean> DATA_IS_PREGNANT = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
-	public static final EntityDataAccessor<Boolean> DATA_IS_SAVAGE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
-	public static final EntityDataAccessor<Boolean> DATA_IS_ANGRY = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
-	public static final EntityDataAccessor<Boolean> DATA_IS_WAITING = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
-	
-	private static final EntityDataAccessor<CombatMode> DATA_COMBAT_MODE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.COMBAT_MODE);
-	
-	public static final EntityDataAccessor<PreggoMobAnimationState> DATA_ANIMATION_STATE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.ANIMATION_STATE);
 	
 	public static final int INVENTARY_SIZE = 12;
 	protected final ItemStackHandler inventory;
@@ -73,79 +71,63 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 		
 	@Override
 	protected void defineSynchedData() {
-		super.defineSynchedData();	
-		this.entityData.define(DATA_HUNGRY, 10);
+		super.defineSynchedData();
+		this.entityData.define(DATA_HUNGRY, 0);
 		this.entityData.define(DATA_HUNGRY_TIMER, 0);
 			
-		this.entityData.define(DATA_IS_PREGNANT, false);
-		this.entityData.define(DATA_IS_WAITING, false);	
-		this.entityData.define(DATA_IS_SAVAGE, false);
-		this.entityData.define(DATA_IS_ANGRY, false);
+		this.entityData.define(DATA_PREGNANT, false);
+		this.entityData.define(DATA_SAVAGE, true);
+		this.entityData.define(DATA_ANGRY, false);
+		this.entityData.define(DATA_WAITING, false);
 		
 		this.entityData.define(DATA_PREGNANCY_TIMER, 0);
 		this.entityData.define(DATA_MAX_PREGNANCY_STAGE, PregnancyStage.P0);
-		this.entityData.define(DATA_PREGNANCY_ILLNESS, PregnancyIllness.NONE);
+		this.entityData.define(DATA_PREGNANCY_SYMPTOM, PregnancySymptom.NONE);
 		this.entityData.define(DATA_PREGNANCY_ILLNESS_TIMER, 0);
-			
+		this.entityData.define(DATA_STATE, PreggoMobState.IDLE);
 		this.entityData.define(DATA_COMBAT_MODE, CombatMode.FIGHT_AND_EXPLODE);
-		
-		this.entityData.define(DATA_ANIMATION_STATE, PreggoMobAnimationState.IDLE);
 	}
 	
 	@Override
-	public void addAdditionalSaveData(CompoundTag compoundTag) {
-		super.addAdditionalSaveData(compoundTag);
-		compoundTag.put("InventoryCustom", inventory.serializeNBT());
-		compoundTag.putInt("DataModeCombat", this.entityData.get(DATA_COMBAT_MODE).ordinal());
-		compoundTag.putInt("DataHungry", this.entityData.get(DATA_HUNGRY));
-		compoundTag.putInt("DataHungryTimer", this.entityData.get(DATA_HUNGRY_TIMER));
+	public void addAdditionalSaveData(CompoundTag compound) {
+		super.addAdditionalSaveData(compound);
+		compound.put("InventoryCustom", inventory.serializeNBT());
+		compound.putInt("DataHungry", this.entityData.get(DATA_HUNGRY));
+		compound.putInt("DataHungryTimer", this.entityData.get(DATA_HUNGRY_TIMER));
 		
-		compoundTag.putBoolean("DataIsWaiting", this.entityData.get(DATA_IS_WAITING));
-		compoundTag.putBoolean("DataIsPregnant", this.entityData.get(DATA_IS_PREGNANT));
-		compoundTag.putBoolean("DataIsSavage", this.entityData.get(DATA_IS_SAVAGE));
-		compoundTag.putBoolean("DataIsAngry", this.entityData.get(DATA_IS_ANGRY));
+		compound.putBoolean("DataPregnant", this.entityData.get(DATA_PREGNANT));
+		compound.putBoolean("DataSavage", this.entityData.get(DATA_SAVAGE));
+		compound.putBoolean("DataWaiting", this.entityData.get(DATA_WAITING));
+		compound.putBoolean("DataAngry", this.entityData.get(DATA_ANGRY));
 
-		compoundTag.putInt("DataPregnancyTimer", this.entityData.get(DATA_PREGNANCY_TIMER));
-		compoundTag.putInt("DataMaxPregnancyStage", this.entityData.get(DATA_MAX_PREGNANCY_STAGE).ordinal());
-		compoundTag.putInt("DataPregnancyIllness", this.entityData.get(DATA_PREGNANCY_ILLNESS).ordinal());	
-		compoundTag.putInt("DataPregnancyIllnessTimer", this.entityData.get(DATA_PREGNANCY_ILLNESS_TIMER));	
+		compound.putInt("DataPregnancyTimer", this.entityData.get(DATA_PREGNANCY_TIMER));
+		compound.putInt("DataMaxPregnancyStage", this.entityData.get(DATA_MAX_PREGNANCY_STAGE).ordinal());
+		compound.putInt("DataPregnancySymptom", this.entityData.get(DATA_PREGNANCY_SYMPTOM).ordinal());	
+		compound.putInt("DataPregnancySymptomTimer", this.entityData.get(DATA_PREGNANCY_ILLNESS_TIMER));	
 	
-		compoundTag.putInt("DataAnimationStage", this.entityData.get(DATA_ANIMATION_STATE).ordinal());
+		compound.putInt("DataStage", this.entityData.get(DATA_STATE).ordinal());
+		
+		compound.putInt("DataCombatMode", this.entityData.get(DATA_COMBAT_MODE).ordinal());
 	}
 	
 	@Override
-	public void readAdditionalSaveData(CompoundTag compoundTag) {
-		super.readAdditionalSaveData(compoundTag);	
-		Tag inventoryCustom = compoundTag.get("InventoryCustom");
+	public void readAdditionalSaveData(CompoundTag compound) {
+		super.readAdditionalSaveData(compound);
+		Tag inventoryCustom = compound.get("InventoryCustom");
 		if (inventoryCustom instanceof CompoundTag inventoryTag)
-			inventory.deserializeNBT(inventoryTag);
-		if (compoundTag.contains("DataModeCombat"))
-			this.entityData.set(DATA_COMBAT_MODE, CombatMode.values()[compoundTag.getInt("DataModeCombat")]);
-		if (compoundTag.contains("DataHungry"))
-			this.entityData.set(DATA_HUNGRY, compoundTag.getInt("DataHungry"));
-		if (compoundTag.contains("DataHungryTimer"))
-			this.entityData.set(DATA_HUNGRY_TIMER, compoundTag.getInt("DataHungryTimer"));
-	
-		if (compoundTag.contains("DataIsWaiting"))
-			this.entityData.set(DATA_IS_WAITING, compoundTag.getBoolean("DataIsWaiting"));
-		if (compoundTag.contains("DataIsPregnant"))
-			this.entityData.set(DATA_IS_PREGNANT, compoundTag.getBoolean("DataIsPregnant"));
-		if (compoundTag.contains("DataIsSavage"))
-			this.entityData.set(DATA_IS_SAVAGE, compoundTag.getBoolean("DataIsSavage"));
-		if (compoundTag.contains("DataIsAngry"))
-			this.entityData.set(DATA_IS_ANGRY, compoundTag.getBoolean("DataIsAngry"));
-				
-		if (compoundTag.contains("DataPregnancyTimer"))
-			this.entityData.set(DATA_PREGNANCY_TIMER, compoundTag.getInt("DataPregnancyTimer"));
-		if (compoundTag.contains("DataPregnancyIllness"))
-			this.entityData.set(DATA_PREGNANCY_ILLNESS, PregnancyIllness.values()[compoundTag.getInt("DataPregnancyIllness")]);
-		if (compoundTag.contains("DataPregnancyIllnessTimer"))
-			this.entityData.set(DATA_PREGNANCY_ILLNESS_TIMER, compoundTag.getInt("DataPregnancyIllnessTimer"));
-		if (compoundTag.contains("DataMaxPregnancyStage"))
-			this.entityData.set(DATA_MAX_PREGNANCY_STAGE, PregnancyStage.values()[compoundTag.getInt("DataMaxPregnancyStage")]);
-	
-		if (compoundTag.contains("DataAnimationStage"))
-			this.entityData.set(DATA_ANIMATION_STATE, PreggoMobAnimationState.values()[compoundTag.getInt("DataAnimationStage")]);
+			inventory.deserializeNBT(inventoryTag);	
+		this.entityData.set(DATA_HUNGRY, compound.getInt("DataHungry"));
+		this.entityData.set(DATA_HUNGRY_TIMER, compound.getInt("DataHungryTimer"));
+		this.entityData.set(DATA_PREGNANT, compound.getBoolean("DataPregnant"));		
+		this.entityData.set(DATA_SAVAGE, compound.getBoolean("DataSavage"));		
+		this.entityData.set(DATA_WAITING, compound.getBoolean("DataWaiting"));		
+		this.entityData.set(DATA_ANGRY, compound.getBoolean("DataAngry"));		
+		this.entityData.set(DATA_PREGNANCY_TIMER, compound.getInt("DataPregnancyTimer"));
+		this.entityData.set(DATA_PREGNANCY_SYMPTOM, PregnancySymptom.values()[compound.getInt("DataPregnancySymptom")]);
+		this.entityData.set(DATA_PREGNANCY_ILLNESS_TIMER, compound.getInt("DataPregnancySymptomTimer"));
+		this.entityData.set(DATA_MAX_PREGNANCY_STAGE, PregnancyStage.values()[compound.getInt("DataMaxPregnancyStage")]);
+		this.entityData.set(DATA_STATE, PreggoMobState.values()[compound.getInt("DataStage")]);
+		this.entityData.set(DATA_COMBAT_MODE, CombatMode.values()[compound.getInt("DataCombatMode")]);
 	}
 	
 	@Override
@@ -155,7 +137,6 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 			@Override
 			public boolean canUse() {				
 				return super.canUse() 
-				&& !isIncapacitated()
 				&& getCanExplote();								
 			}
 		});
@@ -282,30 +263,40 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	public void setHungryTimer(int ticks) {
 	    this.entityData.set(DATA_HUNGRY_TIMER, ticks);
 	}
-
-	@Override
-	public boolean isWaiting() {
-	    return this.entityData.get(DATA_IS_WAITING);
-	}
-
-	@Override
-	public void setWaiting(boolean waiting) {
-	    this.entityData.set(DATA_IS_WAITING, waiting);
-	}
 		
 	@Override
 	public boolean isPregnant() {
-	    return this.entityData.get(DATA_IS_PREGNANT);
+	    return this.entityData.get(DATA_PREGNANT);
 	}
 	
 	@Override
 	public boolean isSavage() {
-	    return this.entityData.get(DATA_IS_SAVAGE);
+	    return this.entityData.get(DATA_SAVAGE);
 	}
 	
 	@Override
 	public void setSavage(boolean savage) {
-	    this.entityData.set(DATA_IS_SAVAGE, savage);
+	    this.entityData.set(DATA_SAVAGE, savage);
+	}
+	
+	@Override
+	public boolean isWaiting() {
+	    return this.entityData.get(DATA_WAITING);
+	}
+	
+	@Override
+	public void setWaiting(boolean waiting) {
+	    this.entityData.set(DATA_WAITING, waiting);
+	}
+	
+	@Override
+	public boolean isAngry() {
+	    return this.entityData.get(DATA_ANGRY);
+	}
+	
+	@Override
+	public void setAngry(boolean angry) {
+	    this.entityData.set(DATA_ANGRY, angry);
 	}
 	
 	@Override
@@ -329,43 +320,13 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	}
 	
 	@Override
-	public PregnancyIllness getPregnancyIllness() {
-		return this.entityData.get(DATA_PREGNANCY_ILLNESS);
-	}
-	
-	@Override
-	public void setPregnancyIllness(PregnancyIllness illness) {
-		this.entityData.set(DATA_PREGNANCY_ILLNESS, illness);
-	}
-	
-	@Override
-	public int getPregnancyIllnessTimer() {
-		return this.entityData.get(DATA_PREGNANCY_ILLNESS_TIMER);
-	}
-	
-	@Override
-	public void setPregnancyIllnessTimer(int ticks) {
-		this.entityData.set(DATA_PREGNANCY_ILLNESS_TIMER, ticks);
-	}
-	
-	@Override
-	public boolean isIncapacitated() {
-		return getPregnancyIllness() != PregnancyIllness.NONE;
-	}
-	
-	@Override
-	public BabyType getBabyType() {
-		return BabyType.HUMANOID_CREEPER;
-	}
-	
-	@Override
-	public PreggoMobAnimationState getAnimationState() {
-		return this.entityData.get(DATA_ANIMATION_STATE);
+	public PreggoMobState getState() {
+		return this.entityData.get(DATA_STATE);
 	}
 
 	@Override
-	public void setAnimationState(PreggoMobAnimationState state) {
-		this.entityData.set(DATA_ANIMATION_STATE, state);
+	public void setState(PreggoMobState state) {
+		this.entityData.set(DATA_STATE, state);
 	}
 	
 	@Override

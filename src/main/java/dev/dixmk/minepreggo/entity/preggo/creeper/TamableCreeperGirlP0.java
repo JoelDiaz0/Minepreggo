@@ -22,7 +22,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 
-import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.utils.PreggoAIHelper;
 import dev.dixmk.minepreggo.utils.PreggoGUIHelper;
@@ -98,7 +97,7 @@ public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl {
 			return InteractionResult.SUCCESS;
 		
 		if (sourceentity instanceof ServerPlayer serverPlayer) {
-			if (PreggoGUIHelper.canOwnerAccessGUI(serverPlayer, this, PreggoTags.CREEPER_GIRL_FOOD)) {
+			if (PreggoGUIHelper.canOwnerAccessPreggoMobGUI(serverPlayer, this, PreggoTags.CREEPER_GIRL_FOOD)) {
 				final var entityId = this.getId();
 				final var blockPos = serverPlayer.blockPosition();
 					
@@ -156,8 +155,4 @@ public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl {
 		return getBasicAttributes(0.24);
 	}
 
-	@Override
-	public PregnancyStage getCurrentPregnancyStage() {
-		return PregnancyStage.P0;
-	}
 }

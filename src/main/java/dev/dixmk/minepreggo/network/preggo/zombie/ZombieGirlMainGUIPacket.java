@@ -4,7 +4,7 @@ import java.util.Comparator;
 import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.entity.preggo.PreggoMobAnimationState;
+import dev.dixmk.minepreggo.entity.preggo.PreggoMobState;
 import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractTamableZombieGirl;
 
 import net.minecraft.core.BlockPos;
@@ -74,7 +74,7 @@ public class ZombieGirlMainGUIPacket {
 				if ((buttonId == 0 || buttonId == 1)) {			
 					boolean flag = buttonId == 0;						
 					zombieGirl.setWaiting(flag);	
-					zombieGirl.setAnimationState(flag ? PreggoMobAnimationState.WAIT : PreggoMobAnimationState.IDLE);
+					zombieGirl.setState(flag ? PreggoMobState.WAIT : PreggoMobState.IDLE);
 				}
 				else if (buttonId == 2 && !zombieGirl.isPassenger()) {
 					var abstractHorse = world.getEntitiesOfClass(AbstractHorse.class, AABB.ofSize(new Vec3(x, y, z), 6, 6, 6), e -> true).stream().sorted(new Object() {

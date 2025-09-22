@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractTamableCreeperGirl;
+import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import dev.dixmk.minepreggo.utils.PreggoArmorHelper;
 import dev.dixmk.minepreggo.utils.PreggoGUIHelper;
 import dev.dixmk.minepreggo.utils.PreggoMessageHelper;
@@ -71,35 +73,40 @@ public abstract class AbstractCreeperGirlInventaryGUIMenu<T extends AbstractTama
 		}));
 		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, 8, 44) {
 			@Override
-			public boolean mayPlace(ItemStack itemstack) {
-				var p =	PreggoArmorHelper.ARMOR_RESTRICTION.get(creeperGirl.getCurrentPregnancyStage().ordinal()).get(0);		
-				if (p != null) {
-					final var success = p.test(itemstack);
-					if (!success) {
-		                final var message = PreggoMessageHelper.ARMOR_MESSAGES.get(-1);     
-		                if (!entity.level().isClientSide && message != null && message[1] != null)     
-		                	entity.displayClientMessage(Component.literal(String.format(message[1], creeperGirl.getPreggoName())), true);
-					}	
-					return success;
+			public boolean mayPlace(ItemStack itemstack) {	
+				
+				var stage = PregnancyStage.P0;
+							
+				if (creeperGirl instanceof AbstractTamablePregnantCreeperGirl c)
+					stage = c.getCurrentPregnancyStage();
+									
+				if (!PreggoArmorHelper.canPreggoMobUseChestplate(itemstack, stage)) {
+	                final var message = PreggoMessageHelper.ARMOR_MESSAGES.get(stage.ordinal());                                
+	                if (!entity.level().isClientSide && message != null && message[1] != null) 
+	                	entity.displayClientMessage(Component.literal(String.format(message[1], creeperGirl.getPreggoName())), true);
+	                return false;
 				}
-				return false;
+			
+				return true;
 			}
 		}));
 		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 8, 26) {
 			@Override
 			public boolean mayPlace(ItemStack itemstack) {
-				var p =	PreggoArmorHelper.ARMOR_RESTRICTION.get(creeperGirl.getCurrentPregnancyStage().ordinal()).get(1);		
-				if (p != null) {
-					final var success = p.test(itemstack);
-					if (!success) {
-		                final var message = PreggoMessageHelper.ARMOR_MESSAGES.get(creeperGirl.getCurrentPregnancyStage().ordinal());     
-		                if (!entity.level().isClientSide && message != null && message[1] != null)     
-		                	entity.displayClientMessage(Component.literal(String.format(message[1], creeperGirl.getPreggoName())), true);
-					}	
-					return success;
-				}
-					
-				return false;
+				
+				var stage = PregnancyStage.P0;
+				
+				if (creeperGirl instanceof AbstractTamablePregnantCreeperGirl c)
+					stage = c.getCurrentPregnancyStage();
+				
+				if (!PreggoArmorHelper.canPreggoMobUseLegging(itemstack, stage)) {
+	                final var message = PreggoMessageHelper.ARMOR_MESSAGES.get(-1);     
+	                if (!entity.level().isClientSide && message != null && message[1] != null)     
+	                	entity.displayClientMessage(Component.literal(String.format(message[1], creeperGirl.getPreggoName())), true);           
+	                return false;
+				}	
+						
+				return true;			
 			}
 		}));
 		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, 8, 8) {

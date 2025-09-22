@@ -33,7 +33,7 @@ public class AnimatedTamableZombieGirlP0Model extends AbstractAnimatedZombieGirl
 					}
 				}
 				
-				switch (zombieGirl.getAnimationState()) {
+				switch (zombieGirl.getState()) {
 				case WAIT: {
 					this.animate(zombieGirl.loopAnimationState, ZombieGirlP0Animation.WAIT, ageInTicks, 1f);						
 					break;
@@ -41,11 +41,7 @@ public class AnimatedTamableZombieGirlP0Model extends AbstractAnimatedZombieGirl
 				case SIT: {
 					this.animate(zombieGirl.loopAnimationState, ZombieGirlP0Animation.RIDING, ageInTicks, 1f);						
 					break;
-				}	
-				case DIZZY: {
-					this.animate(zombieGirl.loopAnimationState, ZombieGirlP0Animation.MORNING_SICKNESS, ageInTicks, 1f);						
-					break;
-				}			
+				}		
 				default:
 					this.animate(zombieGirl.loopAnimationState, ZombieGirlP0Animation.IDLE, ageInTicks, 1f);						
 				}		

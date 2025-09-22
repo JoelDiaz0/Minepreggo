@@ -3,31 +3,26 @@ package dev.dixmk.minepreggo.entity.preggo;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
-public interface IImpregnable {
+public interface IPreggoMob {
 		
 	PregnancyStage getMaxPregnancyStage();
 	void setMaxPregnancyStage(PregnancyStage stage);
 
-	PreggoMobAnimationState getAnimationState();
-	void setAnimationState(PreggoMobAnimationState state);
-	
-	
-	PregnancyStage getCurrentPregnancyStage();
-	
-	boolean isIncapacitated();
-	
-	PregnancyIllness getPregnancyIllness();
-	void setPregnancyIllness(PregnancyIllness illness);
-	
-    int getPregnancyIllnessTimer();
-    void setPregnancyIllnessTimer(int ticks);
+	PreggoMobState getState();
+	void setState(PreggoMobState state);
 	
     int getHungry();
     void setHungry(int hungry);
 
     boolean isWaiting();
     void setWaiting(boolean waiting);
-
+    
+    boolean isSavage();
+    void setSavage(boolean savage);
+    
+    boolean isAngry();
+    void setAngry(boolean angry);
+    
     int getHungryTimer();
     void setHungryTimer(int ticks);
 
@@ -36,14 +31,10 @@ public interface IImpregnable {
     int getPregnancyTimer();
     void setPregnancyTimer(int ticks);
 
-    boolean isSavage();
-    void setSavage(boolean savage);
-	
 	public String getPreggoName();
 	
 	public ItemStackHandler getInventary();
 	
 	public CombinedInvWrapper getCombined();
 	
-	public BabyType getBabyType();
 }

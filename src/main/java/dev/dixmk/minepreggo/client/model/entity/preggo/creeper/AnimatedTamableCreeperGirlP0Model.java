@@ -33,7 +33,7 @@ public class AnimatedTamableCreeperGirlP0Model extends AbstractAnimatedCreeperGi
 					}
 				}
 				
-				switch (creeperGirl.getAnimationState()) {
+				switch (creeperGirl.getState()) {
 				case WAIT: {
 					this.animate(creeperGirl.loopAnimationState, CreeperGirlP0Animation.WAIT, ageInTicks, 1f);						
 					break;
@@ -41,11 +41,7 @@ public class AnimatedTamableCreeperGirlP0Model extends AbstractAnimatedCreeperGi
 				case SIT: {
 					this.animate(creeperGirl.loopAnimationState, CreeperGirlP0Animation.RIDING, ageInTicks, 1f);						
 					break;
-				}	
-				case DIZZY: {
-					this.animate(creeperGirl.loopAnimationState, CreeperGirlP0Animation.MORNING_SICKNESS, ageInTicks, 1f);						
-					break;
-				}			
+				}		
 				default:
 					this.animate(creeperGirl.loopAnimationState, CreeperGirlP0Animation.IDLE, ageInTicks, 1f);						
 				}

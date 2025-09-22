@@ -1,10 +1,9 @@
-package dev.dixmk.minepreggo.entity.preggo.zombie;
+package dev.dixmk.minepreggo.entity.preggo.creeper;
 
 import net.minecraftforge.network.PlayMessages;
 import net.minecraftforge.network.NetworkHooks;
 
 import net.minecraft.world.level.Level;
-
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -19,62 +18,63 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
-
+import dev.dixmk.minepreggo.entity.preggo.Craving;
+import dev.dixmk.minepreggo.entity.preggo.IPregnancyP1;
+import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.utils.PreggoAIHelper;
 import dev.dixmk.minepreggo.utils.PreggoGUIHelper;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
 import dev.dixmk.minepreggo.utils.PreggoTags;
-import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlP0InventaryGUIMenu;
-import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlP0MainGUIMenu;
+import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP0InventaryGUIMenu;
+import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP0MainGUIMenu;
 import io.netty.buffer.Unpooled;
 
-public class TamableZombieGirlP0 extends AbstractTamableZombieGirl {
 
-	public TamableZombieGirlP0(PlayMessages.SpawnEntity packet, Level world) {
-		this(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get(), world);
+public class TamableCreeperGirlP1 extends AbstractTamablePregnantCreeperGirl implements IPregnancyP1 {
+
+	public TamableCreeperGirlP1(PlayMessages.SpawnEntity packet, Level world) {
+		this(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P1.get(), world);
 	}
-	
-	public TamableZombieGirlP0(EntityType<TamableZombieGirlP0> type, Level world) {
+
+	public TamableCreeperGirlP1(EntityType<TamableCreeperGirlP1> type, Level world) {
 		super(type, world);
 		xpReward = 10;
 		setNoAi(false);
 		setMaxUpStep(0.6f);
 	}
-
+	
 	@Override
 	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
-
+	
 	@Override
 	protected void registerGoals() {
 		super.registerGoals();
-		PreggoAIHelper.setTamableZombieGirlGoals(this);
+		PreggoAIHelper.setTamablePregnantCreeperGirlGoals(this);
 	}
 
 	@Override
-	public boolean hurt(DamageSource damagesource, float amount) {			
-		boolean success = super.hurt(damagesource, amount);	
+	public boolean hurt(DamageSource source, float amount) {	
+		boolean success = super.hurt(source, amount);	
+		if(!success) return false;	
+		//CreeperGirlP0EntityIsHurtProcedure.execute(source, this);
 		
-		if (!success) return false;
-
-		
-		//ZombieGirlP0EntityIsHurtProcedure.execute(damagesource, entity);
-		return true;
+		return success;
 	}
-
+	
 	@Override
 	public void baseTick() {
 		super.baseTick();
-		this.refreshDimensions();	
+		this.refreshDimensions();
 		
 		if (PreggoMobHelper.evaluatePreggoMobPregnancyBeginning(this)) {
 			return;
-		}
-		PreggoMobHelper.evaluatePreggoMobHungryTimer(this);	
+		}	
+		PreggoMobHelper.evaluatePreggoMobHungryTimer(this);
 	}
-
+	
 	@Override
 	public void aiStep() {
 		super.aiStep();
@@ -84,28 +84,27 @@ public class TamableZombieGirlP0 extends AbstractTamableZombieGirl {
 	@Override
 	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {
 	
-		InteractionResult retval = super.mobInteract(sourceentity, hand);
-
+		if (super.mobInteract(sourceentity, hand) == InteractionResult.SUCCESS) 
+			return InteractionResult.SUCCESS;
+		
 		if (sourceentity instanceof ServerPlayer serverPlayer) {
-						
-			if (PreggoGUIHelper.canOwnerAccessPreggoMobGUI(serverPlayer, this, PreggoTags.ZOMBIE_GIRL_FOOD) ) {	
-				
+			if (PreggoGUIHelper.canOwnerAccessPregantPreggoMobGUI(serverPlayer, this, PreggoTags.CREEPER_GIRL_FOOD)) {
 				final var entityId = this.getId();
 				final var blockPos = serverPlayer.blockPosition();
-				
+					
 				if (serverPlayer.isShiftKeyDown()) {
 					NetworkHooks.openScreen(serverPlayer, new MenuProvider() {
 						@Override
 						public Component getDisplayName() {
-							return Component.literal("ZombieGirlInventaryGUI");
+							return Component.literal("CreeperGirlInventaryGUI");
 						}
 
 						@Override
 						public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
 							FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
-							packetBuffer.writeBlockPos(serverPlayer.blockPosition());
+							packetBuffer.writeBlockPos(blockPos);
 							packetBuffer.writeVarInt(entityId);			
-							return new ZombieGirlP0InventaryGUIMenu(id, inventory, packetBuffer);
+							return new CreeperGirlP0InventaryGUIMenu(id, inventory, packetBuffer);
 						}
 					}, buf -> {
 						buf.writeBlockPos(blockPos);
@@ -116,35 +115,70 @@ public class TamableZombieGirlP0 extends AbstractTamableZombieGirl {
 					NetworkHooks.openScreen(serverPlayer, new MenuProvider() {		
 						@Override
 						public Component getDisplayName() {
-							return Component.literal("ZombieGirlMainGUI");
+							return Component.literal("CreeperGirlMainGUI");
 						}
 						@Override
 						public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-							FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-							buf.writeBlockPos(blockPos);
-							buf.writeVarInt(entityId);										
-							return new ZombieGirlP0MainGUIMenu(id, inventory, buf);				
+							FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
+							packetBuffer.writeBlockPos(blockPos);
+							packetBuffer.writeVarInt(entityId);					
+							return new CreeperGirlP0MainGUIMenu(id, inventory, packetBuffer);				
 						}
 					}, buf -> {
 					    buf.writeBlockPos(blockPos);         
 					    buf.writeVarInt(entityId);
-					});
-				
-				}		
-			}	
-			else {
-				this.spawnTamingParticles(PreggoMobHelper.evaluatePreggoMobHungry(this, serverPlayer, PreggoTags.ZOMBIE_GIRL_FOOD));
+					});		
+				}
 			}
+			else {		
+				this.spawnTamingParticles(PreggoMobHelper.evaluatePreggoMobHungry(this, serverPlayer, PreggoTags.CREEPER_GIRL_FOOD));
+			}	
 		}
-			
-		return retval;
+
+		return InteractionResult.SUCCESS;
 	}
+	
 	
 	public static void init() {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return AbstractTamableZombieGirl.getBasicAttributes(0.235);
+		return getBasicAttributes(0.24);
 	}
 	
+	@Override
+	public PregnancyStage getCurrentPregnancyStage() {
+		return PregnancyStage.P1;
+	}
+	
+	@Override
+	public int getCraving() {
+		return this.entityData.get(DATA_CRAVING);
+	}
+
+	@Override
+	public void setCraving(int craving) {
+		this.entityData.set(DATA_CRAVING, craving);
+	}
+	
+	@Override
+	public int getCravingTimer() {
+		return this.entityData.get(DATA_CRAVING_TIMER);
+	}
+
+	@Override
+	public void setCravingTimer(int timer) {
+		this.entityData.set(DATA_CRAVING_TIMER, timer);
+	}
+
+	@Override
+	public Craving getCravingChosen() {
+		return this.entityData.get(DATA_CRAVING_CHOSEN);
+	}
+
+	@Override
+	public void setCravingChosen(Craving craving) {
+		this.entityData.set(DATA_CRAVING_CHOSEN, craving);
+	}
+
 }

@@ -1,7 +1,10 @@
 package dev.dixmk.minepreggo.utils;
 
-import dev.dixmk.minepreggo.entity.preggo.IImpregnable;
+import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
+import dev.dixmk.minepreggo.entity.preggo.IPregnancySystem;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractTamableCreeperGirl;
+import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
+import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractTamableZombieGirl;
 
 import net.minecraft.world.entity.LivingEntity;
@@ -32,6 +35,83 @@ public class PreggoAIHelper {
 	
 	public static<T extends AbstractTamableZombieGirl> void setTamableZombieGirlGoals(T zombieGirl) {
 		setBasicPreggoMobGoals(zombieGirl);
+		
+		zombieGirl.goalSelector.addGoal(3, new RestrictSunGoal(zombieGirl));
+
+		zombieGirl.goalSelector.addGoal(3, new FleeSunGoal(zombieGirl, 1.1D));
+	
+		zombieGirl.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(zombieGirl, AbstractVillager.class, false, false) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& (zombieGirl.isSavage() || !zombieGirl.isTame());
+			}
+		});
+		
+		zombieGirl.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(zombieGirl, IronGolem.class, false, false){
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !zombieGirl.isWaiting();
+			}
+		});
+		
+		zombieGirl.targetSelector.addGoal(8, new NearestAttackableTargetGoal<>(zombieGirl, Turtle.class, 10, true, false, Turtle.BABY_ON_LAND_SELECTOR){
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !zombieGirl.isWaiting();
+			}
+		});
+
+		zombieGirl.goalSelector.addGoal(2, new OwnerHurtByTargetGoal(zombieGirl) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !zombieGirl.isWaiting()
+				&& !zombieGirl.isOnFire();				
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse()
+				&& !zombieGirl.isOnFire();	
+			}
+		});
+		
+		zombieGirl.targetSelector.addGoal(2, new OwnerHurtTargetGoal(zombieGirl) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !zombieGirl.isWaiting()
+				&& !zombieGirl.isOnFire();				
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse()
+				&& !zombieGirl.isOnFire();	
+			}
+		});
+		
+		zombieGirl.goalSelector.addGoal(6, new FollowOwnerGoal(zombieGirl, 1.1D, 6F, 2F, false) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !zombieGirl.isWaiting()
+				&& !zombieGirl.isOnFire();				
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse()
+				&& !zombieGirl.isOnFire();	
+			}
+		});	
+	}
+		
+	public static<T extends AbstractTamablePregnantZombieGirl> void setTamablePregnantZombieGirlGoals(T zombieGirl) {
+		setBasicPregnantPreggoMobGoals(zombieGirl);
 		
 		zombieGirl.goalSelector.addGoal(3, new RestrictSunGoal(zombieGirl) {
 			@Override
@@ -147,8 +227,10 @@ public class PreggoAIHelper {
 		});	
 	}
 	
-	public static<T extends AbstractTamableCreeperGirl> void setTamableCreeperGirlGoals(T creeperGirl) {
-		setBasicPreggoMobGoals(creeperGirl);
+	
+	
+	public static<T extends AbstractTamablePregnantCreeperGirl> void setTamablePregnantCreeperGirlGoals(T creeperGirl) {
+		setBasicPregnantPreggoMobGoals(creeperGirl);
 		
 		creeperGirl.goalSelector.addGoal(3, new AvoidEntityGoal<>(creeperGirl, Ocelot.class, 6F, 1, 1.2) {
 			@Override
@@ -182,8 +264,100 @@ public class PreggoAIHelper {
 		creeperGirl.goalSelector.addGoal(6, new PreggoMobFollowOwnerGoal<>(creeperGirl, 1.1D, 6F, 2F, false));	
 	}	
 	
+	public static<T extends AbstractTamableCreeperGirl> void setTamableCreeperGirlGoals(T creeperGirl) {
+		setBasicPreggoMobGoals(creeperGirl);
+		
+		creeperGirl.goalSelector.addGoal(3, new AvoidEntityGoal<>(creeperGirl, Ocelot.class, 6F, 1, 1.2));
+		creeperGirl.goalSelector.addGoal(3, new AvoidEntityGoal<>(creeperGirl, Cat.class, 6F, 1, 1.2));
+		
+		creeperGirl.goalSelector.addGoal(2, new OwnerHurtByTargetGoal(creeperGirl) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !creeperGirl.isWaiting();				
+			}
+		});
+		
+		creeperGirl.targetSelector.addGoal(2, new OwnerHurtTargetGoal(creeperGirl) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !creeperGirl.isWaiting();			
+			}
+		});
+		
+		creeperGirl.goalSelector.addGoal(6, new FollowOwnerGoal(creeperGirl, 1.1D, 6F, 2F, false) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !creeperGirl.isWaiting();		
+			}
+		});
+	}
 	
-	private static<T extends TamableAnimal & IImpregnable> void setBasicPreggoMobGoals(T preggoMob) {	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	private static<T extends TamableAnimal & IPreggoMob> void setBasicPreggoMobGoals(T preggoMob) {	
+		preggoMob.targetSelector.addGoal(3, new HurtByTargetGoal(preggoMob));	
+		
+		preggoMob.goalSelector.addGoal(5, new MeleeAttackGoal(preggoMob, 1.1D, false){
+			@Override
+			protected double getAttackReachSqr(LivingEntity entity) {
+				return this.mob.getBbWidth() * this.mob.getBbWidth() + entity.getBbWidth();
+			};
+		});
+			
+		preggoMob.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(preggoMob, 1.0D) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& (preggoMob.isSavage() || !preggoMob.isTame());	
+			}
+		});
+		
+		preggoMob.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(preggoMob, Player.class, false, false) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& (preggoMob.isSavage() || !preggoMob.isTame());		
+			}
+		});	
+		
+		preggoMob.goalSelector.addGoal(9, new LookAtPlayerGoal(preggoMob, Player.class, 6F) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !PreggoMobHelper.hasValidTarget(preggoMob);
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() 
+				&& !PreggoMobHelper.isTargetStillValid(preggoMob);
+			}
+		});			
+		
+		preggoMob.goalSelector.addGoal(10, new RandomLookAroundGoal(preggoMob) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& (preggoMob.isSavage() || !preggoMob.isTame());		
+			}
+		});
+		
+		preggoMob.goalSelector.addGoal(11, new FloatGoal(preggoMob));
+	}
+	
+	private static<T extends TamableAnimal & IPreggoMob & IPregnancySystem> void setBasicPregnantPreggoMobGoals(T preggoMob) {	
 		preggoMob.targetSelector.addGoal(3, new HurtByTargetGoal(preggoMob) {
 			@Override
 			public boolean canUse() {
@@ -287,7 +461,7 @@ public class PreggoAIHelper {
 		});
 	}
 	
-	private static class PreggMobOwnerHurtByTargetGoal<T extends TamableAnimal & IImpregnable> extends OwnerHurtByTargetGoal {
+	private static class PreggMobOwnerHurtByTargetGoal<T extends TamableAnimal & IPreggoMob & IPregnancySystem> extends OwnerHurtByTargetGoal {
 
 		private final T preggoMob;
 		
@@ -310,7 +484,7 @@ public class PreggoAIHelper {
 		}	
 	}
 	
-	private static class PreggoMobOwnerHurtTargetGoal<T extends TamableAnimal & IImpregnable> extends OwnerHurtTargetGoal {
+	private static class PreggoMobOwnerHurtTargetGoal<T extends TamableAnimal & IPreggoMob & IPregnancySystem> extends OwnerHurtTargetGoal {
 		private final T preggoMob;
 		
 		public PreggoMobOwnerHurtTargetGoal(T p_26107_) {
@@ -333,7 +507,7 @@ public class PreggoAIHelper {
 		}
 	}
 
-	private static class PreggoMobFollowOwnerGoal<T extends TamableAnimal & IImpregnable> extends FollowOwnerGoal {
+	private static class PreggoMobFollowOwnerGoal<T extends TamableAnimal & IPreggoMob & IPregnancySystem> extends FollowOwnerGoal {
 		private final T preggoMob;
 		
 		public PreggoMobFollowOwnerGoal(T p_25294_, double p_25295_, float p_25296_, float p_25297_, boolean p_25298_) {

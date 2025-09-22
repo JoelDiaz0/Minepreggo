@@ -3,9 +3,7 @@ package dev.dixmk.minepreggo.utils;
 import java.util.Comparator;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.entity.preggo.IImpregnable;
-import dev.dixmk.minepreggo.entity.preggo.PreggoMobAnimationState;
-import dev.dixmk.minepreggo.entity.preggo.PregnancyIllness;
+import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -68,7 +66,7 @@ public class PreggoMobHelper {
 	}
 
 
-	public static<E extends TamableAnimal & IImpregnable> boolean evaluatePreggoMobHungry(E preggoMob, ServerPlayer owner, TagKey<Item> foods) {
+	public static<E extends TamableAnimal & IPreggoMob> boolean evaluatePreggoMobHungry(E preggoMob, ServerPlayer owner, TagKey<Item> foods) {
 	    var mainHandItem = owner.getMainHandItem();
 	    var currentHunger = preggoMob.getHungry();
 	    var world = preggoMob.level();
@@ -96,7 +94,7 @@ public class PreggoMobHelper {
 	    return false;
 	}
 	
-	public static<E extends TamableAnimal & IImpregnable> void evaluatePreggoMobHungryTimer(E preggoMob, Level level) {
+	public static<E extends TamableAnimal & IPreggoMob> void evaluatePreggoMobHungryTimer(E preggoMob, Level level) {
 	    if (preggoMob == null)
 	        return;
    
@@ -159,12 +157,12 @@ public class PreggoMobHelper {
 	    }
 	}
 	
-	public static<E extends TamableAnimal & IImpregnable> void evaluatePreggoMobHungryTimer(E preggoMob) {
+	public static<E extends TamableAnimal & IPreggoMob> void evaluatePreggoMobHungryTimer(E preggoMob) {
 		evaluatePreggoMobHungryTimer(preggoMob, preggoMob.level());
 	}
 	
 	
-	public static<E extends TamableAnimal & IImpregnable> boolean evaluatePreggoMobPregnancyBeginning(E preggoMob) {		
+	public static<E extends TamableAnimal & IPreggoMob> boolean evaluatePreggoMobPregnancyBeginning(E preggoMob) {		
 	    	
 		if (preggoMob.isPregnant()) {
 			
@@ -177,22 +175,9 @@ public class PreggoMobHelper {
 	        	preggoMob.setPregnancyTimer(preggoMob.getPregnancyTimer() + 1);
 
                 if (!world.isClientSide()
-                		&& !preggoMob.isIncapacitated()
-                		&& world.getRandom().nextFloat() < MinepreggoModConfig.getMorningSicknessProbability()) {
-                	preggoMob.setPregnancyIllness(PregnancyIllness.MORNING_SICKNESS);                      
-                	preggoMob.setAnimationState(PreggoMobAnimationState.DIZZY);
+                		&& world.getRandom().nextFloat() < MinepreggoModConfig.getMorningSicknessProbability()
+                		&& !preggoMob.hasEffect(MobEffects.CONFUSION)) {
                 	preggoMob.addEffect(new MobEffectInstance(MobEffects.CONFUSION, MinepreggoModConfig.getTotalTicksOfMorningSickness(), 0, false, true));                 
-                    preggoMob.stopRiding();
-                } else {
-                    if (preggoMob.getPregnancyIllnessTimer() < MinepreggoModConfig.getTotalTicksOfMorningSickness()) {
-                    	preggoMob.setPregnancyIllnessTimer(preggoMob.getPregnancyIllnessTimer() + 1);
-                    } else {
-                        if (!world.isClientSide()) {
-                        	preggoMob.setPregnancyIllnessTimer(0);
-                            preggoMob.setPregnancyIllness(PregnancyIllness.NONE);
-                        	preggoMob.setAnimationState(PreggoMobAnimationState.IDLE);
-                        }
-                    }
                 }
 	        }     
 	    }	
@@ -202,6 +187,8 @@ public class PreggoMobHelper {
 
 	
 
+	
+	
 	
 	
 	

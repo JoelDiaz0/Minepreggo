@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.init;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.entity.preggo.creeper.MonsterCreeperGirlP0;
 import dev.dixmk.minepreggo.entity.preggo.creeper.TamableCreeperGirlP0;
+import dev.dixmk.minepreggo.entity.preggo.creeper.TamableCreeperGirlP1;
 import dev.dixmk.minepreggo.entity.preggo.zombie.MonsterZombieGirlP0;
 import dev.dixmk.minepreggo.entity.preggo.zombie.TamableZombieGirlP0;
 import net.minecraft.world.entity.Entity;
@@ -36,6 +37,9 @@ public class MinepreggoModEntities {
 	public static final RegistryObject<EntityType<TamableCreeperGirlP0>> TAMABLE_CREEPER_GIRL_P0 = register("tamable_creeper_girl_p0",
 			EntityType.Builder.<TamableCreeperGirlP0>of(TamableCreeperGirlP0::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamableCreeperGirlP0::new).sized(0.6f, 1.8f));
 	
+	public static final RegistryObject<EntityType<TamableCreeperGirlP1>> TAMABLE_CREEPER_GIRL_P1 = register("tamable_creeper_girl_p1",
+			EntityType.Builder.<TamableCreeperGirlP1>of(TamableCreeperGirlP1::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamableCreeperGirlP1::new).sized(0.6f, 1.8f));
+	
 	
 	private static <T extends Entity> RegistryObject<EntityType<T>> register(String registryname, EntityType.Builder<T> entityTypeBuilder) {
 		return REGISTRY.register(registryname, () -> entityTypeBuilder.build(registryname));
@@ -47,6 +51,7 @@ public class MinepreggoModEntities {
 		event.enqueueWork(TamableZombieGirlP0::init);
 		event.enqueueWork(MonsterCreeperGirlP0::init);
 		event.enqueueWork(TamableCreeperGirlP0::init);
+		event.enqueueWork(TamableCreeperGirlP1::init);
 	}
 
 	@SubscribeEvent
@@ -55,5 +60,6 @@ public class MinepreggoModEntities {
 		event.put(TAMABLE_ZOMBIE_GIRL_P0.get(), TamableZombieGirlP0.createAttributes().build());
 		event.put(MONSTER_CREEPER_GIRL_P0.get(), MonsterCreeperGirlP0.createAttributes().build());
 		event.put(TAMABLE_CREEPER_GIRL_P0.get(), TamableCreeperGirlP0.createAttributes().build());
+		event.put(TAMABLE_CREEPER_GIRL_P1.get(), TamableCreeperGirlP1.createAttributes().build());
 	}
 }

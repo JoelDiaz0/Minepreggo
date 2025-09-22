@@ -3,8 +3,8 @@ package dev.dixmk.minepreggo.utils;
 import java.util.concurrent.atomic.AtomicReference;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.entity.preggo.IImpregnable;
-
+import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
+import dev.dixmk.minepreggo.entity.preggo.IPregnancySystem;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -58,16 +58,19 @@ public class PreggoGUIHelper {
 
 	public static final ResourceLocation ICONS_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/icons.png");
 	
-	public static<E extends TamableAnimal & IImpregnable> boolean canOwnerAccessGUI(Player source, E target, TagKey<Item> foods) {			
+	public static<E extends TamableAnimal & IPreggoMob > boolean canOwnerAccessPreggoMobGUI(Player source, E target, TagKey<Item> foods) {			
 		return target.isOwnedBy(source)
-				&& !target.isIncapacitated()
 				&& !target.isSavage()
 				&& !source.getMainHandItem().is(foods);
 	}
 	
+	public static<E extends TamableAnimal & IPreggoMob & IPregnancySystem> boolean canOwnerAccessPregantPreggoMobGUI(Player source, E target, TagKey<Item> foods) {			
+		return !target.isIncapacitated()
+				&& canOwnerAccessPreggoMobGUI(source, target, foods);
+	}
 
 	
-	public static<T extends TamableAnimal & IImpregnable> void syncPreggoMobInventary(T preggoEntity) {
+	public static<T extends TamableAnimal & IPreggoMob> void syncPreggoMobInventary(T preggoEntity) {
 	    if (preggoEntity == null)
 	        return;
 	    
@@ -91,7 +94,7 @@ public class PreggoGUIHelper {
 	}
 	
 
-	public static<T extends TamableAnimal & IImpregnable> void syncPreggoMobInventaryOnTick(Level world, T preggoEntity) {
+	public static<T extends TamableAnimal & IPreggoMob> void syncPreggoMobInventaryOnTick(Level world, T preggoEntity) {
 	    if (preggoEntity == null)
 	        return;
 	    
@@ -103,7 +106,7 @@ public class PreggoGUIHelper {
 	    }
 	}
 
-	private static<T extends TamableAnimal & IImpregnable> ItemStack getItemStack(int sltid, T preggoEntity) {
+	private static<T extends TamableAnimal & IPreggoMob> ItemStack getItemStack(int sltid, T preggoEntity) {
 	    AtomicReference<ItemStack> retval = new AtomicReference<>(ItemStack.EMPTY);
 	    preggoEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> retval.set(capability.getStackInSlot(sltid).copy()));
 	    return retval.get();
@@ -114,7 +117,7 @@ public class PreggoGUIHelper {
 	
 	
 	
-	public static void renderDefaultPreggoP0MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, IImpregnable p0) {
+	public static void renderDefaultPreggoP0MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, IPreggoMob p0) {
 
 		for (int i = 0, pos = 74; i < 10; i++, pos += 10) {
 			guiGraphics.blit(MINECRAFT_ICONS_TEXTURE, leftPos + pos, topPos + 56, 16, 27, 9, 9, 256, 256);
@@ -154,7 +157,7 @@ public class PreggoGUIHelper {
 		}
 	}
 	
-	public static void renderDefaultPreggoP0LabelMainGUI(GuiGraphics guiGraphics, Font font, IImpregnable p0, boolean post) {	
+	public static void renderDefaultPreggoP0LabelMainGUI(GuiGraphics guiGraphics, Font font, IPreggoMob p0, boolean post) {	
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_0_main_gui.label_state"), 78, 21, -12829636, false);
 		guiGraphics.drawString(font, p0.getPreggoName(), 90, 4, -12829636, false);
 	

@@ -16,11 +16,11 @@ public interface IPregnancySystem {
 	PregnancySymptom getPregnancySymptom();
 	void setPregnancySymptom(PregnancySymptom symptom);
 	
-	PregnancyState getPregnancyState();
-	void setPregnancyState(PregnancyState stage);
+	PregnancyPain getPregnancyPain();
+	void setPregnancyPain(PregnancyPain pain);
 	
-    int getPregnancyStateTimer();
-    void setPregnancyStateTimer(int ticks);
+    int getPregnancyPainTimer();
+    void setPregnancyPainTimer(int ticks);
 	
 	public BabyType getBabyType();
 	

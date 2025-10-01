@@ -3,7 +3,7 @@ package dev.dixmk.minepreggo.entity.preggo.creeper;
 import dev.dixmk.minepreggo.entity.preggo.BabyType;
 import dev.dixmk.minepreggo.entity.preggo.Craving;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancySystem;
-import dev.dixmk.minepreggo.entity.preggo.PregnancyState;
+import dev.dixmk.minepreggo.entity.preggo.PregnancyPain;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
 
@@ -29,7 +29,7 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 	protected static final EntityDataAccessor<Integer> DATA_HORNY = SynchedEntityData.defineId(AbstractTamablePregnantCreeperGirl.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<Integer> DATA_HORNY_TIMER = SynchedEntityData.defineId(AbstractTamablePregnantCreeperGirl.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<PregnancySymptom> DATA_PREGNANCY_SYMPTOM = SynchedEntityData.defineId(AbstractTamablePregnantCreeperGirl.class, MinepreggoModEntityDataSerializers.PREGNANCY_SYMPTOM);
-	protected static final EntityDataAccessor<PregnancyState> DATA_PREGNANCY_STATE = SynchedEntityData.defineId(AbstractTamablePregnantCreeperGirl.class, MinepreggoModEntityDataSerializers.PREGNANCY_STATE);
+	protected static final EntityDataAccessor<PregnancyPain> DATA_PREGNANCY_PAIN = SynchedEntityData.defineId(AbstractTamablePregnantCreeperGirl.class, MinepreggoModEntityDataSerializers.PREGNANCY_PAIN);
 	protected static final EntityDataAccessor<Craving> DATA_CRAVING_CHOSEN = SynchedEntityData.defineId(AbstractTamablePregnantCreeperGirl.class, MinepreggoModEntityDataSerializers.CRAVING);
 	protected static final EntityDataAccessor<Integer> DATA_PREGNANCY_STATE_TIMER = SynchedEntityData.defineId(AbstractTamablePregnantCreeperGirl.class, EntityDataSerializers.INT);
 
@@ -54,7 +54,7 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 		this.entityData.define(DATA_HORNY, 0);
 		this.entityData.define(DATA_HORNY_TIMER, 0);
 		this.entityData.define(DATA_PREGNANCY_SYMPTOM, PregnancySymptom.NONE);
-		this.entityData.define(DATA_PREGNANCY_STATE, PregnancyState.NONE);
+		this.entityData.define(DATA_PREGNANCY_PAIN, PregnancyPain.NONE);
 		this.entityData.define(DATA_CRAVING_CHOSEN, Craving.NONE);
 		this.entityData.define(DATA_PREGNANCY_STATE_TIMER, 0);		
 	}
@@ -75,7 +75,7 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 		compoundTag.putInt("DataHorny", this.entityData.get(DATA_HORNY));
 		compoundTag.putInt("DataHornyTimer", this.entityData.get(DATA_HORNY_TIMER));
 		compoundTag.putInt("DataPregnancySymptom", this.entityData.get(DATA_PREGNANCY_SYMPTOM).ordinal());
-		compoundTag.putInt("DataPregnancyState", this.entityData.get(DATA_PREGNANCY_STATE).ordinal());
+		compoundTag.putInt("DataPregnancyPain", this.entityData.get(DATA_PREGNANCY_PAIN).ordinal());
 		compoundTag.putInt("DataPregnancyStateTimer", this.entityData.get(DATA_PREGNANCY_STATE_TIMER));
 		compoundTag.putInt("DataCravingChosen", this.entityData.get(DATA_CRAVING_CHOSEN).ordinal());
 	}
@@ -96,7 +96,7 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 		this.entityData.set(DATA_HORNY, compoundTag.getInt("DataHorny"));
 		this.entityData.set(DATA_HORNY_TIMER, compoundTag.getInt("DataHornyTimer"));
 		this.entityData.set(DATA_PREGNANCY_SYMPTOM, PregnancySymptom.values()[compoundTag.getInt("DataPregnancySymptom")]);
-		this.entityData.set(DATA_PREGNANCY_STATE, PregnancyState.values()[compoundTag.getInt("DataPregnancyState")]);
+		this.entityData.set(DATA_PREGNANCY_PAIN, PregnancyPain.values()[compoundTag.getInt("DataPregnancyPain")]);
 		this.entityData.set(DATA_CRAVING_CHOSEN, Craving.values()[compoundTag.getInt("DataCravingChosen")]);
 		this.entityData.set(DATA_PREGNANCY_STATE_TIMER, compoundTag.getInt("DataPregnancyStateTimer"));
 	}
@@ -245,22 +245,22 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 	}
 	
 	@Override
-	public PregnancyState getPregnancyState() {
-		return this.entityData.get(DATA_PREGNANCY_STATE);
+	public PregnancyPain getPregnancyPain() {
+		return this.entityData.get(DATA_PREGNANCY_PAIN);
 	}
 	
 	@Override
-	public void setPregnancyState(PregnancyState symptom) {
-		this.entityData.set(DATA_PREGNANCY_STATE, symptom);
+	public void setPregnancyPain(PregnancyPain symptom) {
+		this.entityData.set(DATA_PREGNANCY_PAIN, symptom);
 	}
 	
 	@Override
-	public int getPregnancyStateTimer() {
+	public int getPregnancyPainTimer() {
 		return this.entityData.get(DATA_PREGNANCY_STATE_TIMER);
 	}
 	
 	@Override
-	public void setPregnancyStateTimer(int ticks) {
+	public void setPregnancyPainTimer(int ticks) {
 		this.entityData.set(DATA_PREGNANCY_STATE_TIMER, ticks);
 	}
 	

@@ -30,7 +30,7 @@ public interface IPreggoMob {
 
     int getPregnancyTimer();
     void setPregnancyTimer(int ticks);
-
+    
 	public String getPreggoName();
 	
 	public ItemStackHandler getInventary();

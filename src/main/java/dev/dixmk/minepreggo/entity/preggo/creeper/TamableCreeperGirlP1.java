@@ -9,18 +9,22 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import dev.dixmk.minepreggo.entity.preggo.Craving;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancyP1;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
+import dev.dixmk.minepreggo.entity.preggo.PregnancySystemP1;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.utils.PreggoAIHelper;
 import dev.dixmk.minepreggo.utils.PreggoGUIHelper;
@@ -33,6 +37,8 @@ import io.netty.buffer.Unpooled;
 
 public class TamableCreeperGirlP1 extends AbstractTamablePregnantCreeperGirl implements IPregnancyP1 {
 
+	private final PregnancySystemP1<TamableCreeperGirlP1> preggoMobSystem;
+	
 	public TamableCreeperGirlP1(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P1.get(), world);
 	}
@@ -42,6 +48,22 @@ public class TamableCreeperGirlP1 extends AbstractTamablePregnantCreeperGirl imp
 		xpReward = 10;
 		setNoAi(false);
 		setMaxUpStep(0.6f);
+		preggoMobSystem = new PregnancySystemP1<TamableCreeperGirlP1>(this) {
+			@Override
+			protected void changePregnancyStage() {
+
+				
+			}
+			
+			@Override
+			protected void finishMiscarriage() {
+				if (preggoMob.level() instanceof ServerLevel serverLevel) {
+					var creeperGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);
+					PreggoMobHelper.transferPreggoMobBasicData(preggoMob, creeperGirl);
+					preggoMob.discard();
+				}
+			}
+		};
 	}
 	
 	@Override
@@ -67,12 +89,8 @@ public class TamableCreeperGirlP1 extends AbstractTamablePregnantCreeperGirl imp
 	@Override
 	public void baseTick() {
 		super.baseTick();
-		this.refreshDimensions();
-		
-		if (PreggoMobHelper.evaluatePreggoMobPregnancyBeginning(this)) {
-			return;
-		}	
-		PreggoMobHelper.evaluatePreggoMobHungryTimer(this);
+		this.refreshDimensions();	
+		this.preggoMobSystem.evaluate();
 	}
 	
 	@Override

@@ -2,10 +2,8 @@ package dev.dixmk.minepreggo.entity.preggo;
 
 public enum PregnancySymptom {
 	NONE,
-	MORNING_SICKNESS,
 	CRAVING,
-	KICKING,
-	CONTRACTION,
+	MILKING,
 	BELLY_RUBS,
 	HORNY,
 }

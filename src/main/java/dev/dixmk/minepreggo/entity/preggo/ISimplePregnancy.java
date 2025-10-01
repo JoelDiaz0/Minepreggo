@@ -6,8 +6,5 @@ public interface ISimplePregnancy {
 	
 	SimplePregnancyData getSimplePregnancyData();
 	
-	
-	
-	
 	record SimplePregnancyData(int numOfBabies, int totalDaysPassed, int totalDays) {}
 }

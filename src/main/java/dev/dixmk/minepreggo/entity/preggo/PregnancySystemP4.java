@@ -1,0 +1,181 @@
+package dev.dixmk.minepreggo.entity.preggo;
+
+import javax.annotation.Nonnull;
+
+import dev.dixmk.minepreggo.MinepreggoModConfig;
+
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.level.Level;
+
+public abstract class PregnancySystemP4<E extends TamableAnimal
+	& IPreggoMob & IPregnancySystem & IPregnancyP4> extends PregnancySystemP3<E> {
+
+	protected final PregnancyStage currentPregnancyStage;
+	
+	protected PregnancySystemP4(@Nonnull E preggoMob) {
+		super(preggoMob);
+		this.currentPregnancyStage = preggoMob.getCurrentPregnancyStage();
+	}
+	
+	protected Result evaluteBirth(Level level, double x, double y, double z, final int totalTicksOfPrebirth, final int totalTicksOfBirth) {	
+		if (preggoMob.getPregnancyPain() == PregnancyPain.PREBIRTH) {		
+			if (preggoMob.getPregnancyPainTimer() >= totalTicksOfPrebirth) {
+				preggoMob.setPregnancyPain(PregnancyPain.BIRTH);
+	    		preggoMob.setPregnancyPainTimer(0);    		
+			}	
+			else {
+	    		preggoMob.setPregnancyPainTimer(preggoMob.getPregnancyPainTimer() + 1);
+	            level.addParticle(ParticleTypes.FALLING_DRIPSTONE_WATER, x, (y + preggoMob.getBbHeight() * 0.35), z, 0, 1, 0);
+			}
+			
+			return Result.SUCCESS;
+		}
+		else if (preggoMob.getPregnancyPain() == PregnancyPain.BIRTH) {
+			if (preggoMob.getPregnancyPainTimer() >= totalTicksOfBirth) {
+				finishBirth();
+			}	
+			else {
+	    		preggoMob.setPregnancyPainTimer(preggoMob.getPregnancyPainTimer() + 1);
+			}
+			
+			return Result.SUCCESS;
+		}
+			
+		return Result.NOTHING;
+	}
+	
+	protected final boolean hasToGiveBirth() {
+		return preggoMob.getMaxPregnancyStage() == currentPregnancyStage;
+	}
+	
+	@Override
+	protected final Result evaluatePregnancyStageChange() {
+	    if (preggoMob.getDaysPassed() == preggoMob.getDaysByStage()) {
+	    	if (hasToGiveBirth()) {		
+	    		preggoMob.setPregnancyPain(PregnancyPain.PREBIRTH);	  
+	    		preggoMob.setPregnancyPainTimer(0);
+	    	}
+	    	else {
+	    		changePregnancyStage();
+	    	}	  	
+	    	
+	        return Result.SUCCESS;
+	    }
+	    return Result.NOTHING;
+	}
+	
+	@Override
+	protected boolean activateAngry() {
+		return super.activateAngry() || preggoMob.getHorny() >= 20;
+	}
+	
+	
+	protected final void evaluatePregnancyPains(Level level, final float morningSicknessProbability, final float pregnancyPainProbability, final int totalTicksOfKicking, final int totalTicksOfContraction) {
+		if (preggoMob.getPregnancyPain() == PregnancyPain.NONE
+				&& !level.isClientSide()) {		
+			if (randomSource.nextFloat() < morningSicknessProbability) {
+				preggoMob.setPregnancyPain(PregnancyPain.MORNING_SICKNESS);		
+			}
+			else if (randomSource.nextFloat() < pregnancyPainProbability) {			
+				if (preggoMob.getMaxPregnancyStage() == currentPregnancyStage) {
+					preggoMob.setPregnancyPain(PregnancyPain.CONTRACTION);		
+				}
+				else {
+					preggoMob.setPregnancyPain(PregnancyPain.KICKING);		
+				}
+			}	
+		} 
+		else {					
+			if ((preggoMob.getPregnancyPain() == PregnancyPain.MORNING_SICKNESS && preggoMob.getPregnancyPainTimer() >= PregnancySystemConstants.TOTAL_TICKS_MORNING_SICKNESS)
+					|| (preggoMob.getPregnancyPain() == PregnancyPain.KICKING && preggoMob.getPregnancyPainTimer() >= totalTicksOfKicking)
+					|| (preggoMob.getPregnancyPain() == PregnancyPain.CONTRACTION && preggoMob.getPregnancyPainTimer() >= totalTicksOfContraction)) {
+				preggoMob.setPregnancyPainTimer(0);
+				preggoMob.setPregnancyPain(PregnancyPain.NONE);
+			}
+			else {
+				preggoMob.setPregnancyPainTimer(preggoMob.getPregnancyPainTimer() + 1);
+			}
+		}
+	}
+	
+	@Override
+	protected final void evaluatePregnancySymptoms(Level level) {		
+		if (preggoMob.getPregnancySymptom() == PregnancySymptom.NONE) {		
+			if (!level.isClientSide()) {			
+				if (preggoMob.getCraving() >= PregnancySystemConstants.ACTIVATE_CRAVING_SYMPTOM) {		
+					preggoMob.setPregnancySymptom(PregnancySymptom.CRAVING);	
+				}
+				else if (preggoMob.getMilking() >= PregnancySystemConstants.ACTIVATE_MILKING_SYMPTOM) {
+					preggoMob.setPregnancySymptom(PregnancySymptom.MILKING);
+				}
+				else if (preggoMob.getBellyRubs() >= PregnancySystemConstants.ACTIVATE_BELLY_RUBS_SYMPTOM) {
+					preggoMob.setPregnancySymptom(PregnancySymptom.BELLY_RUBS);
+				}
+				else if (preggoMob.getHorny() >= PregnancySystemConstants.ACTIVATE_HORNY_SYMPTOM) {
+					preggoMob.setPregnancySymptom(PregnancySymptom.HORNY);
+				}
+			}
+		}
+		else {
+			if (preggoMob.getPregnancySymptom() == PregnancySymptom.CRAVING
+					&& preggoMob.getCravingChosen() == Craving.NONE) {
+				preggoMob.setCravingChosen(CravingFactory.getRandomCraving(randomSource));
+			}
+		}
+	}
+	
+	protected void evaluateHornyTimer(final int totalTicksOfHorny) {
+		if (preggoMob.getHorny() < 20) {
+	        if (preggoMob.getHornyTimer() >= totalTicksOfHorny) {
+	        	preggoMob.setHorny(preggoMob.getHorny() + 1);
+	        	preggoMob.setHornyTimer(0);
+	        }
+	        else {
+	        	preggoMob.setHornyTimer(preggoMob.getHornyTimer() + 1);
+	        }
+		}	
+	}
+
+	@Override
+	public void evaluate() {
+		
+		final var level = preggoMob.level();
+		final var x =  preggoMob.getX();
+		final var y = preggoMob.getY();
+		final var z = preggoMob.getZ();
+		
+		if (evaluteBirth(level, x, y, z,
+				PregnancySystemConstants.TOTAL_TICKS_PREBIRTH_P4,
+				PregnancySystemConstants.TOTAL_TICKS_BIRTH_P4) == Result.SUCCESS) {
+			return;
+		}
+		
+		if (evaluatePregnancyStageChange() == Result.SUCCESS) {
+			return;
+		}
+		
+		if (evaluateMiscarriage(level, x, y, z,
+				PregnancySystemConstants.TOTAL_TICKS_MISCARRIAGE) == Result.SUCCESS) {
+			return;
+		}
+		
+		this.evaluatePregnancyTimer();
+		this.evaluateHungryTimer(level, x, y, z, MinepreggoModConfig.getTotalTicksOfHungryP4());
+		this.evaluateCravingTimer(MinepreggoModConfig.getTotalTicksOfCravingP4());
+		this.evaluateMilkingTimer(MinepreggoModConfig.getTotalTicksOfMilkingP4());
+		this.evaluateBellyRubsTimer(MinepreggoModConfig.getTotalTicksOfBellyRubsP4());
+		this.evaluateHornyTimer(MinepreggoModConfig.getTotalTicksOfHornyP4());
+		this.evaluateAngry(level, x, y, z, PregnancySystemConstants.HIGH_ANGER_PROBABILITY);
+		
+		this.evaluatePregnancySymptoms(level);
+		this.evaluatePregnancyPains(level,
+				PregnancySystemConstants.LOW_MORNING_SICKNESS_PROBABILITY,
+				PregnancySystemConstants.MEDIUM_PREGNANCY_PAIN_PROBABILITY,
+				PregnancySystemConstants.TOTAL_TICKS_KICKING_P4,
+				PregnancySystemConstants.TOTAL_TICKS_CONTRACTION_P4);
+	}
+	
+	protected abstract void finishBirth();
+	
+}

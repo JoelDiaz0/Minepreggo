@@ -55,12 +55,10 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	protected static final EntityDataAccessor<PreggoMobState> DATA_STATE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.STATE);
 	protected static final EntityDataAccessor<CombatMode> DATA_COMBAT_MODE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.COMBAT_MODE);
 
-	
-	
-	
 	public static final int INVENTARY_SIZE = 12;
 	protected final ItemStackHandler inventory;
 	protected final CombinedInvWrapper combined;
+	
 	
 	protected AbstractTamableCreeperGirl(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_) {
 	      super(p_21803_, p_21804_);

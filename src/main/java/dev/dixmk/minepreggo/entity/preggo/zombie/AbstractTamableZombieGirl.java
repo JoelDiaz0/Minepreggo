@@ -69,7 +69,7 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	      this.inventory = new ItemStackHandler(INVENTORY_SIZE);
 	      this.combined = new CombinedInvWrapper(inventory, new EntityHandsInvWrapper(this), new EntityArmorInvWrapper(this));
 	}
-		
+	
 	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();

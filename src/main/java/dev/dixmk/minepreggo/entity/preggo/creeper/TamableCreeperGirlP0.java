@@ -18,10 +18,11 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
-
+import dev.dixmk.minepreggo.entity.preggo.PreggoMobSystem;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.utils.PreggoAIHelper;
 import dev.dixmk.minepreggo.utils.PreggoGUIHelper;
@@ -33,6 +34,9 @@ import io.netty.buffer.Unpooled;
 
 public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl {
 
+	private final PreggoMobSystem<TamableCreeperGirlP0> preggoMobSystem;
+	
+	
 	public TamableCreeperGirlP0(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P0.get(), world);
 	}
@@ -42,6 +46,16 @@ public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl {
 		xpReward = 10;
 		setNoAi(false);
 		setMaxUpStep(0.6f);
+		preggoMobSystem = new PreggoMobSystem<>(this) {
+			@Override
+			protected void startPregnancy() {		
+				if (preggoMob.level() instanceof ServerLevel serverLevel) {
+					var creeperGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P1.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);		
+					PreggoMobHelper.transferPreggoMobBasicData(preggoMob, creeperGirl);			
+					preggoMob.discard();
+				}			
+			}
+		};
 	}
 	
 	@Override
@@ -76,13 +90,8 @@ public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl {
 	public void baseTick() {
 		super.baseTick();
 		this.refreshDimensions();
-		
-		if (PreggoMobHelper.evaluatePreggoMobPregnancyBeginning(this)) {
-			return;
-		}	
-		PreggoMobHelper.evaluatePreggoMobHungryTimer(this);
+		this.preggoMobSystem.evaluate();
 	}
-
 	
 	@Override
 	public void aiStep() {
@@ -154,5 +163,4 @@ public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl {
 	public static AttributeSupplier.Builder createAttributes() {
 		return getBasicAttributes(0.24);
 	}
-
 }

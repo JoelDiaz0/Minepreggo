@@ -4,7 +4,7 @@ import dev.dixmk.minepreggo.entity.preggo.Craving;
 import dev.dixmk.minepreggo.entity.preggo.PreggoMobState;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
-import dev.dixmk.minepreggo.entity.preggo.PregnancyState;
+import dev.dixmk.minepreggo.entity.preggo.PregnancyPain;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractCreeperGirl.CombatMode;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -15,7 +15,7 @@ public class MinepreggoModEntityDataSerializers {
 	
 	public static final EntityDataSerializer<PregnancySymptom> PREGNANCY_SYMPTOM = EntityDataSerializer.simpleEnum(PregnancySymptom.class);	
 	public static final EntityDataSerializer<PregnancyStage> PREGNANCY_STAGE = EntityDataSerializer.simpleEnum(PregnancyStage.class);
-	public static final EntityDataSerializer<PregnancyState> PREGNANCY_STATE = EntityDataSerializer.simpleEnum(PregnancyState.class);
+	public static final EntityDataSerializer<PregnancyPain> PREGNANCY_PAIN = EntityDataSerializer.simpleEnum(PregnancyPain.class);
 	
 	public static final EntityDataSerializer<CombatMode> COMBAT_MODE = EntityDataSerializer.simpleEnum(CombatMode.class);
 	public static final EntityDataSerializer<PreggoMobState> STATE = EntityDataSerializer.simpleEnum(PreggoMobState.class);
@@ -24,7 +24,7 @@ public class MinepreggoModEntityDataSerializers {
     public static void register() {
         EntityDataSerializers.registerSerializer(PREGNANCY_SYMPTOM);
         EntityDataSerializers.registerSerializer(PREGNANCY_STAGE);
-        EntityDataSerializers.registerSerializer(PREGNANCY_STATE);
+        EntityDataSerializers.registerSerializer(PREGNANCY_PAIN);
         EntityDataSerializers.registerSerializer(COMBAT_MODE);
         EntityDataSerializers.registerSerializer(STATE);
         EntityDataSerializers.registerSerializer(CRAVING);

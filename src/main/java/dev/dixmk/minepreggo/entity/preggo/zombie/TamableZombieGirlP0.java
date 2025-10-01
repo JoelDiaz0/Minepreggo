@@ -4,7 +4,7 @@ import net.minecraftforge.network.PlayMessages;
 import net.minecraftforge.network.NetworkHooks;
 
 import net.minecraft.world.level.Level;
-
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -15,11 +15,17 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 
+import java.util.UUID;
+
+import dev.dixmk.minepreggo.entity.preggo.PreggoMobSystem;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.utils.PreggoAIHelper;
 import dev.dixmk.minepreggo.utils.PreggoGUIHelper;
@@ -31,6 +37,12 @@ import io.netty.buffer.Unpooled;
 
 public class TamableZombieGirlP0 extends AbstractTamableZombieGirl {
 
+	private static final UUID SPEED_MODIFIER_TIRENESS_UUID = UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D836");
+	private static final AttributeModifier SPEED_MODIFIER_TIRENESS = new AttributeModifier(SPEED_MODIFIER_TIRENESS_UUID, "Tireness speed boost", -0.2D, AttributeModifier.Operation.MULTIPLY_BASE);
+	private static final EntityDataAccessor<Boolean> DATA_TIRENESS_ID = SynchedEntityData.defineId(TamableZombieGirlP0.class, EntityDataSerializers.BOOLEAN);
+	
+	private final PreggoMobSystem<TamableZombieGirlP0> preggoMobSystem;
+
 	public TamableZombieGirlP0(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get(), world);
 	}
@@ -40,8 +52,14 @@ public class TamableZombieGirlP0 extends AbstractTamableZombieGirl {
 		xpReward = 10;
 		setNoAi(false);
 		setMaxUpStep(0.6f);
+		preggoMobSystem = new PreggoMobSystem<>(this) {
+			@Override
+			protected void startPregnancy() {
+				
+			}
+		};
 	}
-
+	
 	@Override
 	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
@@ -68,11 +86,7 @@ public class TamableZombieGirlP0 extends AbstractTamableZombieGirl {
 	public void baseTick() {
 		super.baseTick();
 		this.refreshDimensions();	
-		
-		if (PreggoMobHelper.evaluatePreggoMobPregnancyBeginning(this)) {
-			return;
-		}
-		PreggoMobHelper.evaluatePreggoMobHungryTimer(this);	
+		this.preggoMobSystem.evaluate();
 	}
 
 	@Override
@@ -146,5 +160,5 @@ public class TamableZombieGirlP0 extends AbstractTamableZombieGirl {
 	public static AttributeSupplier.Builder createAttributes() {
 		return AbstractTamableZombieGirl.getBasicAttributes(0.235);
 	}
-	
+
 }

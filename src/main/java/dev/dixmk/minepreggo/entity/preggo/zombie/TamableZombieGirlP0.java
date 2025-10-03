@@ -9,7 +9,9 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -18,7 +20,9 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -28,7 +32,6 @@ import java.util.UUID;
 import dev.dixmk.minepreggo.entity.preggo.PreggoMobSystem;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.utils.PreggoAIHelper;
-import dev.dixmk.minepreggo.utils.PreggoGUIHelper;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
 import dev.dixmk.minepreggo.utils.PreggoTags;
 import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlP0InventaryGUIMenu;
@@ -55,7 +58,16 @@ public class TamableZombieGirlP0 extends AbstractTamableZombieGirl {
 		preggoMobSystem = new PreggoMobSystem<>(this) {
 			@Override
 			protected void startPregnancy() {
-				
+				if (preggoMob.level() instanceof ServerLevel serverLevel) {
+					var creeperGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P1.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);		
+					PreggoMobHelper.transferPreggoMobBasicData(preggoMob, creeperGirl);			
+					preggoMob.discard();
+				}	
+			}
+
+			@Override
+			protected boolean isFood(ItemStack food) {
+				return food.is(PreggoTags.ZOMBIE_GIRL_FOOD);
 			}
 		};
 	}
@@ -86,7 +98,7 @@ public class TamableZombieGirlP0 extends AbstractTamableZombieGirl {
 	public void baseTick() {
 		super.baseTick();
 		this.refreshDimensions();	
-		this.preggoMobSystem.evaluate();
+		this.preggoMobSystem.evaluateBaseTick();
 	}
 
 	@Override
@@ -100,57 +112,54 @@ public class TamableZombieGirlP0 extends AbstractTamableZombieGirl {
 	
 		InteractionResult retval = super.mobInteract(sourceentity, hand);
 
-		if (sourceentity instanceof ServerPlayer serverPlayer) {
-						
-			if (PreggoGUIHelper.canOwnerAccessPreggoMobGUI(serverPlayer, this, PreggoTags.ZOMBIE_GIRL_FOOD) ) {	
-				
-				final var entityId = this.getId();
-				final var blockPos = serverPlayer.blockPosition();
-				
-				if (serverPlayer.isShiftKeyDown()) {
-					NetworkHooks.openScreen(serverPlayer, new MenuProvider() {
-						@Override
-						public Component getDisplayName() {
-							return Component.literal("ZombieGirlInventaryGUI");
-						}
-
-						@Override
-						public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-							FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
-							packetBuffer.writeBlockPos(serverPlayer.blockPosition());
-							packetBuffer.writeVarInt(entityId);			
-							return new ZombieGirlP0InventaryGUIMenu(id, inventory, packetBuffer);
-						}
-					}, buf -> {
-						buf.writeBlockPos(blockPos);
-						buf.writeVarInt(entityId);
-					});
-				}
-				else {				
-					NetworkHooks.openScreen(serverPlayer, new MenuProvider() {		
-						@Override
-						public Component getDisplayName() {
-							return Component.literal("ZombieGirlMainGUI");
-						}
-						@Override
-						public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-							FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-							buf.writeBlockPos(blockPos);
-							buf.writeVarInt(entityId);										
-							return new ZombieGirlP0MainGUIMenu(id, inventory, buf);				
-						}
-					}, buf -> {
-					    buf.writeBlockPos(blockPos);         
-					    buf.writeVarInt(entityId);
-					});
-				
-				}		
-			}	
-			else {
-				this.spawnTamingParticles(PreggoMobHelper.evaluatePreggoMobHungry(this, serverPlayer, PreggoTags.ZOMBIE_GIRL_FOOD));
-			}
-		}
+		if (sourceentity instanceof ServerPlayer serverPlayer
+				&& preggoMobSystem.canOwnerAccessGUI(sourceentity)) {
+					
+			final var entityId = this.getId();
+			final var blockPos = serverPlayer.blockPosition();
 			
+			if (serverPlayer.isShiftKeyDown()) {
+				NetworkHooks.openScreen(serverPlayer, new MenuProvider() {
+					@Override
+					public Component getDisplayName() {
+						return Component.literal("ZombieGirlInventaryGUI");
+					}
+
+					@Override
+					public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
+						FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
+						packetBuffer.writeBlockPos(serverPlayer.blockPosition());
+						packetBuffer.writeVarInt(entityId);			
+						return new ZombieGirlP0InventaryGUIMenu(id, inventory, packetBuffer);
+					}
+				}, buf -> {
+					buf.writeBlockPos(blockPos);
+					buf.writeVarInt(entityId);
+				});
+			}
+			else {				
+				NetworkHooks.openScreen(serverPlayer, new MenuProvider() {		
+					@Override
+					public Component getDisplayName() {
+						return Component.literal("ZombieGirlMainGUI");
+					}
+					@Override
+					public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
+						FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+						buf.writeBlockPos(blockPos);
+						buf.writeVarInt(entityId);										
+						return new ZombieGirlP0MainGUIMenu(id, inventory, buf);				
+					}
+				}, buf -> {
+				    buf.writeBlockPos(blockPos);         
+				    buf.writeVarInt(entityId);
+				});			
+			}		
+		}
+		else {
+			preggoMobSystem.evaluateRightClick(sourceentity);
+		}
+				
 		return retval;
 	}
 	

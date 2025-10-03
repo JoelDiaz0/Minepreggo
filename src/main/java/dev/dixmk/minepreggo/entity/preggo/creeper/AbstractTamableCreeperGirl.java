@@ -59,7 +59,6 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	protected final ItemStackHandler inventory;
 	protected final CombinedInvWrapper combined;
 	
-	
 	protected AbstractTamableCreeperGirl(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_) {
 	      super(p_21803_, p_21804_);
 	      this.reassessTameGoals();	   
@@ -240,6 +239,11 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 				.add(Attributes.ATTACK_DAMAGE, 2D)
 				.add(Attributes.FOLLOW_RANGE, 35D)
 				.add(Attributes.MOVEMENT_SPEED, movementSpeed);
+	}
+	
+	@Override
+	public boolean hasCustomHeadAnimation() {
+		return isWaiting();
 	}
 	
 	@Override

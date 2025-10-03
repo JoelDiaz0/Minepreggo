@@ -14,7 +14,7 @@ public abstract class PregnancySystemP6<E extends TamableAnimal
 	}
 	
 	@Override
-	public void evaluate() {
+	public void evaluateBaseTick() {
 		
 		final var level = preggoMob.level();
 		final var x =  preggoMob.getX();

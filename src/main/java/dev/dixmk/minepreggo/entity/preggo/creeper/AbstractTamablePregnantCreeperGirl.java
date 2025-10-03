@@ -1,17 +1,22 @@
 package dev.dixmk.minepreggo.entity.preggo.creeper;
 
+import org.jetbrains.annotations.NotNull;
+
+import com.google.common.collect.ImmutableMap;
+
 import dev.dixmk.minepreggo.entity.preggo.BabyType;
 import dev.dixmk.minepreggo.entity.preggo.Craving;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancySystem;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyPain;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
-
+import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 
 public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamableCreeperGirl implements IPregnancySystem {
@@ -33,10 +38,15 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 	protected static final EntityDataAccessor<Craving> DATA_CRAVING_CHOSEN = SynchedEntityData.defineId(AbstractTamablePregnantCreeperGirl.class, MinepreggoModEntityDataSerializers.CRAVING);
 	protected static final EntityDataAccessor<Integer> DATA_PREGNANCY_STATE_TIMER = SynchedEntityData.defineId(AbstractTamablePregnantCreeperGirl.class, EntityDataSerializers.INT);
 
+	protected static final ImmutableMap<Craving, @NotNull Item> CRAVING_ENUM_MAP = ImmutableMap.of(
+			Craving.SALTY, MinepreggoModItems.ACTIVATED_GUNPOWDER_WITH_SALT.get(), 
+			Craving.SWEET, MinepreggoModItems.ACTIVATED_GUNPOWDER_WITH_CHOCOLATE.get(), 
+			Craving.SOUR, MinepreggoModItems.SOUR_ACTIVATED_GUNPOWDER.get(),
+			Craving.SPICY, MinepreggoModItems.ACTIVATED_GUNPOWDER_WITH_HOT_SAUCE.get());	
+	
 	protected AbstractTamablePregnantCreeperGirl(EntityType<? extends AbstractTamableCreeperGirl> p_21803_, Level p_21804_) {
 		super(p_21803_, p_21804_);
 	}
-	
 	
 	@Override
 	protected void defineSynchedData() {
@@ -193,6 +203,11 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
         this.entityData.set(DATA_HORNY_TIMER, timer);
     }
 	 */
+	
+	@Override
+	public boolean hasCustomHeadAnimation() {
+		return super.hasCustomHeadAnimation() || this.getPregnancyPain() != PregnancyPain.NONE;
+	}
 	
 	@Override
 	public int getDaysByStage() {

@@ -216,6 +216,11 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	}
 	
 	@Override
+	public boolean hasCustomHeadAnimation() {
+		return isWaiting();
+	}
+	
+	@Override
 	public int getHungry() {
 	    return this.entityData.get(DATA_HUNGRY);
 	}

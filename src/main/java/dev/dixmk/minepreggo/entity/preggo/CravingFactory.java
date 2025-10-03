@@ -21,5 +21,5 @@ public class CravingFactory {
 			return Craving.SOUR;
 		}
 	}
-	
+
 }

@@ -4,10 +4,12 @@ import net.minecraftforge.network.PlayMessages;
 import net.minecraftforge.network.NetworkHooks;
 
 import net.minecraft.world.level.Level;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
@@ -16,16 +18,21 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
+
+import java.util.UUID;
+
 import dev.dixmk.minepreggo.entity.preggo.PreggoMobSystem;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.utils.PreggoAIHelper;
-import dev.dixmk.minepreggo.utils.PreggoGUIHelper;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
 import dev.dixmk.minepreggo.utils.PreggoTags;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP0InventaryGUIMenu;
@@ -34,9 +41,12 @@ import io.netty.buffer.Unpooled;
 
 public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl {
 
+	private static final UUID SPEED_MODIFIER_TIRENESS_UUID = UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D836");
+	private static final AttributeModifier SPEED_MODIFIER_TIRENESS = new AttributeModifier(SPEED_MODIFIER_TIRENESS_UUID, "Tireness speed boost", -0.2D, AttributeModifier.Operation.MULTIPLY_BASE);
+	private static final EntityDataAccessor<Boolean> DATA_TIRENESS_ID = SynchedEntityData.defineId(TamableCreeperGirlP0.class, EntityDataSerializers.BOOLEAN);
+	
 	private final PreggoMobSystem<TamableCreeperGirlP0> preggoMobSystem;
-	
-	
+		
 	public TamableCreeperGirlP0(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P0.get(), world);
 	}
@@ -54,6 +64,11 @@ public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl {
 					PreggoMobHelper.transferPreggoMobBasicData(preggoMob, creeperGirl);			
 					preggoMob.discard();
 				}			
+			}
+
+			@Override
+			protected boolean isFood(ItemStack food) {
+				return food.is(PreggoTags.CREEPER_GIRL_FOOD);
 			}
 		};
 	}
@@ -90,7 +105,7 @@ public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl {
 	public void baseTick() {
 		super.baseTick();
 		this.refreshDimensions();
-		this.preggoMobSystem.evaluate();
+		this.preggoMobSystem.evaluateBaseTick();
 	}
 	
 	@Override
@@ -105,54 +120,54 @@ public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl {
 		if (super.mobInteract(sourceentity, hand) == InteractionResult.SUCCESS) 
 			return InteractionResult.SUCCESS;
 		
-		if (sourceentity instanceof ServerPlayer serverPlayer) {
-			if (PreggoGUIHelper.canOwnerAccessPreggoMobGUI(serverPlayer, this, PreggoTags.CREEPER_GIRL_FOOD)) {
-				final var entityId = this.getId();
-				final var blockPos = serverPlayer.blockPosition();
-					
-				if (serverPlayer.isShiftKeyDown()) {
-					NetworkHooks.openScreen(serverPlayer, new MenuProvider() {
-						@Override
-						public Component getDisplayName() {
-							return Component.literal("CreeperGirlInventaryGUI");
-						}
+		if (sourceentity instanceof ServerPlayer serverPlayer
+				&& preggoMobSystem.canOwnerAccessGUI(sourceentity)) {
 
-						@Override
-						public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-							FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
-							packetBuffer.writeBlockPos(blockPos);
-							packetBuffer.writeVarInt(entityId);			
-							return new CreeperGirlP0InventaryGUIMenu(id, inventory, packetBuffer);
-						}
-					}, buf -> {
-						buf.writeBlockPos(blockPos);
-						buf.writeVarInt(entityId);
-					});
-				}
-				else {				
-					NetworkHooks.openScreen(serverPlayer, new MenuProvider() {		
-						@Override
-						public Component getDisplayName() {
-							return Component.literal("CreeperGirlMainGUI");
-						}
-						@Override
-						public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-							FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
-							packetBuffer.writeBlockPos(blockPos);
-							packetBuffer.writeVarInt(entityId);					
-							return new CreeperGirlP0MainGUIMenu(id, inventory, packetBuffer);				
-						}
-					}, buf -> {
-					    buf.writeBlockPos(blockPos);         
-					    buf.writeVarInt(entityId);
-					});		
-				}
+			final var entityId = this.getId();
+			final var blockPos = serverPlayer.blockPosition();
+				
+			if (serverPlayer.isShiftKeyDown()) {
+				NetworkHooks.openScreen(serverPlayer, new MenuProvider() {
+					@Override
+					public Component getDisplayName() {
+						return Component.literal("CreeperGirlInventaryGUI");
+					}
+
+					@Override
+					public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
+						FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
+						packetBuffer.writeBlockPos(blockPos);
+						packetBuffer.writeVarInt(entityId);			
+						return new CreeperGirlP0InventaryGUIMenu(id, inventory, packetBuffer);
+					}
+				}, buf -> {
+					buf.writeBlockPos(blockPos);
+					buf.writeVarInt(entityId);
+				});
 			}
-			else {		
-				this.spawnTamingParticles(PreggoMobHelper.evaluatePreggoMobHungry(this, serverPlayer, PreggoTags.CREEPER_GIRL_FOOD));
-			}	
+			else {				
+				NetworkHooks.openScreen(serverPlayer, new MenuProvider() {		
+					@Override
+					public Component getDisplayName() {
+						return Component.literal("CreeperGirlMainGUI");
+					}
+					@Override
+					public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
+						FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
+						packetBuffer.writeBlockPos(blockPos);
+						packetBuffer.writeVarInt(entityId);					
+						return new CreeperGirlP0MainGUIMenu(id, inventory, packetBuffer);				
+					}
+				}, buf -> {
+				    buf.writeBlockPos(blockPos);         
+				    buf.writeVarInt(entityId);
+				});		
+			}
 		}
-
+		else {		
+			preggoMobSystem.evaluateRightClick(sourceentity);
+		}	
+		
 		return InteractionResult.SUCCESS;
 	}
 	

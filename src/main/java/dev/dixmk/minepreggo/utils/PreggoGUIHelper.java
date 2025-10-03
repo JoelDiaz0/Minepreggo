@@ -58,18 +58,7 @@ public class PreggoGUIHelper {
 
 	public static final ResourceLocation ICONS_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/icons.png");
 	
-	public static<E extends TamableAnimal & IPreggoMob > boolean canOwnerAccessPreggoMobGUI(Player source, E target, TagKey<Item> foods) {			
-		return target.isOwnedBy(source)
-				&& !target.isSavage()
-				&& !source.getMainHandItem().is(foods);
-	}
-	
-	public static<E extends TamableAnimal & IPreggoMob & IPregnancySystem> boolean canOwnerAccessPregantPreggoMobGUI(Player source, E target, TagKey<Item> foods) {			
-		return !target.isIncapacitated()
-				&& canOwnerAccessPreggoMobGUI(source, target, foods);
-	}
 
-	
 	public static<T extends TamableAnimal & IPreggoMob> void syncPreggoMobInventary(T preggoEntity) {
 	    if (preggoEntity == null)
 	        return;

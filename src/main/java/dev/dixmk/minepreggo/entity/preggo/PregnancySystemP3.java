@@ -2,9 +2,17 @@ package dev.dixmk.minepreggo.entity.preggo;
 
 import javax.annotation.Nonnull;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class PregnancySystemP3 <E extends TamableAnimal
 	& IPreggoMob & IPregnancySystem & IPregnancyP3> extends PregnancySystemP2<E> {
@@ -80,7 +88,7 @@ public abstract class PregnancySystemP3 <E extends TamableAnimal
 	}
 	
 	@Override
-	public void evaluate() {
+	public void evaluateBaseTick() {
 		if (evaluatePregnancyStageChange() == Result.SUCCESS) {
 			return;
 		}
@@ -104,4 +112,55 @@ public abstract class PregnancySystemP3 <E extends TamableAnimal
 		this.evaluatePregnancySymptoms(level);
 		this.evaluatePregnancyPains(level);
 	}
+	
+	
+	@Override
+	public void evaluateRightClick(Player source) {	
+		super.evaluateRightClick(source);
+		spawnParticles(evaluateBellyRubs(source));
+	}
+	
+	
+	protected Result evaluateBellyRubs(Player source) {	
+		
+		var level = source.level();
+		
+		if (canOwnerRubBelly(source) && !level.isClientSide()) {		
+			level.playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "belly_touch")), SoundSource.NEUTRAL, 0.75F, 1);
+		
+			var currentBellyRubs = preggoMob.getBellyRubs();
+			
+			if (preggoMob.getPregnancySymptom() == PregnancySymptom.BELLY_RUBS
+					&& currentBellyRubs > PregnancySystemConstants.DESACTIVATE_FULL_BELLY_RUBS_STAGE) {		
+				currentBellyRubs = Math.max(0, currentBellyRubs - PregnancySystemConstants.BELLY_RUBBING_VALUE);
+				preggoMob.setBellyRubs(currentBellyRubs);
+				
+				if (currentBellyRubs <= PregnancySystemConstants.DESACTIVATE_FULL_BELLY_RUBS_STAGE) {
+					preggoMob.setPregnancySymptom(PregnancySymptom.NONE);
+				}		
+				return Result.SUCCESS;
+			}
+			else if (currentBellyRubs > 0) {
+				currentBellyRubs = Math.max(0, currentBellyRubs - PregnancySystemConstants.BELLY_RUBBING_VALUE);
+				preggoMob.setBellyRubs(currentBellyRubs);				
+				return Result.NOTHING;
+			}
+			else {
+				return Result.FAIL;
+			}
+			
+		}		
+		
+		return Result.NOTHING;
+	}
+	
+	protected boolean canOwnerRubBelly(Player source) {
+		return source.getMainHandItem().getItem() == ItemStack.EMPTY.getItem() 
+				&& source.getDirection() == preggoMob.getDirection().getOpposite()
+				&& preggoMob.getItemBySlot(EquipmentSlot.CHEST).getItem() == ItemStack.EMPTY.getItem();
+	}
+	
+	
+	
+	
 }

@@ -3,8 +3,15 @@ package dev.dixmk.minepreggo.entity.preggo;
 import javax.annotation.Nonnull;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class PregnancySystemP2<E extends TamableAnimal
 	& IPreggoMob & IPregnancySystem & IPregnancyP2> extends PregnancySystemP1<E> {
@@ -70,7 +77,7 @@ public abstract class PregnancySystemP2<E extends TamableAnimal
 	}
 	
 	@Override
-	public void evaluate() {
+	public void evaluateBaseTick() {
 		if (evaluatePregnancyStageChange() == Result.SUCCESS) {
 			return;
 		}
@@ -94,5 +101,38 @@ public abstract class PregnancySystemP2<E extends TamableAnimal
 		this.evaluatePregnancyPains(level);
 	}
 
+	@Override
+	public void evaluateRightClick(Player source) {	
+		super.evaluateRightClick(source);
+		spawnParticles(evaluateMilking(source));
+	}
 	
+	public Result evaluateMilking(Player source) {
+			
+	    var mainHandItem = source.getMainHandItem().getItem();
+	    var currentMilking = preggoMob.getMilking();
+		
+	    if (currentMilking >= PregnancySystemConstants.MILKING_VALUE
+	    		&& mainHandItem == Items.GLASS_BOTTLE) {    	
+        
+		    var level = preggoMob.level();
+    		
+            source.getInventory().clearOrCountMatchingItems(p -> mainHandItem == p.getItem(), 1, source.inventoryMenu.getCraftSlots());
+            currentMilking = Math.max(0, currentMilking - PregnancySystemConstants.MILKING_VALUE);
+            preggoMob.setMilking(currentMilking);
+                
+            if (!level.isClientSide()) {
+            	level.playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.cow.milk")), SoundSource.NEUTRAL, 0.75f, 1);	
+
+                if (preggoMob.getPregnancySymptom() == PregnancySymptom.MILKING
+                		&& currentMilking <= PregnancySystemConstants.DESACTIVATE_MILKING_SYMPTOM) {
+        	    	preggoMob.setPregnancySymptom(PregnancySymptom.NONE);
+                }
+            }      
+
+            return Result.SUCCESS;   
+	    }
+		
+	    return Result.NOTHING;
+	}
 }

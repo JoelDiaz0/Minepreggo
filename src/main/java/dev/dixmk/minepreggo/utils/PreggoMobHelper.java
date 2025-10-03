@@ -150,33 +150,6 @@ public class PreggoMobHelper {
 	}
 
 
-	public static<E extends TamableAnimal & IPreggoMob> boolean evaluatePreggoMobHungry(E preggoMob, ServerPlayer owner, TagKey<Item> foods) {
-	    var mainHandItem = owner.getMainHandItem();
-	    var currentHunger = preggoMob.getHungry();
-	    var world = preggoMob.level();
-	    
-	    if (currentHunger < 20) {
-	        int foodValue = 0;
-
-	        if (mainHandItem.is(foods)) {      	           	
-	        	var foodProperties = mainHandItem.getItem().getFoodProperties(mainHandItem, preggoMob);
-	        	foodValue = foodProperties.getNutrition();      
-	        }
-         
-	        if (foodValue > 0) {
-                if (!world.isClientSide()) {
-                	world.playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.generic.eat")), SoundSource.NEUTRAL, 0.75f, 1);	
-                }
-                
-	            owner.getInventory().clearOrCountMatchingItems(p -> mainHandItem.getItem() == p.getItem(), 1, owner.inventoryMenu.getCraftSlots());
-	            preggoMob.setHungry(currentHunger + foodValue);
-	            
-	            return true;
-	        }
-	    }
-	    
-	    return false;
-	}
 
 
 	

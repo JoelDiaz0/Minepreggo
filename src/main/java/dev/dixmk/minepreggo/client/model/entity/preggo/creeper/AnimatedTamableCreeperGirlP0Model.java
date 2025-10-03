@@ -52,9 +52,15 @@ public class AnimatedTamableCreeperGirlP0Model extends AbstractAnimatedCreeperGi
 
 	@Override
 	public void setupAnim(TamableCreeperGirlP0 entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		
 		animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-	}
 	
+		if (entity.hasCustomHeadAnimation()) {
+			this.hat.copyFrom(this.head);
+		}
+		else {
+			super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+		}
+	}
 	
 }

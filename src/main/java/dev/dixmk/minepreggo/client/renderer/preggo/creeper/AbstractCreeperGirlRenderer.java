@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractCreeperGirlModel;
 import dev.dixmk.minepreggo.client.renderer.entity.layer.CreeperGirlPowerLayer;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractCreeperGirl;
+
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
@@ -37,5 +38,4 @@ public abstract class AbstractCreeperGirlRenderer<E extends AbstractCreeperGirl,
 		float f = creeperGirl.getSwelling(p_114044_);
 		return (int)(f * 10.0F) % 2 == 0 ? 0.0F : Mth.clamp(f, 0.5F, 1.0F);
 	}
-		
 }

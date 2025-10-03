@@ -5,23 +5,30 @@ import java.util.Comparator;
 import javax.annotation.Nonnull;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 	
 	public static final int MIN_HUNGRY_TO_HEAL = 16;
 	public static final int MIN_HUNGRY_TO_TAME_AGAIN = 12;
 	
-	protected final RandomSource randomSource;
-	
+	protected final RandomSource randomSource;	
 	protected final E preggoMob;
 	
 	
@@ -105,9 +112,9 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 	
 	protected abstract void startPregnancy();
 	
-
-	public void evaluate() {
-		
+	protected abstract boolean isFood(ItemStack food);
+	
+	public void evaluateBaseTick() {
 		final var level = preggoMob.level();
 		final var x = preggoMob.getX();
 		final var y = preggoMob.getY();
@@ -120,7 +127,75 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 		evaluateHungryTimer(level, x, y, z, MinepreggoModConfig.getTotalTicksOfHungryP0());
 	}
 	
+	public void evaluateRightClick(Player source) {
+		
+		if (!preggoMob.isOwnedBy(source)) {
+			return;
+		}
+			
+		spawnParticles(evaluateHungry(source));
+	}
+	
+	
+	public boolean canOwnerAccessGUI(Player source) {			
+		return preggoMob.isOwnedBy(source)
+				&& !preggoMob.isSavage()
+				&& !isFood(source.getMainHandItem());
+	}
+	
+	protected Result evaluateHungry(Player source) {		
+	    var mainHandItem = source.getMainHandItem();
+	    var currentHunger = preggoMob.getHungry();
+	    var world = preggoMob.level();
+	    
+	    if (currentHunger < 20) {
+	        int foodValue = 0;
+
+	        if (isFood(mainHandItem)) {      	           	
+	        	var foodProperties = mainHandItem.getItem().getFoodProperties(mainHandItem, preggoMob);
+	        	foodValue = foodProperties.getNutrition();      
+	        }
+         
+	        if (foodValue > 0) {
+                if (!world.isClientSide()) {
+                	world.playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.generic.eat")), SoundSource.NEUTRAL, 0.75f, 1);	
+                }
+                
+                source.getInventory().clearOrCountMatchingItems(p -> mainHandItem.getItem() == p.getItem(), 1, source.inventoryMenu.getCraftSlots());
+	            preggoMob.setHungry(currentHunger + foodValue);
+	            
+	            return Result.SUCCESS;
+	        }
+	    }
+	    
+	    return Result.NOTHING;		
+	}
+	
+	protected void spawnParticles(Result result) {
+		
+		ParticleOptions particleoptions;
+			
+		if (result == Result.SUCCESS)
+			particleoptions = ParticleTypes.HEART;
+		else if (result == Result.FAIL)
+			particleoptions = ParticleTypes.SMOKE;
+		else if (result == Result.ANGRY)
+			particleoptions = ParticleTypes.ANGRY_VILLAGER;
+		else 
+			return;
+					
+		for(int i = 0; i < 7; ++i) {
+			double d0 = randomSource.nextGaussian() * 0.02D;
+			double d1 = randomSource.nextGaussian() * 0.02D;
+			double d2 = randomSource.nextGaussian() * 0.02D;
+			preggoMob.level().addParticle(particleoptions, preggoMob.getRandomX(1.0D), preggoMob.getRandomY() + 0.5D, preggoMob.getRandomZ(1.0D), d0, d1, d2);
+		}
+	}
+	
+	
 	protected enum Result {
+		ANGRY,
+		FAIL,
 		PROCESS,
 		NOTHING,
 		SUCCESS

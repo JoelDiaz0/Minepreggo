@@ -31,10 +31,13 @@ public interface IPreggoMob {
     int getPregnancyTimer();
     void setPregnancyTimer(int ticks);
     
-	public String getPreggoName();
+    
+    boolean hasCustomHeadAnimation();
+    
+	String getPreggoName();
 	
-	public ItemStackHandler getInventary();
+	ItemStackHandler getInventary();
 	
-	public CombinedInvWrapper getCombined();
+	CombinedInvWrapper getCombined();
 	
 }

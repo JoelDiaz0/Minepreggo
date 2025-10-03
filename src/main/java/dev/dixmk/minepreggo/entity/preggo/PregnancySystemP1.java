@@ -4,15 +4,21 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class PregnancySystemP1<
 	E extends TamableAnimal & IPreggoMob & IPregnancySystem & IPregnancyP1> extends PreggoMobSystem<E> {
@@ -120,8 +126,7 @@ public abstract class PregnancySystemP1<
 	
 	
 	@Override
-	public void evaluate() {
-		
+	public void evaluateBaseTick() {		
 		if (evaluatePregnancyStageChange() == Result.SUCCESS) {
 			return;
 		}
@@ -148,15 +153,67 @@ public abstract class PregnancySystemP1<
 		return preggoMob.getCraving() >= 20 || preggoMob.getHungry() <= 2;
 	}
 
+	@Override
+	public void evaluateRightClick(Player source) {	
+		super.evaluateRightClick(source);
+		spawnParticles(evaluateCraving(source));
+	}
+	
+	
+	@Override
+	public boolean canOwnerAccessGUI(Player source) {	
+		return super.canOwnerAccessGUI(source) && !preggoMob.isIncapacitated();
+	}
+	
+	protected Result evaluateCraving(Player source) {
+		if (preggoMob.getPregnancySymptom() != PregnancySymptom.CRAVING) {
+			return Result.NOTHING;
+		}
+		
+	    var mainHandItem = source.getMainHandItem().getItem();
+	    var currentCraving = preggoMob.getCraving();
+	    
+	    if (currentCraving > PregnancySystemConstants.DESACTIVATE_CRAVING_SYMPTOM) {    	
+		    var level = preggoMob.level();
+	    	var craving = getCraving(preggoMob.getCravingChosen()); 
+            
+	    	if (craving == mainHandItem) {
+	            source.getInventory().clearOrCountMatchingItems(p -> mainHandItem == p.getItem(), 1, source.inventoryMenu.getCraftSlots());
+	            currentCraving = Math.max(0, currentCraving - craving.getGratification());
+                preggoMob.setCraving(currentCraving);
+	            
+	            if (!level.isClientSide()) {
+	            	level.playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.generic.eat")), SoundSource.NEUTRAL, 0.75f, 1);	
+	                   
+		            if (currentCraving <= PregnancySystemConstants.DESACTIVATE_CRAVING_SYMPTOM) {
+		    	    	preggoMob.setPregnancySymptom(PregnancySymptom.NONE);
+		            }
+	            }                     
+	            return Result.SUCCESS; 
+	    	}    
+	    	else {
+	    		return Result.ANGRY;
+	    	}
+	    }
+	    
+	    return Result.NOTHING;
+	}
+	
 	
 	protected abstract void changePregnancyStage();
 	
 	protected abstract void finishMiscarriage();
 	
+
+	
+	
+	
+	@Nullable
+	protected abstract<I extends Item & ICraving> I getCraving(Craving craving);
+	
 	
 	
 	@Override
 	protected final void startPregnancy() {}
-
 }
 

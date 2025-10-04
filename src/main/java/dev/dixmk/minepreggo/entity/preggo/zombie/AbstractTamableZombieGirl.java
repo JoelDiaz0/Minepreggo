@@ -161,12 +161,20 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	
 	@Override
 	public boolean hurt(DamageSource damagesource, float amount) {
-		return PreggoMobHelper.defaultHurt(super.hurt(damagesource, amount), this, damagesource, amount);	
+		boolean result = super.hurt(damagesource, amount);	
+		if (result) {
+			PreggoMobHelper.defaultHurt(this, damagesource, amount);
+		}		
+		return result;
 	}
 	
 	@Override
 	public boolean doHurtTarget(Entity target) {	
-		return PreggoMobHelper.defaultDoHurtTarget(super.doHurtTarget(target), this, target);
+		boolean result = super.doHurtTarget(target);	
+		if (result) {
+			PreggoMobHelper.defaultDoHurtTarget(this, target);
+		}
+		return result;
 	}
 
 	@Override

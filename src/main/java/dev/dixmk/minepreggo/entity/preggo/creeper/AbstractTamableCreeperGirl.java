@@ -201,13 +201,21 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	}
 	
 	@Override
-	public boolean hurt(DamageSource damagesource, float amount) {
-		return PreggoMobHelper.defaultHurt(super.hurt(damagesource, amount), this, damagesource, amount);	
+	public boolean hurt(DamageSource damagesource, float amount) {				
+		boolean result = super.hurt(damagesource, amount);	
+		if (result) {
+			PreggoMobHelper.defaultHurt(this, damagesource, amount);
+		}		
+		return result;
 	}
 	
 	@Override
-	public boolean doHurtTarget(Entity target) {	
-		return PreggoMobHelper.defaultDoHurtTarget(super.doHurtTarget(target), this, target);
+	public boolean doHurtTarget(Entity target) {		
+		boolean result = super.doHurtTarget(target);	
+		if (result) {
+			PreggoMobHelper.defaultDoHurtTarget(this, target);
+		}
+		return result;
 	}
 			
 	@Override

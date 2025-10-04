@@ -21,7 +21,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -38,9 +37,7 @@ public abstract class AbstractZombieGirlInventaryGUIMenu<T extends AbstractTamab
 	protected IItemHandler internal;
 	protected Map<Integer, Slot> customSlots = new HashMap<>();
 	protected boolean bound = false;
-	protected Supplier<Boolean> boundItemMatcher = null;
 	protected T zombieGirl = null;
-	protected BlockEntity boundBlockEntity = null;
 	protected final Class<T> zombieGirlClass;	
 	
 	protected AbstractZombieGirlInventaryGUIMenu(MenuType<?> menuType, Class<T> zombieGirlClass, int id, Inventory inv, FriendlyByteBuf extraData) {
@@ -111,9 +108,15 @@ public abstract class AbstractZombieGirlInventaryGUIMenu<T extends AbstractTamab
 				return PreggoArmorHelper.isHelmet(itemstack);
 			}
 		}));
+		
 		this.customSlots.put(4, this.addSlot(new SlotItemHandler(internal, 4, 80, 61)));
 		this.customSlots.put(5, this.addSlot(new SlotItemHandler(internal, 5, 98, 61)));
+		
+		
 		this.customSlots.put(6, this.addSlot(new SlotItemHandler(internal, 6, 134, 7)));
+		
+			
+		
 		this.customSlots.put(7, this.addSlot(new SlotItemHandler(internal, 7, 152, 7)));
 		this.customSlots.put(8, this.addSlot(new SlotItemHandler(internal, 8, 134, 25)));
 		this.customSlots.put(9, this.addSlot(new SlotItemHandler(internal, 9, 152, 25)));
@@ -125,22 +128,18 @@ public abstract class AbstractZombieGirlInventaryGUIMenu<T extends AbstractTamab
 		for (int si = 0; si < 3; ++si)
 			for (int sj = 0; sj < 9; ++sj)
 				this.addSlot(new Slot(inv, sj + (si + 1) * 9, 0 + 8 + sj * 18, 0 + 84 + si * 18));
+		
 		for (int si = 0; si < 9; ++si)
 			this.addSlot(new Slot(inv, si, 0 + 8 + si * 18, 0 + 142));
 		
 		if (zombieGirl != null)	
-			PreggoGUIHelper.syncPreggoMobInventary(zombieGirl);
+			PreggoGUIHelper.syncPreggoMobInventaryOnStart(zombieGirl);
 	}
 
 	@Override
 	public boolean stillValid(Player player) {
-		if (this.bound) {
-			if (this.boundItemMatcher != null)
-				return this.boundItemMatcher.get();
-			else if (this.boundBlockEntity != null)
-				return AbstractContainerMenu.stillValid(this.access, player, this.boundBlockEntity.getBlockState().getBlock());
-			else if (this.zombieGirl != null)
-				return this.zombieGirl.isAlive();
+		if (this.bound && this.zombieGirl != null) {
+			return this.zombieGirl.isAlive();
 		}
 		return true;
 	}

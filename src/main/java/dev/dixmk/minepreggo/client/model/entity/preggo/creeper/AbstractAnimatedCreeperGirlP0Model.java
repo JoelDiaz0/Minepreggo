@@ -2,6 +2,7 @@ package dev.dixmk.minepreggo.client.model.entity.preggo.creeper;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractCreeperGirl;
+
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -12,13 +13,16 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public abstract class AbstractAnimatedCreeperGirlP0Model<E extends AbstractCreeperGirl> extends AbstractCreeperGirlModel<E> {
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_girl_p0_model"), "main");
 
 	protected final ModelPart root;
 	protected HierarchicalModel<E> animator;
-	
+
 	protected AbstractAnimatedCreeperGirlP0Model(ModelPart root, HierarchicalModel<E> animator) {
 		super(root);
 		this.root = root;

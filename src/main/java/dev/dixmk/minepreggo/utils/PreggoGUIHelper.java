@@ -4,17 +4,14 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
-import dev.dixmk.minepreggo.entity.preggo.IPregnancySystem;
+
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.TamableAnimal;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -59,7 +56,7 @@ public class PreggoGUIHelper {
 	public static final ResourceLocation ICONS_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/icons.png");
 	
 
-	public static<T extends TamableAnimal & IPreggoMob> void syncPreggoMobInventary(T preggoEntity) {
+	public static<T extends TamableAnimal & IPreggoMob> void syncPreggoMobInventaryOnStart(T preggoEntity) {
 	    if (preggoEntity == null)
 	        return;
 	    

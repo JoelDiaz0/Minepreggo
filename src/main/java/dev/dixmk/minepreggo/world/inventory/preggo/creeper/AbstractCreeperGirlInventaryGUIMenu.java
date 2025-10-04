@@ -22,7 +22,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -39,9 +38,7 @@ public abstract class AbstractCreeperGirlInventaryGUIMenu<T extends AbstractTama
 	protected IItemHandler internal;
 	protected Map<Integer, Slot> customSlots = new HashMap<>();
 	protected boolean bound = false;
-	protected Supplier<Boolean> boundItemMatcher = null;
 	protected T creeperGirl = null;
-	protected BlockEntity boundBlockEntity = null;
 	protected final Class<T> creeperGirlClass;
 	
 	protected AbstractCreeperGirlInventaryGUIMenu(MenuType<?> menuType, Class<T> creeperGirlClass, int id, Inventory inv, FriendlyByteBuf extraData) {
@@ -131,19 +128,14 @@ public abstract class AbstractCreeperGirlInventaryGUIMenu<T extends AbstractTama
 			this.addSlot(new Slot(inv, si, 0 + 8 + si * 18, 0 + 142));
 		
 		if (creeperGirl != null)	
-			PreggoGUIHelper.syncPreggoMobInventary(creeperGirl);
+			PreggoGUIHelper.syncPreggoMobInventaryOnStart(creeperGirl);
 	}
 
 
 	@Override
 	public boolean stillValid(Player player) {
-		if (this.bound) {
-			if (this.boundItemMatcher != null)
-				return this.boundItemMatcher.get();
-			else if (this.boundBlockEntity != null)
-				return AbstractContainerMenu.stillValid(this.access, player, this.boundBlockEntity.getBlockState().getBlock());
-			else if (this.creeperGirl != null)
-				return this.creeperGirl.isAlive();
+		if (this.bound && this.creeperGirl != null) {
+			return this.creeperGirl.isAlive();
 		}
 		return true;
 	}

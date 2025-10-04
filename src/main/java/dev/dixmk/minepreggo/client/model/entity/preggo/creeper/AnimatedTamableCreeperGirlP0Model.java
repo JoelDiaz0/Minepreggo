@@ -4,7 +4,10 @@ import dev.dixmk.minepreggo.client.entity.animation.preggo.creeper.CreeperGirlP0
 import dev.dixmk.minepreggo.entity.preggo.creeper.TamableCreeperGirlP0;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class AnimatedTamableCreeperGirlP0Model extends AbstractAnimatedCreeperGirlP0Model<TamableCreeperGirlP0> {
 
 	public AnimatedTamableCreeperGirlP0Model(ModelPart root) {

@@ -51,11 +51,8 @@ import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
 public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl implements IPreggoMob {
 
 	protected static final EntityDataAccessor<Integer> DATA_HUNGRY = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.INT);
-	protected static final EntityDataAccessor<Integer> DATA_HUNGRY_TIMER = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.INT);
-	protected static final EntityDataAccessor<Integer> DATA_PREGNANCY_TIMER = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.INT);	
 	protected static final EntityDataAccessor<PregnancyStage> DATA_MAX_PREGNANCY_STAGE = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, MinepreggoModEntityDataSerializers.PREGNANCY_STAGE);
 	protected static final EntityDataAccessor<PregnancySymptom> DATA_PREGNANCY_SYMPTOM = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, MinepreggoModEntityDataSerializers.PREGNANCY_SYMPTOM);
-	protected static final EntityDataAccessor<Integer> DATA_PREGNANCY_ILLNESS_TIMER = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<Boolean> DATA_PREGNANT = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> DATA_SAVAGE = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> DATA_ANGRY = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
@@ -69,7 +66,6 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	
 	private int pregnancyTimer = 0;
 	private int hungryTimer = 0;
-	private int pregnancyIllnessTimer = 0;
 	private int healingCooldownTimer = 0;
 	
 	
@@ -84,7 +80,6 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	protected void defineSynchedData() {
 		super.defineSynchedData();
 		this.entityData.define(DATA_HUNGRY, 4);
-		this.entityData.define(DATA_HUNGRY_TIMER, 0);
 			
 		this.entityData.define(DATA_PREGNANT, false);
 		this.entityData.define(DATA_SAVAGE, true);
@@ -92,10 +87,8 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 		this.entityData.define(DATA_WAITING, false);
 		this.entityData.define(DATA_PANIC, false);
 		
-		this.entityData.define(DATA_PREGNANCY_TIMER, 0);
 		this.entityData.define(DATA_MAX_PREGNANCY_STAGE, PregnancyStage.P0);
 		this.entityData.define(DATA_PREGNANCY_SYMPTOM, PregnancySymptom.NONE);
-		this.entityData.define(DATA_PREGNANCY_ILLNESS_TIMER, 0);
 		
 		this.entityData.define(DATA_STATE, PreggoMobState.IDLE);
 	}
@@ -105,7 +98,7 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 		super.addAdditionalSaveData(compound);
 		compound.put("InventoryCustom", inventory.serializeNBT());
 		compound.putInt("DataHungry", this.entityData.get(DATA_HUNGRY));
-		compound.putInt("DataHungryTimer", this.entityData.get(DATA_HUNGRY_TIMER));
+		compound.putInt("DataHungryTimer", hungryTimer);
 		
 		compound.putBoolean("DataPregnant", this.entityData.get(DATA_PREGNANT));
 		compound.putBoolean("DataSavage", this.entityData.get(DATA_SAVAGE));
@@ -113,10 +106,9 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 		compound.putBoolean("DataAngry", this.entityData.get(DATA_ANGRY));
 		compound.putBoolean("DataPanic", this.entityData.get(DATA_PANIC));
 		
-		compound.putInt("DataPregnancyTimer", this.entityData.get(DATA_PREGNANCY_TIMER));
+		compound.putInt("DataPregnancyTimer", pregnancyTimer);
 		compound.putInt("DataMaxPregnancyStage", this.entityData.get(DATA_MAX_PREGNANCY_STAGE).ordinal());
 		compound.putInt("DataPregnancySymptom", this.entityData.get(DATA_PREGNANCY_SYMPTOM).ordinal());	
-		compound.putInt("DataPregnancySymptomTimer", this.entityData.get(DATA_PREGNANCY_ILLNESS_TIMER));	
 	
 		compound.putInt("DataStage", this.entityData.get(DATA_STATE).ordinal());
 	}
@@ -128,15 +120,14 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 		if (inventoryCustom instanceof CompoundTag inventoryTag)
 			inventory.deserializeNBT(inventoryTag);	
 		this.entityData.set(DATA_HUNGRY, compound.getInt("DataHungry"));
-		this.entityData.set(DATA_HUNGRY_TIMER, compound.getInt("DataHungryTimer"));
+		hungryTimer = compound.getInt("DataHungryTimer");
 		this.entityData.set(DATA_PREGNANT, compound.getBoolean("DataPregnant"));		
 		this.entityData.set(DATA_SAVAGE, compound.getBoolean("DataSavage"));		
 		this.entityData.set(DATA_WAITING, compound.getBoolean("DataWaiting"));		
 		this.entityData.set(DATA_ANGRY, compound.getBoolean("DataAngry"));	
 		this.entityData.set(DATA_PANIC, compound.getBoolean("DataPanic"));	
-		this.entityData.set(DATA_PREGNANCY_TIMER, compound.getInt("DataPregnancyTimer"));
+		pregnancyTimer = compound.getInt("DataPregnancyTimer");
 		this.entityData.set(DATA_PREGNANCY_SYMPTOM, PregnancySymptom.values()[compound.getInt("DataPregnancySymptom")]);
-		this.entityData.set(DATA_PREGNANCY_ILLNESS_TIMER, compound.getInt("DataPregnancySymptomTimer"));
 		this.entityData.set(DATA_MAX_PREGNANCY_STAGE, PregnancyStage.values()[compound.getInt("DataMaxPregnancyStage")]);
 		this.entityData.set(DATA_STATE, PreggoMobState.values()[compound.getInt("DataStage")]);
 	}
@@ -244,6 +235,24 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	}
 	
 	@Override
+   	public void aiStep() {
+      super.aiStep();
+      
+      if (this.isAlive()
+    		  && this.isLeashed()) {
+    	  this.dropLeash(true, true);
+      }
+      
+      this.updateSwingTime();
+	}
+	
+	@Override
+	public void baseTick() {
+		super.baseTick();
+		this.refreshDimensions();
+	}
+	
+	@Override
 	public boolean wantsToAttack(LivingEntity target, LivingEntity owner) {		
 		if ((target instanceof TamableAnimal tamableTarget && tamableTarget.isOwnedBy(owner))
 				|| (target instanceof AbstractHorse houseTarget && houseTarget.isTamed())
@@ -279,12 +288,12 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 
 	@Override
 	public int getHungryTimer() {
-	    return this.entityData.get(DATA_HUNGRY_TIMER);
+	    return this.hungryTimer;
 	}
 
 	@Override
 	public void setHungryTimer(int ticks) {
-	    this.entityData.set(DATA_HUNGRY_TIMER, ticks);
+	    this.hungryTimer = ticks;
 	}
 		
 	@Override
@@ -334,12 +343,12 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	
 	@Override
 	public int getPregnancyTimer() {
-	    return this.entityData.get(DATA_PREGNANCY_TIMER);
+	    return this.pregnancyTimer;
 	}
 	
 	@Override
 	public void setPregnancyTimer(int ticks) {
-	    this.entityData.set(DATA_PREGNANCY_TIMER, ticks);
+	    this.pregnancyTimer = ticks;
 	}
 	
 	@Override

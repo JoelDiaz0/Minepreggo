@@ -11,8 +11,8 @@ import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.utils.PreggoAIHelper;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
 import dev.dixmk.minepreggo.utils.PreggoTags;
-import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP0InventaryGUIMenu;
-import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP0MainGUIMenu;
+import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlP1InventaryGUIMenu;
+import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlP1MainGUIMenu;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -57,8 +57,8 @@ public class TamableZombieGirlP1 extends AbstractTamablePregnantZombieGirl imple
 			@Override
 			protected void finishMiscarriage() {
 				if (preggoMob.level() instanceof ServerLevel serverLevel) {
-					var creeperGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);
-					PreggoMobHelper.transferPreggoMobBasicData(preggoMob, creeperGirl);
+					var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);
+					PreggoMobHelper.transferPreggoMobBasicData(preggoMob, zombieGirl);
 					preggoMob.discard();
 				}
 			}
@@ -95,7 +95,7 @@ public class TamableZombieGirlP1 extends AbstractTamablePregnantZombieGirl imple
 	public void baseTick() {
 		super.baseTick();
 		this.refreshDimensions();	
-		this.preggoMobSystem.evaluateBaseTick();
+		this.preggoMobSystem.evaluateOnTick();
 	}
 	
 	@Override
@@ -119,7 +119,7 @@ public class TamableZombieGirlP1 extends AbstractTamablePregnantZombieGirl imple
 				NetworkHooks.openScreen(serverPlayer, new MenuProvider() {
 					@Override
 					public Component getDisplayName() {
-						return Component.literal("CreeperGirlInventaryGUI");
+						return Component.literal("ZombieGirlInventaryGUI");
 					}
 
 					@Override
@@ -127,7 +127,7 @@ public class TamableZombieGirlP1 extends AbstractTamablePregnantZombieGirl imple
 						FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
 						packetBuffer.writeBlockPos(blockPos);
 						packetBuffer.writeVarInt(entityId);			
-						return new CreeperGirlP0InventaryGUIMenu(id, inventory, packetBuffer);
+						return new ZombieGirlP1InventaryGUIMenu(id, inventory, packetBuffer);
 					}
 				}, buf -> {
 					buf.writeBlockPos(blockPos);
@@ -138,14 +138,14 @@ public class TamableZombieGirlP1 extends AbstractTamablePregnantZombieGirl imple
 				NetworkHooks.openScreen(serverPlayer, new MenuProvider() {		
 					@Override
 					public Component getDisplayName() {
-						return Component.literal("CreeperGirlMainGUI");
+						return Component.literal("ZombieGirlMainGUI");
 					}
 					@Override
 					public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
 						FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
 						packetBuffer.writeBlockPos(blockPos);
 						packetBuffer.writeVarInt(entityId);					
-						return new CreeperGirlP0MainGUIMenu(id, inventory, packetBuffer);				
+						return new ZombieGirlP1MainGUIMenu(id, inventory, packetBuffer);				
 					}
 				}, buf -> {
 				    buf.writeBlockPos(blockPos);         
@@ -186,19 +186,19 @@ public class TamableZombieGirlP1 extends AbstractTamablePregnantZombieGirl imple
 	
 	@Override
 	public int getCravingTimer() {
-		return this.entityData.get(DATA_CRAVING_TIMER);
+		return this.cravingTimer;
 	}
 
 	@Override
 	public void setCravingTimer(int timer) {
-		this.entityData.set(DATA_CRAVING_TIMER, timer);
+		this.cravingTimer = timer;
 	}
 
 	@Override
 	public Craving getCravingChosen() {
 		return this.entityData.get(DATA_CRAVING_CHOSEN);
 	}
-
+	
 	@Override
 	public void setCravingChosen(Craving craving) {
 		this.entityData.set(DATA_CRAVING_CHOSEN, craving);

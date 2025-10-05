@@ -52,23 +52,21 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 		            }
 	            }
 	            
-	            if (currentHungryTimer < totalTicksOfHungry) {
-	            	preggoMob.setHungryTimer(currentHungryTimer + timerIncrement);
-	            } else {
+	            if (currentHungryTimer >= totalTicksOfHungry) {
 	            	preggoMob.setHungryTimer(0);
 	            	preggoMob.setHungry(currentHungry + 1);
+	            }
+	            else {
+	            	preggoMob.setHungryTimer(currentHungryTimer + timerIncrement);
 	            }
 
 	            if (currentHungry >= MIN_HUNGRY_TO_HEAL && preggoMob.getHealth() < preggoMob.getMaxHealth()) {
 	            	preggoMob.heal(1F);
 	            	preggoMob.setHungry(currentHungry - 1);
-	            }
-	            
+	            }            
 	        } 
 	        else {
-	            if (!level.isClientSide()) {
-	            	preggoMob.setSavage(true);
-	            }
+	        	preggoMob.setSavage(true);
 	        }
 	    } else {
 	    	/*
@@ -91,16 +89,15 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 	    }
 	}
 		
-	private final Result evaluatePregnancyBeginnigTimer(Level level) {			    	
+	private final Result evaluatePregnancyBeginnigTimer() {			    	
 		if (preggoMob.isPregnant()) {
 					
-	        if (!level.isClientSide() && preggoMob.getPregnancyTimer() >= MinepreggoModConfig.getTicksToStartPregnancy()) {
+	        if (preggoMob.getPregnancyTimer() >= MinepreggoModConfig.getTicksToStartPregnancy()) {
 	        	startPregnancy();
 	        	return Result.SUCCESS;
 	        } else {
 	        	preggoMob.setPregnancyTimer(preggoMob.getPregnancyTimer() + 1);
-                if (!level.isClientSide()
-                		&& randomSource.nextFloat() < 0.0001F
+                if (randomSource.nextFloat() < 0.0001F
                 		&& !preggoMob.hasEffect(MobEffects.CONFUSION)) {
                 	preggoMob.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 100, 0, false, true));                 
                 }        
@@ -115,26 +112,30 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 	
 	protected abstract boolean isFood(ItemStack food);
 	
-	public void evaluateBaseTick() {
+	public void evaluateOnTick() {
 		final var level = preggoMob.level();
+		
+		if (level.isClientSide()) {
+			return;
+		}
+		
 		final var x = preggoMob.getX();
 		final var y = preggoMob.getY();
 		final var z = preggoMob.getZ();
 		
-		if (evaluatePregnancyBeginnigTimer(level) == Result.SUCCESS) {
+		if (evaluatePregnancyBeginnigTimer() == Result.SUCCESS) {
 			return;
 		}
 		
 		evaluateHungryTimer(level, x, y, z, MinepreggoModConfig.getTotalTicksOfHungryP0());
 	}
 	
-	public void evaluateRightClick(Player source) {
-		
-		if (!preggoMob.isOwnedBy(source)) {
+	public void evaluateRightClick(Player source) {		
+		final var level = preggoMob.level();	
+		if (!preggoMob.isOwnedBy(source) || level.isClientSide()) {
 			return;
-		}
-			
-		spawnParticles(evaluateHungry(source));
+		}			
+		spawnParticles(level, evaluateHungry(level, source));
 	}
 	
 	
@@ -144,11 +145,10 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 				&& !isFood(source.getMainHandItem());
 	}
 	
-	protected Result evaluateHungry(Player source) {		
+	protected Result evaluateHungry(Level level, Player source) {		
 	    var mainHandItem = source.getMainHandItem();
 	    var currentHunger = preggoMob.getHungry();
-	    var world = preggoMob.level();
-	    
+    
 	    if (currentHunger < 20) {
 	        int foodValue = 0;
 
@@ -162,14 +162,12 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
                 currentHunger += foodValue;          
                 preggoMob.setHungry(currentHunger);
 	        	        	
-                if (!world.isClientSide()) {
-                	world.playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.generic.eat")), SoundSource.NEUTRAL, 0.75f, 1);	          	
+                level.playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.generic.eat")), SoundSource.NEUTRAL, 0.75f, 1);	          	
+      
+                if (preggoMob.isSavage() && preggoMob.isTame() && currentHunger >= MIN_HUNGRY_TO_TAME_AGAIN) {
+                	preggoMob.setSavage(false);
+                } 
                 
-                	if (preggoMob.isSavage() && preggoMob.isTame() && currentHunger >= MIN_HUNGRY_TO_TAME_AGAIN) {
-                		preggoMob.setSavage(false);
-                	} 
-                }
- 
 	            return Result.SUCCESS;
 	        }
 	    }
@@ -177,7 +175,7 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 	    return Result.NOTHING;		
 	}
 	
-	protected void spawnParticles(Result result) {
+	protected void spawnParticles(Level level, Result result) {
 		
 		ParticleOptions particleoptions;
 			
@@ -194,7 +192,7 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 			double d0 = randomSource.nextGaussian() * 0.02D;
 			double d1 = randomSource.nextGaussian() * 0.02D;
 			double d2 = randomSource.nextGaussian() * 0.02D;
-			preggoMob.level().addParticle(particleoptions, preggoMob.getRandomX(1.0D), preggoMob.getRandomY() + 0.5D, preggoMob.getRandomZ(1.0D), d0, d1, d2);
+			level.addParticle(particleoptions, preggoMob.getRandomX(1.0D), preggoMob.getRandomY() + 0.5D, preggoMob.getRandomZ(1.0D), d0, d1, d2);
 		}
 	}
 	

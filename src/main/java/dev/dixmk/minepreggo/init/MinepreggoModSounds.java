@@ -3,10 +3,10 @@ package dev.dixmk.minepreggo.init;
 import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.DeferredRegister;
-
 import net.minecraft.sounds.SoundEvent;
-import dev.dixmk.minepreggo.MinepreggoMod;
 import net.minecraft.resources.ResourceLocation;
+
+import dev.dixmk.minepreggo.MinepreggoMod;
 
 public class MinepreggoModSounds {
 	

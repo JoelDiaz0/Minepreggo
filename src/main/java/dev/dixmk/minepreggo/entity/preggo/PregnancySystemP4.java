@@ -3,10 +3,9 @@ package dev.dixmk.minepreggo.entity.preggo;
 import javax.annotation.Nonnull;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.TamableAnimal;
-import net.minecraft.world.level.Level;
 
 public abstract class PregnancySystemP4<E extends TamableAnimal
 	& IPreggoMob & IPregnancySystem & IPregnancyP4> extends PregnancySystemP3<E> {
@@ -18,7 +17,7 @@ public abstract class PregnancySystemP4<E extends TamableAnimal
 		this.currentPregnancyStage = preggoMob.getCurrentPregnancyStage();
 	}
 	
-	protected Result evaluteBirth(Level level, double x, double y, double z, final int totalTicksOfPrebirth, final int totalTicksOfBirth) {	
+	protected Result evaluteBirth(ServerLevel level, double x, double y, double z, final int totalTicksOfPrebirth, final int totalTicksOfBirth) {	
 		if (preggoMob.getPregnancyPain() == PregnancyPain.PREBIRTH) {		
 			if (preggoMob.getPregnancyPainTimer() >= totalTicksOfPrebirth) {
 				preggoMob.setPregnancyPain(PregnancyPain.BIRTH);
@@ -71,9 +70,8 @@ public abstract class PregnancySystemP4<E extends TamableAnimal
 	}
 	
 	
-	protected final void evaluatePregnancyPains(Level level, final float morningSicknessProbability, final float pregnancyPainProbability, final int totalTicksOfKicking, final int totalTicksOfContraction) {
-		if (preggoMob.getPregnancyPain() == PregnancyPain.NONE
-				&& !level.isClientSide()) {		
+	protected final void evaluatePregnancyPains(final float morningSicknessProbability, final float pregnancyPainProbability, final int totalTicksOfKicking, final int totalTicksOfContraction) {
+		if (preggoMob.getPregnancyPain() == PregnancyPain.NONE) {		
 			if (randomSource.nextFloat() < morningSicknessProbability) {
 				preggoMob.setPregnancyPain(PregnancyPain.MORNING_SICKNESS);		
 			}
@@ -100,21 +98,19 @@ public abstract class PregnancySystemP4<E extends TamableAnimal
 	}
 	
 	@Override
-	protected final void evaluatePregnancySymptoms(Level level) {		
+	protected final void evaluatePregnancySymptoms() {		
 		if (preggoMob.getPregnancySymptom() == PregnancySymptom.NONE) {		
-			if (!level.isClientSide()) {			
-				if (preggoMob.getCraving() >= PregnancySystemConstants.ACTIVATE_CRAVING_SYMPTOM) {		
-					preggoMob.setPregnancySymptom(PregnancySymptom.CRAVING);	
-				}
-				else if (preggoMob.getMilking() >= PregnancySystemConstants.ACTIVATE_MILKING_SYMPTOM) {
-					preggoMob.setPregnancySymptom(PregnancySymptom.MILKING);
-				}
-				else if (preggoMob.getBellyRubs() >= PregnancySystemConstants.ACTIVATE_BELLY_RUBS_SYMPTOM) {
-					preggoMob.setPregnancySymptom(PregnancySymptom.BELLY_RUBS);
-				}
-				else if (preggoMob.getHorny() >= PregnancySystemConstants.ACTIVATE_HORNY_SYMPTOM) {
-					preggoMob.setPregnancySymptom(PregnancySymptom.HORNY);
-				}
+			if (preggoMob.getCraving() >= PregnancySystemConstants.ACTIVATE_CRAVING_SYMPTOM) {		
+				preggoMob.setPregnancySymptom(PregnancySymptom.CRAVING);	
+			}
+			else if (preggoMob.getMilking() >= PregnancySystemConstants.ACTIVATE_MILKING_SYMPTOM) {
+				preggoMob.setPregnancySymptom(PregnancySymptom.MILKING);
+			}
+			else if (preggoMob.getBellyRubs() >= PregnancySystemConstants.ACTIVATE_BELLY_RUBS_SYMPTOM) {
+				preggoMob.setPregnancySymptom(PregnancySymptom.BELLY_RUBS);
+			}
+			else if (preggoMob.getHorny() >= PregnancySystemConstants.ACTIVATE_HORNY_SYMPTOM) {
+				preggoMob.setPregnancySymptom(PregnancySymptom.HORNY);
 			}
 		}
 		else {
@@ -138,14 +134,20 @@ public abstract class PregnancySystemP4<E extends TamableAnimal
 	}
 
 	@Override
-	public void evaluateBaseTick() {
+	public void evaluateOnTick() {
 		
 		final var level = preggoMob.level();
+		
+		if (level.isClientSide()) {
+			return;
+		}
+		
 		final var x =  preggoMob.getX();
 		final var y = preggoMob.getY();
 		final var z = preggoMob.getZ();
 		
-		if (evaluteBirth(level, x, y, z,
+		if (level instanceof ServerLevel serverLevel
+				&& evaluteBirth(serverLevel, x, y, z,
 				PregnancySystemConstants.TOTAL_TICKS_PREBIRTH_P4,
 				PregnancySystemConstants.TOTAL_TICKS_BIRTH_P4) == Result.SUCCESS) {
 			return;
@@ -155,9 +157,9 @@ public abstract class PregnancySystemP4<E extends TamableAnimal
 			return;
 		}
 		
-		if (evaluateMiscarriage(level, x, y, z,
-				PregnancySystemConstants.TOTAL_TICKS_MISCARRIAGE) == Result.SUCCESS) {
-			return;
+		if (level instanceof ServerLevel serverLevel
+				&& evaluateMiscarriage(serverLevel, x, y, z, PregnancySystemConstants.TOTAL_TICKS_MISCARRIAGE) == Result.SUCCESS) {
+			return; 
 		}
 		
 		this.evaluatePregnancyTimer();
@@ -168,8 +170,8 @@ public abstract class PregnancySystemP4<E extends TamableAnimal
 		this.evaluateHornyTimer(MinepreggoModConfig.getTotalTicksOfHornyP4());
 		this.evaluateAngry(level, x, y, z, PregnancySystemConstants.HIGH_ANGER_PROBABILITY);
 		
-		this.evaluatePregnancySymptoms(level);
-		this.evaluatePregnancyPains(level,
+		this.evaluatePregnancySymptoms();
+		this.evaluatePregnancyPains(
 				PregnancySystemConstants.LOW_MORNING_SICKNESS_PROBABILITY,
 				PregnancySystemConstants.MEDIUM_PREGNANCY_PAIN_PROBABILITY,
 				PregnancySystemConstants.TOTAL_TICKS_KICKING_P4,

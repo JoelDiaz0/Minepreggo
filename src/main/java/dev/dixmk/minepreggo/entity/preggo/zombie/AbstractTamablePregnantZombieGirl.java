@@ -26,17 +26,12 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 	protected static final EntityDataAccessor<Integer> DATA_DAYS_BY_STAGE = SynchedEntityData.defineId(AbstractTamablePregnantZombieGirl.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<Integer> DATA_DAYS_TO_GIVE_BIRTH = SynchedEntityData.defineId(AbstractTamablePregnantZombieGirl.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<Integer> DATA_CRAVING = SynchedEntityData.defineId(AbstractTamablePregnantZombieGirl.class, EntityDataSerializers.INT);
-	protected static final EntityDataAccessor<Integer> DATA_CRAVING_TIMER = SynchedEntityData.defineId(AbstractTamablePregnantZombieGirl.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<Integer> DATA_MILKING = SynchedEntityData.defineId(AbstractTamablePregnantZombieGirl.class, EntityDataSerializers.INT);
-	protected static final EntityDataAccessor<Integer> DATA_MILKING_TIMER = SynchedEntityData.defineId(AbstractTamablePregnantZombieGirl.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<Integer> DATA_BELLY_RUBS = SynchedEntityData.defineId(AbstractTamablePregnantZombieGirl.class, EntityDataSerializers.INT);
-	protected static final EntityDataAccessor<Integer> DATA_BELLY_RUBS_TIMER = SynchedEntityData.defineId(AbstractTamablePregnantZombieGirl.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<Integer> DATA_HORNY = SynchedEntityData.defineId(AbstractTamablePregnantZombieGirl.class, EntityDataSerializers.INT);
-	protected static final EntityDataAccessor<Integer> DATA_HORNY_TIMER = SynchedEntityData.defineId(AbstractTamablePregnantZombieGirl.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<PregnancySymptom> DATA_PREGNANCY_SYMPTOM = SynchedEntityData.defineId(AbstractTamablePregnantZombieGirl.class, MinepreggoModEntityDataSerializers.PREGNANCY_SYMPTOM);
 	protected static final EntityDataAccessor<PregnancyPain> DATA_PREGNANCY_PAIN = SynchedEntityData.defineId(AbstractTamablePregnantZombieGirl.class, MinepreggoModEntityDataSerializers.PREGNANCY_PAIN);
 	protected static final EntityDataAccessor<Craving> DATA_CRAVING_CHOSEN = SynchedEntityData.defineId(AbstractTamablePregnantZombieGirl.class, MinepreggoModEntityDataSerializers.CRAVING);
-	protected static final EntityDataAccessor<Integer> DATA_PREGNANCY_STATE_TIMER = SynchedEntityData.defineId(AbstractTamablePregnantZombieGirl.class, EntityDataSerializers.INT);
 
 	protected int cravingTimer = 0;
 	protected int milkingTimer = 0;
@@ -62,17 +57,12 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 		this.entityData.define(DATA_DAYS_BY_STAGE, 0);
 		this.entityData.define(DATA_DAYS_TO_GIVE_BIRTH, 0);	
 		this.entityData.define(DATA_CRAVING, 0);
-		this.entityData.define(DATA_CRAVING_TIMER, 0);	
 		this.entityData.define(DATA_MILKING, 0);
-		this.entityData.define(DATA_MILKING_TIMER, 0);
 		this.entityData.define(DATA_BELLY_RUBS, 0);
-		this.entityData.define(DATA_BELLY_RUBS_TIMER, 0);	
 		this.entityData.define(DATA_HORNY, 0);
-		this.entityData.define(DATA_HORNY_TIMER, 0);
 		this.entityData.define(DATA_PREGNANCY_SYMPTOM, PregnancySymptom.NONE);
 		this.entityData.define(DATA_PREGNANCY_PAIN, PregnancyPain.NONE);
 		this.entityData.define(DATA_CRAVING_CHOSEN, Craving.NONE);
-		this.entityData.define(DATA_PREGNANCY_STATE_TIMER, 0);		
 	}
 	
 	@Override
@@ -83,16 +73,16 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 		compoundTag.putInt("DataDaysByStage", this.entityData.get(DATA_DAYS_BY_STAGE));
 		compoundTag.putInt("DataDaysToGiveBirth", this.entityData.get(DATA_DAYS_TO_GIVE_BIRTH));
 		compoundTag.putInt("DataCraving", this.entityData.get(DATA_CRAVING));
-		compoundTag.putInt("DataCravingTimer", this.entityData.get(DATA_CRAVING_TIMER));
+		compoundTag.putInt("DataCravingTimer", this.cravingTimer);
 		compoundTag.putInt("DataMilking", this.entityData.get(DATA_MILKING));
-		compoundTag.putInt("DataMilkingTimer", this.entityData.get(DATA_MILKING_TIMER));
+		compoundTag.putInt("DataMilkingTimer", this.milkingTimer);
 		compoundTag.putInt("DataBellyRubs", this.entityData.get(DATA_BELLY_RUBS));
-		compoundTag.putInt("DataBellyRubsTimer", this.entityData.get(DATA_BELLY_RUBS_TIMER));
+		compoundTag.putInt("DataBellyRubsTimer", this.bellyRubsTimer);
 		compoundTag.putInt("DataHorny", this.entityData.get(DATA_HORNY));
-		compoundTag.putInt("DataHornyTimer", this.entityData.get(DATA_HORNY_TIMER));
+		compoundTag.putInt("DataHornyTimer", this.hornyTimer);
 		compoundTag.putInt("DataPregnancySymptom", this.entityData.get(DATA_PREGNANCY_SYMPTOM).ordinal());
 		compoundTag.putInt("DataPregnancyPain", this.entityData.get(DATA_PREGNANCY_PAIN).ordinal());
-		compoundTag.putInt("DataPregnancyStateTimer", this.entityData.get(DATA_PREGNANCY_STATE_TIMER));
+		compoundTag.putInt("DataPregnancyPainTimer", this.pregnancyPainTimer);
 		compoundTag.putInt("DataCravingChosen", this.entityData.get(DATA_CRAVING_CHOSEN).ordinal());
 	}
 	
@@ -104,17 +94,17 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 		this.entityData.set(DATA_DAYS_BY_STAGE, compoundTag.getInt("DataDaysByStage"));
 		this.entityData.set(DATA_DAYS_TO_GIVE_BIRTH, compoundTag.getInt("DataDaysToGiveBirth"));
 		this.entityData.set(DATA_CRAVING, compoundTag.getInt("DataCraving"));
-		this.entityData.set(DATA_CRAVING_TIMER, compoundTag.getInt("DataCravingTimer"));
+		this.cravingTimer = compoundTag.getInt("DataCravingTimer");
 		this.entityData.set(DATA_MILKING, compoundTag.getInt("DataMilking"));
-		this.entityData.set(DATA_MILKING_TIMER, compoundTag.getInt("DataMilkingTimer"));
+		this.milkingTimer = compoundTag.getInt("DataMilkingTimer");
 		this.entityData.set(DATA_BELLY_RUBS, compoundTag.getInt("DataBellyRubs"));
-		this.entityData.set(DATA_BELLY_RUBS_TIMER, compoundTag.getInt("DataBellyRubsTimer"));
+		this.bellyRubsTimer = compoundTag.getInt("DataBellyRubsTimer");
 		this.entityData.set(DATA_HORNY, compoundTag.getInt("DataHorny"));
-		this.entityData.set(DATA_HORNY_TIMER, compoundTag.getInt("DataHornyTimer"));
+		this.hornyTimer = compoundTag.getInt("DataHornyTimer");
 		this.entityData.set(DATA_PREGNANCY_SYMPTOM, PregnancySymptom.values()[compoundTag.getInt("DataPregnancySymptom")]);
 		this.entityData.set(DATA_PREGNANCY_PAIN, PregnancyPain.values()[compoundTag.getInt("DataPregnancyPain")]);
 		this.entityData.set(DATA_CRAVING_CHOSEN, Craving.values()[compoundTag.getInt("DataCravingChosen")]);
-		this.entityData.set(DATA_PREGNANCY_STATE_TIMER, compoundTag.getInt("DataPregnancyStateTimer"));
+		this.pregnancyPainTimer = compoundTag.getInt("DataPregnancyPainTimer");
 	}
 	
 	@Override
@@ -184,12 +174,12 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 	
 	@Override
 	public int getPregnancyPainTimer() {
-		return this.entityData.get(DATA_PREGNANCY_STATE_TIMER);
+		return this.pregnancyPainTimer;
 	}
 	
 	@Override
 	public void setPregnancyPainTimer(int ticks) {
-		this.entityData.set(DATA_PREGNANCY_STATE_TIMER, ticks);
+		this.pregnancyPainTimer = ticks;
 	}
 	
 	@Override

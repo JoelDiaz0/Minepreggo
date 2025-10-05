@@ -6,9 +6,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 public class CreeperGirlP1InventaryGUIScreen extends AbstractCreeperGirlInventaryGUIScreen<TamableCreeperGirlP1, CreeperGirlP1InventaryGUIMenu> {
-
 	public CreeperGirlP1InventaryGUIScreen(CreeperGirlP1InventaryGUIMenu container, Inventory inventory, Component text) {
 		super(container, inventory, text);
 	}
-
 }

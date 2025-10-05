@@ -1,9 +1,6 @@
 package dev.dixmk.minepreggo.entity.preggo.creeper;
 
-import javax.annotation.Nullable;
-
 import dev.dixmk.minepreggo.entity.preggo.Craving;
-import dev.dixmk.minepreggo.entity.preggo.ICraving;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancyP3;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySystemP3;
@@ -16,8 +13,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
@@ -42,17 +37,6 @@ public class TamableCreeperGirlP3 extends AbstractTamablePregnantCreeperGirl imp
 			
 			@Override
 			protected void finishMiscarriage() {
-			}
-
-			@Override
-			@Nullable
-			protected <I extends Item & ICraving> I getCraving(Craving craving) {						
-				return null;
-			}
-
-			@Override
-			protected boolean isFood(ItemStack food) {		
-				return true;
 			}
 		};
 	}
@@ -93,7 +77,7 @@ public class TamableCreeperGirlP3 extends AbstractTamablePregnantCreeperGirl imp
 	
 	@Override
 	public PregnancyStage getCurrentPregnancyStage() {
-		return PregnancyStage.P2;
+		return PregnancyStage.P3;
 	}
 	
 	@Override

@@ -1,7 +1,5 @@
 package dev.dixmk.minepreggo.entity.preggo.creeper;
 
-import org.jetbrains.annotations.NotNull;
-
 import com.google.common.collect.ImmutableMap;
 
 import dev.dixmk.minepreggo.entity.preggo.BabyType;
@@ -11,6 +9,7 @@ import dev.dixmk.minepreggo.entity.preggo.PregnancyPain;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -39,11 +38,12 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 	protected int hornyTimer = 0;
 	protected int pregnancyPainTimer = 0;
 	
-	protected static final ImmutableMap<Craving, @NotNull Item> CRAVING_ENUM_MAP = ImmutableMap.of(
+	protected static final ImmutableMap<Craving, Item> CRAVING_ENUM_MAP = ImmutableMap.of(
 			Craving.SALTY, MinepreggoModItems.ACTIVATED_GUNPOWDER_WITH_SALT.get(), 
 			Craving.SWEET, MinepreggoModItems.ACTIVATED_GUNPOWDER_WITH_CHOCOLATE.get(), 
 			Craving.SOUR, MinepreggoModItems.SOUR_ACTIVATED_GUNPOWDER.get(),
-			Craving.SPICY, MinepreggoModItems.ACTIVATED_GUNPOWDER_WITH_HOT_SAUCE.get());	
+			Craving.SPICY, MinepreggoModItems.ACTIVATED_GUNPOWDER_WITH_HOT_SAUCE.get(),
+			Craving.NONE, null);	
 	
 	protected AbstractTamablePregnantCreeperGirl(EntityType<? extends AbstractTamableCreeperGirl> p_21803_, Level p_21804_) {
 		super(p_21803_, p_21804_);
@@ -107,7 +107,11 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 		this.pregnancyPainTimer = compoundTag.getInt("DataPregnancyPainTimer");
 	}
 	
-
+	@Override
+	public boolean isValidCraving(Craving kindOfCraving, Item item) {
+		return item == CRAVING_ENUM_MAP.get(kindOfCraving);
+	}
+	
 	/*
 	@Override
 	public int getCraving() {

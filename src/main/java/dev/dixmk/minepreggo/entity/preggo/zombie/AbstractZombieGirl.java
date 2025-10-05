@@ -9,10 +9,9 @@ import net.minecraft.world.entity.monster.ZombieVillager;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.level.LevelAccessor;
 
-import java.util.List;
-
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
+import dev.dixmk.minepreggo.utils.PreggoTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -82,8 +81,12 @@ public abstract class AbstractZombieGirl extends TamableAnimal {
 	
 	@Override
 	public boolean isFood(ItemStack stack) {
-		return List.of(MinepreggoModItems.VILLAGER_BRAIN.get()).contains(stack.getItem());
-	}	
+		return stack.is(PreggoTags.ZOMBIE_GIRL_FOOD);
+	}
+	
+	public boolean isFoodToTame(ItemStack stack) {
+		return stack.is(MinepreggoModItems.VILLAGER_BRAIN.get());
+	}
 	
     @Override
     public void handleEntityEvent(byte id) {
@@ -182,7 +185,7 @@ public abstract class AbstractZombieGirl extends TamableAnimal {
 		if (this.level().isClientSide()) {
 			retval = (this.isTame() && this.isOwnedBy(sourceentity) || this.isFood(itemstack)) ? InteractionResult.sidedSuccess(this.level().isClientSide()) : InteractionResult.PASS;
 		} else {
-			if (!this.isBaby() && this.canBeTamedByPlayer() && !this.isTame() && this.isFood(itemstack)) {
+			if (!this.isBaby() && this.canBeTamedByPlayer() && !this.isTame() && this.isFoodToTame(itemstack)) {
 				this.usePlayerItem(sourceentity, hand, itemstack);
 				if (this.random.nextInt(3) == 0 && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(this, sourceentity)) {
 					this.tame(sourceentity);

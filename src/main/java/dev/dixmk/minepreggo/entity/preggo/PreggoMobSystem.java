@@ -17,7 +17,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -117,8 +116,6 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 	
 	protected abstract void startPregnancy();
 	
-	protected abstract boolean isFood(ItemStack food);
-	
 	public void evaluateOnTick() {
 		final var level = preggoMob.level();
 		
@@ -154,7 +151,7 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 	public boolean canOwnerAccessGUI(Player source) {			
 		return preggoMob.isOwnedBy(source)
 				&& !preggoMob.isSavage()
-				&& !isFood(source.getMainHandItem());
+				&& !preggoMob.isFood(source.getMainHandItem());
 	}
 	
 	protected Result evaluateHungry(Level level, Player source) {		
@@ -164,7 +161,7 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 	    if (currentHunger < 20) {
 	        int foodValue = 0;
 
-	        if (isFood(mainHandItem)) {      	           	
+	        if (preggoMob.isFood(mainHandItem)) {      	           	
 	        	var foodProperties = mainHandItem.getItem().getFoodProperties(mainHandItem, preggoMob);
 	        	foodValue = foodProperties.getNutrition();      
 	        }

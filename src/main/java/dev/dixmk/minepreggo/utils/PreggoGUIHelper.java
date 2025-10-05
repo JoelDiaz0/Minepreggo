@@ -6,6 +6,7 @@ import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancyP1;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancyP2;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancyP3;
+import dev.dixmk.minepreggo.entity.preggo.IPregnancyP4;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import net.minecraft.client.gui.Font;
@@ -223,6 +224,20 @@ public class PreggoGUIHelper {
 		}	
 	}
 	
+	private static void renderDefaultPreggoP4MainGUI(GuiGraphics gui, int leftPos, int topPos, IPregnancyP4 p4) {		
+
+		final int horny = p4.getHorny();
+
+		for (int i = 0, pos = 74, oddValue = 1, evenValue = 2; i < 10; ++i, pos += 10, oddValue += 2, evenValue += 2) {		
+			gui.blit(ICONS_TEXTURE, leftPos + pos, topPos + 128, 9, 9, 0, 11, 16, 11, 256, 256);	
+			if (horny >= evenValue) {
+				gui.blit(ICONS_TEXTURE, leftPos + pos, topPos + 128, 9, 9, 32, 11, 16, 11, 256, 256);
+			} else if (horny >= oddValue) {
+				gui.blit(ICONS_TEXTURE, leftPos + pos, topPos + 128, 9, 9, 16, 11, 16, 11, 256, 256);
+			}	
+		}		
+	}
+	
 	public static void renderDefaultPreggoP0LabelMainGUI(GuiGraphics guiGraphics, Font font, IPreggoMob p0) {	
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_0_main_gui.label_state"), 78, 21, -12829636, false);
 		guiGraphics.drawString(font, p0.getPreggoName(), 90, 4, -12829636, false);
@@ -277,6 +292,19 @@ public class PreggoGUIHelper {
 		} 
 	}
 	
+	public static<E extends IPreggoMob & IPregnancyP2> void renderP4LabelMainGUI(GuiGraphics guiGraphics, Font font, E p4) {
+		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_4_main_gui.label_stage"), 74, 35, -12829636, false);
+		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_4_main_gui.label_birth_in"), 74, 51, -12829636, false);
+		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_4_main_gui.label_statepregnant"), 74, 19, -12829636, false);
+		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_3_main_gui.label_pregnant"), 107, 17, -12829636, false);
+		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_4_main_gui.label_pregnant"), 106, 19, -12829636, false);
+
+		guiGraphics.drawString(font, p4.getPreggoName(), 90, 4, -12829636, false);
+
+		if (p4.getCravingChosen() == Craving.NONE) {
+			guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_4_main_gui.label_no"), 118, 51, -12829636, false);
+		} 
+	}
 	
 	/*Creeper Girl*/
 	public static<E extends AbstractTamablePregnantCreeperGirl & IPregnancyP1> void renderCreeperGirlP1MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, E creeperGirl) {
@@ -300,6 +328,15 @@ public class PreggoGUIHelper {
 		renderDefaultPreggoP3MainGUI(guiGraphics, leftPos, topPos + 4, p3);		
 	}
 	
+	public static<E extends AbstractTamablePregnantCreeperGirl & IPregnancyP4> void renderCreeperGirlP4MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, E p4) {
+		renderDefaultPreggoP0MainGUI(guiGraphics, leftPos, topPos + 10, health, p4);
+		renderCreeperGirlCravingMainGUI(guiGraphics, leftPos, topPos, p4);	
+		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, p4);		
+		renderDefaultPreggoP2MainGUI(guiGraphics, leftPos, topPos + 5, p4);		
+		renderDefaultPreggoP3MainGUI(guiGraphics, leftPos, topPos + 4, p4);	
+		renderDefaultPreggoP4MainGUI(guiGraphics, leftPos, topPos, p4);		
+	}
+	
 	/*Zombie Girl*/
 	public static<E extends AbstractTamablePregnantZombieGirl & IPregnancyP1> void renderZombieGirlP1MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, E zombieGirl) {
 		renderDefaultPreggoP0MainGUI(guiGraphics, leftPos, topPos + 10, health, zombieGirl);
@@ -320,5 +357,14 @@ public class PreggoGUIHelper {
 		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, p3);		
 		renderDefaultPreggoP2MainGUI(guiGraphics, leftPos, topPos + 5, p3);		
 		renderDefaultPreggoP3MainGUI(guiGraphics, leftPos, topPos + 4, p3);		
+	}
+	
+	public static<E extends AbstractTamablePregnantZombieGirl & IPregnancyP4> void renderZombieGirlP4MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, E p4) {
+		renderDefaultPreggoP0MainGUI(guiGraphics, leftPos, topPos + 10, health, p4);
+		renderZombieGirlCravingMainGUI(guiGraphics, leftPos, topPos, p4);	
+		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, p4);		
+		renderDefaultPreggoP2MainGUI(guiGraphics, leftPos, topPos + 5, p4);		
+		renderDefaultPreggoP3MainGUI(guiGraphics, leftPos, topPos + 4, p4);	
+		renderDefaultPreggoP4MainGUI(guiGraphics, leftPos, topPos, p4);		
 	}
 }

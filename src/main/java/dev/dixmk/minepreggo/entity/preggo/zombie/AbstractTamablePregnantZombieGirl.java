@@ -1,7 +1,5 @@
 package dev.dixmk.minepreggo.entity.preggo.zombie;
 
-import org.jetbrains.annotations.NotNull;
-
 import com.google.common.collect.ImmutableMap;
 
 import dev.dixmk.minepreggo.entity.preggo.BabyType;
@@ -38,11 +36,12 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 	protected int hornyTimer = 0;
 	protected int pregnancyPainTimer = 0;
 	
-	protected static final ImmutableMap<Craving, @NotNull Item> CRAVING_ENUM_MAP = ImmutableMap.of(
+	protected static final ImmutableMap<Craving, Item> CRAVING_ENUM_MAP = ImmutableMap.of(
 			Craving.SALTY, MinepreggoModItems.BRAIN_WITH_SALT.get(), 
 			Craving.SWEET, MinepreggoModItems.BRAIN_WITH_CHOCOLATE.get(), 
 			Craving.SOUR, MinepreggoModItems.SOUR_BRAIN.get(),
-			Craving.SPICY, MinepreggoModItems.BRAIN_WITH_HOT_SAUCE.get());	
+			Craving.SPICY, MinepreggoModItems.BRAIN_WITH_HOT_SAUCE.get(),
+			Craving.NONE, null);	
 	
 	protected AbstractTamablePregnantZombieGirl(EntityType<? extends AbstractTamablePregnantZombieGirl> p_21803_, Level p_21804_) {
 		super(p_21803_, p_21804_);
@@ -104,6 +103,11 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 		this.entityData.set(DATA_PREGNANCY_PAIN, PregnancyPain.values()[compoundTag.getInt("DataPregnancyPain")]);
 		this.entityData.set(DATA_CRAVING_CHOSEN, Craving.values()[compoundTag.getInt("DataCravingChosen")]);
 		this.pregnancyPainTimer = compoundTag.getInt("DataPregnancyPainTimer");
+	}
+	
+	@Override
+	public boolean isValidCraving(Craving kindOfCraving, Item item) {
+		return item == CRAVING_ENUM_MAP.get(kindOfCraving);
 	}
 	
 	@Override

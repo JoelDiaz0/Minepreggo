@@ -7,6 +7,6 @@ public interface ICraving {
 	@NonNegative
 	int getGratification();
 	
-	
+	Craving getTypeOfCraving();
 	
 }

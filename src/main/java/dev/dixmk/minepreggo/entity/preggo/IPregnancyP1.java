@@ -10,5 +10,4 @@ public interface IPregnancyP1 {
 	
 	int getCravingTimer();
 	void setCravingTimer(int timer);
-	
 }

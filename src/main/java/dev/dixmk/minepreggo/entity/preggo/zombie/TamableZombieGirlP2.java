@@ -1,39 +1,19 @@
 package dev.dixmk.minepreggo.entity.preggo.zombie;
 
-import javax.annotation.Nullable;
-
 import dev.dixmk.minepreggo.entity.preggo.Craving;
-import dev.dixmk.minepreggo.entity.preggo.ICraving;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancyP2;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySystemP2;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.utils.PreggoAIHelper;
-import dev.dixmk.minepreggo.utils.PreggoMobHelper;
-import dev.dixmk.minepreggo.utils.PreggoTags;
-import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlP1InventaryGUIMenu;
-import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlP1MainGUIMenu;
-import io.netty.buffer.Unpooled;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
 
@@ -58,17 +38,6 @@ public class TamableZombieGirlP2 extends AbstractTamablePregnantZombieGirl imple
 			@Override
 			protected void finishMiscarriage() {
 			}
-
-			@Override
-			@Nullable
-			protected <I extends Item & ICraving> I getCraving(Craving craving) {					
-				return null;
-			}
-
-			@Override
-			protected boolean isFood(ItemStack food) {		
-				return true;
-			}
 		};
 	}
 	
@@ -78,14 +47,14 @@ public class TamableZombieGirlP2 extends AbstractTamablePregnantZombieGirl imple
 	}
 	
 	@Override
-	public void tick() {
-		this.preggoMobSystem.evaluateOnTick();
+	protected void registerGoals() {
+		super.registerGoals();
+		PreggoAIHelper.setTamablePregnantZombieGirlGoals(this);
 	}
 	
 	@Override
-	public void aiStep() {
-		super.aiStep();
-		this.updateSwingTime();
+	public void tick() {
+		this.preggoMobSystem.evaluateOnTick();
 	}
 
 	@Override

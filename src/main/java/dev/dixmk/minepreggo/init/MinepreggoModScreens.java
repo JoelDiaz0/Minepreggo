@@ -8,6 +8,8 @@ import dev.dixmk.minepreggo.client.gui.preggo.creeper.CreeperGirlP2InventaryGUIS
 import dev.dixmk.minepreggo.client.gui.preggo.creeper.CreeperGirlP2MainGUIScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.creeper.CreeperGirlP3InventaryGUIScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.creeper.CreeperGirlP3MainGUIScreen;
+import dev.dixmk.minepreggo.client.gui.preggo.creeper.CreeperGirlP4InventaryGUIScreen;
+import dev.dixmk.minepreggo.client.gui.preggo.creeper.CreeperGirlP4MainGUIScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.zombie.ZombieGirlP0InventaryGUIScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.zombie.ZombieGirlP0MainGUIScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.zombie.ZombieGirlP1InventaryGUIScreen;
@@ -16,6 +18,8 @@ import dev.dixmk.minepreggo.client.gui.preggo.zombie.ZombieGirlP2InventaryGUIScr
 import dev.dixmk.minepreggo.client.gui.preggo.zombie.ZombieGirlP2MainGUIScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.zombie.ZombieGirlP3InventaryGUIScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.zombie.ZombieGirlP3MainGUIScreen;
+import dev.dixmk.minepreggo.client.gui.preggo.zombie.ZombieGirlP4InventaryGUIScreen;
+import dev.dixmk.minepreggo.client.gui.preggo.zombie.ZombieGirlP4MainGUIScreen;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -39,6 +43,8 @@ public class MinepreggoModScreens {
 			MenuScreens.register(MinepreggoModMenus.ZOMBIE_GIRL_P2_INVENTARY_GUI.get(), ZombieGirlP2InventaryGUIScreen::new);
 			MenuScreens.register(MinepreggoModMenus.ZOMBIE_GIRL_P3_MAIN_GUI.get(), ZombieGirlP3MainGUIScreen::new);
 			MenuScreens.register(MinepreggoModMenus.ZOMBIE_GIRL_P3_INVENTARY_GUI.get(), ZombieGirlP3InventaryGUIScreen::new);
+			MenuScreens.register(MinepreggoModMenus.ZOMBIE_GIRL_P4_MAIN_GUI.get(), ZombieGirlP4MainGUIScreen::new);
+			MenuScreens.register(MinepreggoModMenus.ZOMBIE_GIRL_P4_INVENTARY_GUI.get(), ZombieGirlP4InventaryGUIScreen::new);
 			/*Creeper Girl*/
 			MenuScreens.register(MinepreggoModMenus.CREEPER_GIRL_P0_MAIN_GUI.get(), CreeperGirlP0MainGUIScreen::new);
 			MenuScreens.register(MinepreggoModMenus.CREEPER_GIRL_P0_INVENTARY_GUI.get(), CreeperGirlP0InventaryGUIScreen::new);
@@ -48,6 +54,8 @@ public class MinepreggoModScreens {
 			MenuScreens.register(MinepreggoModMenus.CREEPER_GIRL_P2_INVENTARY_GUI.get(), CreeperGirlP2InventaryGUIScreen::new);
 			MenuScreens.register(MinepreggoModMenus.CREEPER_GIRL_P3_MAIN_GUI.get(), CreeperGirlP3MainGUIScreen::new);
 			MenuScreens.register(MinepreggoModMenus.CREEPER_GIRL_P3_INVENTARY_GUI.get(), CreeperGirlP3InventaryGUIScreen::new);
+			MenuScreens.register(MinepreggoModMenus.CREEPER_GIRL_P4_MAIN_GUI.get(), CreeperGirlP4MainGUIScreen::new);
+			MenuScreens.register(MinepreggoModMenus.CREEPER_GIRL_P4_INVENTARY_GUI.get(), CreeperGirlP4InventaryGUIScreen::new);
 		});
 	}
 }

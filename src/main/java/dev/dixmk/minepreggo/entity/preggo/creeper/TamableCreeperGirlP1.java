@@ -7,8 +7,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.InteractionHand;
@@ -22,17 +20,13 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 
-import javax.annotation.Nullable;
-
 import dev.dixmk.minepreggo.entity.preggo.Craving;
-import dev.dixmk.minepreggo.entity.preggo.ICraving;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancyP1;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySystemP1;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.utils.PreggoAIHelper;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
-import dev.dixmk.minepreggo.utils.PreggoTags;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP0InventaryGUIMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP0MainGUIMenu;
 
@@ -55,32 +49,20 @@ public class TamableCreeperGirlP1 extends AbstractTamablePregnantCreeperGirl imp
 		preggoMobSystem = new PregnancySystemP1<TamableCreeperGirlP1>(this) {
 			@Override
 			protected void changePregnancyStage() {
-
-				
+				if (preggoMob.level() instanceof ServerLevel serverLevel) {
+					var creeperGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P2.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);
+					PreggoMobHelper.transferPregnancyP1Data(preggoMob, creeperGirl);
+					preggoMob.discard();
+				}
 			}
 			
 			@Override
 			protected void finishMiscarriage() {
 				if (preggoMob.level() instanceof ServerLevel serverLevel) {
-					var creeperGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);
-					PreggoMobHelper.transferPreggoMobBasicData(preggoMob, creeperGirl);
+					var post = TamableCreeperGirlP0.spawnPostMiscarriage(serverLevel, preggoMob.getX(), preggoMob.getY(), preggoMob.getZ());
+					PreggoMobHelper.transferPreggoMobBasicData(preggoMob, post);
 					preggoMob.discard();
 				}
-			}
-
-			@SuppressWarnings("unchecked")
-			@Override
-			@Nullable
-			protected <I extends Item & ICraving> I getCraving(Craving craving) {					
-				if (craving == Craving.NONE) {
-					return null;
-				}		
-				return (I) CRAVING_ENUM_MAP.get(craving);
-			}
-
-			@Override
-			protected boolean isFood(ItemStack food) {		
-				return food.is(PreggoTags.CREEPER_GIRL_FOOD);
 			}
 		};
 	}
@@ -200,5 +182,7 @@ public class TamableCreeperGirlP1 extends AbstractTamablePregnantCreeperGirl imp
 	public void setCravingChosen(Craving craving) {
 		this.entityData.set(DATA_CRAVING_CHOSEN, craving);
 	}
+
+
 
 }

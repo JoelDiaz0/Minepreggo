@@ -64,11 +64,6 @@ public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl {
 					preggoMob.discard();
 				}			
 			}
-
-			@Override
-			protected boolean isFood(ItemStack food) {
-				return food.is(PreggoTags.CREEPER_GIRL_FOOD);
-			}
 		};
 	}
 	
@@ -159,5 +154,11 @@ public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl {
 
 	public static AttributeSupplier.Builder createAttributes() {
 		return getBasicAttributes(0.24);
+	}
+	
+	public static TamableCreeperGirlP0 spawnPostMiscarriage(ServerLevel serverLevel, double x, double y, double z) {
+		var zombieGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
+		
+		return zombieGirl;
 	}
 }

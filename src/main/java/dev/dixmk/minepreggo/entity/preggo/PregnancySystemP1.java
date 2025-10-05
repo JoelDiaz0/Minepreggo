@@ -4,7 +4,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
@@ -15,7 +14,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -189,9 +187,12 @@ public abstract class PregnancySystemP1<
 	    var currentCraving = preggoMob.getCraving();
 	    
 	    if (currentCraving > PregnancySystemConstants.DESACTIVATE_CRAVING_SYMPTOM) {    	
-	    	var craving = getCraving(preggoMob.getCravingChosen()); 
-            
-	    	if (craving == mainHandItem) {
+
+	    	if (!(mainHandItem instanceof ICraving craving)) {
+	    		return Result.ANGRY;
+	    	}
+	    	    	
+	    	if (preggoMob.isValidCraving(preggoMob.getCravingChosen(), mainHandItem)) {
 	            source.getInventory().clearOrCountMatchingItems(p -> mainHandItem == p.getItem(), 1, source.inventoryMenu.getCraftSlots());
 	            currentCraving = Math.max(0, currentCraving - craving.getGratification());
                 preggoMob.setCraving(currentCraving);
@@ -204,9 +205,6 @@ public abstract class PregnancySystemP1<
 	            
 	            return Result.SUCCESS; 
 	    	}    
-	    	else {
-	    		return Result.ANGRY;
-	    	}
 	    }
 	    
 	    return Result.NOTHING;
@@ -215,9 +213,6 @@ public abstract class PregnancySystemP1<
 	protected abstract void changePregnancyStage();
 	
 	protected abstract void finishMiscarriage();
-	
-	@Nullable
-	protected abstract<I extends Item & ICraving> I getCraving(Craving craving);
 	
 	@Override
 	protected final void startPregnancy() {}

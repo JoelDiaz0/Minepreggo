@@ -1,5 +1,7 @@
 package dev.dixmk.minepreggo.entity.preggo;
 
+import net.minecraft.world.item.Item;
+
 public interface IPregnancySystem {
 	int getDaysByStage();
 	void setDaysByStage(int days);
@@ -27,4 +29,6 @@ public interface IPregnancySystem {
 	boolean isIncapacitated();
 	
 	PregnancyStage getCurrentPregnancyStage();
+	
+	boolean isValidCraving(Craving kindOfCraving, Item item);
 }

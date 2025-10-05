@@ -11,12 +11,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.List;
 
 import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
+import dev.dixmk.minepreggo.utils.PreggoTags;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -87,7 +87,11 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 
 	@Override
 	public boolean isFood(ItemStack stack) {
-		return List.of(MinepreggoModItems.ACTIVATED_GUNPOWDER.get()).contains(stack.getItem());
+		return stack.is(PreggoTags.CREEPER_GIRL_FOOD);
+	}
+	
+	public boolean isFoodToTame(ItemStack stack) {
+		return stack.is(MinepreggoModItems.ACTIVATED_GUNPOWDER.get());
 	}
 	
 	@Override
@@ -263,12 +267,6 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 		}	
 	}
 	
-	@Override
-	public void aiStep() {
-		super.aiStep();
-		this.updateSwingTime();
-	}
-	
     @Override
     public void handleEntityEvent(byte id) {
         if (id == 4) { // vanilla "swing/attack" animation event
@@ -308,7 +306,7 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 		else if (this.level().isClientSide()) {
 			retval = (this.isTame() && this.isOwnedBy(sourceentity) || this.isFood(itemstack)) ? InteractionResult.sidedSuccess(this.level().isClientSide()) : InteractionResult.PASS;
 		} else {
-			if (!this.isBaby() && this.canBeTamedByPlayer() && !this.isTame() && this.isFood(itemstack)) {
+			if (!this.isBaby() && this.canBeTamedByPlayer() && !this.isTame() && this.isFoodToTame(itemstack)) {
 				this.usePlayerItem(sourceentity, hand, itemstack);
 				if (this.random.nextInt(3) == 0 && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(this, sourceentity)) {
 					this.tame(sourceentity);

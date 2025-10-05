@@ -1,10 +1,11 @@
 package dev.dixmk.minepreggo.utils;
 
-import java.util.concurrent.atomic.AtomicReference;
-
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.entity.preggo.Craving;
 import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
-
+import dev.dixmk.minepreggo.entity.preggo.IPregnancyP1;
+import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
+import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -12,7 +13,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.TamableAnimal;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -21,19 +21,18 @@ public class PreggoGUIHelper {
 
 	private PreggoGUIHelper() {}
 	
-	public static final ResourceLocation CREEPER_GIRL_CRAVING_1 = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/activated_gunpowder_with_chocolate.png");
-	public static final ResourceLocation CREEPER_GIRL_CRAVING_2 = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/activated_gunpowder_with_salt.png");
-	public static final ResourceLocation CREEPER_GIRL_CRAVING_3 = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/sour_activated_gunpowder.png");
-	public static final ResourceLocation CREEPER_GIRL_CRAVING_4 = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/activated_gunpowder_with_hot_sauce.png");
+	public static final ResourceLocation CREEPER_GIRL_SWEET_CRAVING = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/activated_gunpowder_with_chocolate.png");
+	public static final ResourceLocation CREEPER_GIRL_SALTY_CRAVING = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/activated_gunpowder_with_salt.png");
+	public static final ResourceLocation CREEPER_GIRL_SOUR_CRAVING = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/sour_activated_gunpowder.png");
+	public static final ResourceLocation CREEPER_GIRL_SPICY_CRAVING = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/activated_gunpowder_with_hot_sauce.png");
 
-	public static final ResourceLocation ZOMBIE_GIRL_CRAVING_1 = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/brain_with_chocolate.png");
-	public static final ResourceLocation ZOMBIE_GIRL_CRAVING_2 = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/brain_with_salt.png");
-	public static final ResourceLocation ZOMBIE_GIRL_CRAVING_3 = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/sour_brain.png");
-	public static final ResourceLocation ZOMBIE_GIRL_CRAVING_4 = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/brain_with_hot_sauce.png");
+	public static final ResourceLocation ZOMBIE_GIRL_SWEET_CRAVING = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/brain_with_chocolate.png");
+	public static final ResourceLocation ZOMBIE_GIRL_SALTY_CRAVING = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/brain_with_salt.png");
+	public static final ResourceLocation ZOMBIE_GIRL_SOUR_CRAVING = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/sour_brain.png");
+	public static final ResourceLocation ZOMBIE_GIRL_SPICY_CRAVING = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/brain_with_hot_sauce.png");
 	
-	public static final ResourceLocation DEFAULT_INVENTARY_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/default_preggo_mob_inventory_gui.png");
-	
-	public static final ResourceLocation ZOMBIE_GIRL_INVENTARY_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/zombie_girl_inventory_gui.png");
+	public static final ResourceLocation CREEPER_GIRL_INVENTARY_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/creeper_girl_inventory.png");	
+	public static final ResourceLocation ZOMBIE_GIRL_INVENTARY_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/zombie_girl_inventory.png");
 	
 	public static final ResourceLocation DEFAULT_P0_MAIN_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/default_preggo_mob_p0_main_gui.png");
 	public static final ResourceLocation DEFAULT_P1_MAIN_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/default_preggo_mob_p1_main_gui.png");
@@ -41,10 +40,10 @@ public class PreggoGUIHelper {
 	public static final ResourceLocation DEFAULT_P3_MAIN_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/default_preggo_mob_p3_main_gui.png");
 	public static final ResourceLocation DEFAULT_P4_MAIN_GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/default_preggo_mob_p4_main_gui.png");
 	
-	public static final ResourceLocation DEFAULT_ICON_CREEPER_GIRL_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entities/creeper_girl_p0.png");
-	public static final ResourceLocation DEFAULT_ICON_ZOMBIE_GIRL_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entities/zombie_girl_p0.png");
-	
+	public static final ResourceLocation DEFAULT_ICON_CREEPER_GIRL_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/creeper_girl_p0.png");
+	public static final ResourceLocation DEFAULT_ICON_ZOMBIE_GIRL_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p0.png");
 	public static final ResourceLocation DEFAULT_ICON_HUMAN_TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/player/wide/alex.png");
+
 	public static final ResourceLocation MINECRAFT_ICONS_TEXTURE = ResourceLocation.withDefaultNamespace("textures/gui/icons.png");
 
 	public static final ResourceLocation PICKLE_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/item/salty_pickle.png");
@@ -61,22 +60,15 @@ public class PreggoGUIHelper {
 	        return;
 	    
         preggoEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> {
-            if (capability instanceof IItemHandlerModifiable modHandlerEntSetSlot)
-                modHandlerEntSetSlot.setStackInSlot(4, preggoEntity.getMainHandItem().copy());
+            if (capability instanceof IItemHandlerModifiable modHandlerEntSetSlot) {
+                modHandlerEntSetSlot.setStackInSlot(IPreggoMob.HEAD_INVENTARY_SLOT, preggoEntity.getItemBySlot(EquipmentSlot.HEAD));
+                modHandlerEntSetSlot.setStackInSlot(IPreggoMob.CHEST_INVENTARY_SLOT, preggoEntity.getItemBySlot(EquipmentSlot.CHEST));
+                modHandlerEntSetSlot.setStackInSlot(IPreggoMob.LEGS_INVENTARY_SLOT, preggoEntity.getItemBySlot(EquipmentSlot.LEGS));
+                modHandlerEntSetSlot.setStackInSlot(IPreggoMob.FEET_INVENTARY_SLOT, preggoEntity.getItemBySlot(EquipmentSlot.FEET));
+                modHandlerEntSetSlot.setStackInSlot(IPreggoMob.MAINHAND_INVENTARY_SLOT, preggoEntity.getMainHandItem());
+                modHandlerEntSetSlot.setStackInSlot(IPreggoMob.OFFHAND_INVENTARY_SLOT, preggoEntity.getOffhandItem());
+            }
         });
-          
-        preggoEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> {
-            if (capability instanceof IItemHandlerModifiable modHandlerEntSetSlot)
-                modHandlerEntSetSlot.setStackInSlot(5, preggoEntity.getOffhandItem().copy());
-        });
-	      
-	    for (int i = 0; i < 4; i++) {
-            final int slotid = i;
-            preggoEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> {
-                if (capability instanceof IItemHandlerModifiable modHandlerEntSetSlot)
-                    modHandlerEntSetSlot.setStackInSlot(slotid, preggoEntity.getItemBySlot(EquipmentSlot.byTypeAndIndex(EquipmentSlot.Type.ARMOR, slotid)).copy());
-            });
-	    }
 	}
 	
 
@@ -85,22 +77,63 @@ public class PreggoGUIHelper {
 	        return;
 	    
 	    if (!world.isClientSide()) {
-	        preggoEntity.setItemInHand(InteractionHand.MAIN_HAND, getItemStack(4, preggoEntity).copy());
-	        preggoEntity.setItemInHand(InteractionHand.OFF_HAND, getItemStack(5, preggoEntity).copy());
-	        for (int i = 0; i < 4; i++) 
-                preggoEntity.setItemSlot(EquipmentSlot.byTypeAndIndex(EquipmentSlot.Type.ARMOR, i), getItemStack(i, preggoEntity));	   
+		    preggoEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> {   	
+		        preggoEntity.setItemInHand(InteractionHand.MAIN_HAND, capability.getStackInSlot(IPreggoMob.MAINHAND_INVENTARY_SLOT));
+		        preggoEntity.setItemInHand(InteractionHand.OFF_HAND, capability.getStackInSlot(IPreggoMob.OFFHAND_INVENTARY_SLOT));
+		        preggoEntity.setItemSlot(EquipmentSlot.HEAD, capability.getStackInSlot(IPreggoMob.HEAD_INVENTARY_SLOT));	   
+		        preggoEntity.setItemSlot(EquipmentSlot.CHEST, capability.getStackInSlot(IPreggoMob.CHEST_INVENTARY_SLOT));	   
+		        preggoEntity.setItemSlot(EquipmentSlot.LEGS, capability.getStackInSlot(IPreggoMob.LEGS_INVENTARY_SLOT));	   
+		        preggoEntity.setItemSlot(EquipmentSlot.FEET, capability.getStackInSlot(IPreggoMob.FEET_INVENTARY_SLOT));		
+		    });   
 	    }
 	}
-
-	private static<T extends TamableAnimal & IPreggoMob> ItemStack getItemStack(int sltid, T preggoEntity) {
-	    AtomicReference<ItemStack> retval = new AtomicReference<>(ItemStack.EMPTY);
-	    preggoEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> retval.set(capability.getStackInSlot(sltid).copy()));
-	    return retval.get();
+	
+	private static<E extends AbstractTamablePregnantZombieGirl & IPregnancyP1> void renderZombieGirlCravingMainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, E zombieGirl) {
+		switch (zombieGirl.getCravingChosen()) {
+		case SWEET: {
+			guiGraphics.blit(ZOMBIE_GIRL_SWEET_CRAVING, leftPos + 113, topPos + 43, 0, 0, 24, 24, 24, 24);
+			return;
+		}
+		case SALTY: {
+			guiGraphics.blit(ZOMBIE_GIRL_SALTY_CRAVING, leftPos + 113, topPos + 43, 0, 0, 24, 24, 24, 24);
+			return;
+		}
+		case SOUR: {
+			guiGraphics.blit(ZOMBIE_GIRL_SOUR_CRAVING, leftPos + 113, topPos + 43, 0, 0, 24, 24, 24, 24);
+			return;
+		}
+		case SPICY: {
+			guiGraphics.blit(ZOMBIE_GIRL_SPICY_CRAVING, leftPos + 113, topPos + 43, 0, 0, 24, 24, 24, 24);
+			return;
+		}
+		default:
+			return;
+		}	
 	}
 	
 	
-	
-	
+	private static<E extends AbstractTamablePregnantCreeperGirl & IPregnancyP1> void renderCreeperGirlCravingMainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, E creeperGirl) {
+		switch (creeperGirl.getCravingChosen()) {
+		case SWEET: {
+			guiGraphics.blit(CREEPER_GIRL_SWEET_CRAVING, leftPos + 113, topPos + 43, 0, 0, 24, 24, 24, 24);
+			return;
+		}
+		case SALTY: {
+			guiGraphics.blit(CREEPER_GIRL_SALTY_CRAVING, leftPos + 113, topPos + 43, 0, 0, 24, 24, 24, 24);
+			return;
+		}
+		case SOUR: {
+			guiGraphics.blit(CREEPER_GIRL_SOUR_CRAVING, leftPos + 113, topPos + 43, 0, 0, 24, 24, 24, 24);
+			return;
+		}
+		case SPICY: {
+			guiGraphics.blit(CREEPER_GIRL_SPICY_CRAVING, leftPos + 113, topPos + 43, 0, 0, 24, 24, 24, 24);
+			return;
+		}
+		default:
+			return;
+		}	
+	}
 	
 	
 	public static void renderDefaultPreggoP0MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, IPreggoMob p0) {
@@ -143,17 +176,58 @@ public class PreggoGUIHelper {
 		}
 	}
 	
-	public static void renderDefaultPreggoP0LabelMainGUI(GuiGraphics guiGraphics, Font font, IPreggoMob p0, boolean post) {	
+	
+	private static void renderDefaultPreggoP1MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, IPregnancyP1 p1) {	
+		for (int i = 0, pos = 74; i < 10; i++, pos += 10) {
+			guiGraphics.blit(ICONS_TEXTURE, leftPos + pos, topPos + 98, 9, 9, 0, 35, 19, 19, 256, 256);		
+		}	
+	
+		for (int i = 0, pos = 74, oddValue = 1, evenValue = 2; i < 10; ++i, pos += 10, oddValue += 2, evenValue += 2) {		
+
+			if (p1.getCraving() >= evenValue) {
+				guiGraphics.blit(ICONS_TEXTURE, leftPos + pos, topPos + 98, 9, 9, 38, 35, 19, 19, 256, 256);
+			} else if (p1.getCraving() >= oddValue) {
+				guiGraphics.blit(ICONS_TEXTURE, leftPos + pos, topPos + 98, 9, 9, 19, 35, 19, 19, 256, 256);
+			}					
+		}
+	}
+	
+	
+	public static void renderDefaultPreggoP0LabelMainGUI(GuiGraphics guiGraphics, Font font, IPreggoMob p0) {	
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_0_main_gui.label_state"), 78, 21, -12829636, false);
 		guiGraphics.drawString(font, p0.getPreggoName(), 90, 4, -12829636, false);
 	
-		if (!post) {
-			if (p0.isPregnant()) {
-				guiGraphics.drawString(font, "Maybe Pregnant?", 109, 21, -12829636, false);
-			} else {
-				guiGraphics.drawString(font, "Not Pregnant", 109, 21, -12829636, false);
-			}
+		if (p0.isPregnant()) {
+			guiGraphics.drawString(font, "Maybe Pregnant?", 109, 21, -12829636, false);
+		} else {
+			guiGraphics.drawString(font, "Not Pregnant", 109, 21, -12829636, false);
 		}
 
+	}
+	
+	public static<E extends IPreggoMob & IPregnancyP1> void renderP1LabelMainGUI(GuiGraphics guiGraphics, Font font, E p1) {	
+		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_1_main_gui.label_state"), 75, 22, -12829636, false);
+		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_1_main_gui.label_not_pregnant"), 107, 22, -12829636, false);
+		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_1_main_gui.label_stage"), 75, 37, -12829636, false);
+		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_1_main_gui.label_p1"), 107, 37, -12829636, false);
+		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_1_main_gui.label_craving"), 75, 51, -12829636, false);
+
+		guiGraphics.drawString(font, p1.getPreggoName(), 90, 4, -12829636, false);
+
+		if (p1.getCravingChosen() == Craving.NONE) {
+			guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_1_main_gui.label_no"), 118, 51, -12829636, false);
+		}  	
+	}
+	
+	public static<E extends AbstractTamablePregnantZombieGirl & IPregnancyP1> void renderZombieGirlP1MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, E zombieGirl) {
+		renderDefaultPreggoP0MainGUI(guiGraphics, leftPos, topPos + 10, health, zombieGirl);
+		renderZombieGirlCravingMainGUI(guiGraphics, leftPos, topPos, zombieGirl);	
+		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, zombieGirl);				
+	}
+	
+	public static<E extends AbstractTamablePregnantCreeperGirl & IPregnancyP1> void renderCreeperGirlP1MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, E creeperGirl) {
+		renderDefaultPreggoP0MainGUI(guiGraphics, leftPos, topPos + 10, health, creeperGirl);
+		renderCreeperGirlCravingMainGUI(guiGraphics, leftPos, topPos, creeperGirl);	
+		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, creeperGirl);				
 	}
 }

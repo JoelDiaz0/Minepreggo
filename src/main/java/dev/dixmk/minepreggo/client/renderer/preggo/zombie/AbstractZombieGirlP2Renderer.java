@@ -1,5 +1,9 @@
 package dev.dixmk.minepreggo.client.renderer.preggo.zombie;
 
-public class AbstractZombieGirlP2Renderer {
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+@OnlyIn(Dist.CLIENT) 
+public abstract class AbstractZombieGirlP2Renderer {
 
 }

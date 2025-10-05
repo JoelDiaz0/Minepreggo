@@ -8,13 +8,13 @@ public interface IPreggoMob {
 		
 	static final int HEALING_COOLDOWN_DURATION = 100;
 	
-	static final int INVENTARY_HEAD = EquipmentSlot.HEAD.getFilterFlag();
-	static final int INVENTARY_CHEST = EquipmentSlot.CHEST.getFilterFlag();
-	static final int INVENTARY_LEGS = EquipmentSlot.LEGS.getFilterFlag();
-	static final int INVENTARY_FEET = EquipmentSlot.FEET.getFilterFlag();
-	static final int INVENTARY_MAINHAND = 4;
-	static final int INVENTARY_OFFHAND = 5;
-	static final int INVENTARY_FOOD = 6;
+	static final int HEAD_INVENTARY_SLOT = EquipmentSlot.HEAD.getFilterFlag();
+	static final int CHEST_INVENTARY_SLOT = EquipmentSlot.CHEST.getFilterFlag();
+	static final int LEGS_INVENTARY_SLOT = EquipmentSlot.LEGS.getFilterFlag();
+	static final int FEET_INVENTARY_SLOT = EquipmentSlot.FEET.getFilterFlag();
+	static final int MAINHAND_INVENTARY_SLOT = EquipmentSlot.MAINHAND.getFilterFlag();
+	static final int OFFHAND_INVENTARY_SLOT = EquipmentSlot.OFFHAND.getFilterFlag();
+	static final int FOOD_INVENTARY_SLOT = 6;
 	
 	
 	PregnancyStage getMaxPregnancyStage();
@@ -40,6 +40,9 @@ public interface IPreggoMob {
 
     boolean isPregnant();
 
+    boolean isPanic();
+    void setPanic(boolean panic);
+    
     int getPregnancyTimer();
     void setPregnancyTimer(int ticks);
     

@@ -9,6 +9,7 @@ import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
+
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -19,6 +20,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -52,10 +54,11 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	protected static final EntityDataAccessor<Boolean> DATA_SAVAGE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> DATA_ANGRY = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> DATA_WAITING = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
+	protected static final EntityDataAccessor<Boolean> DATA_PANIC = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<PreggoMobState> DATA_STATE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.STATE);
 	protected static final EntityDataAccessor<CombatMode> DATA_COMBAT_MODE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.COMBAT_MODE);
 
-	public static final int INVENTARY_SIZE = 12;
+	public static final int INVENTARY_SIZE = 13;
 	protected final ItemStackHandler inventory;
 	protected final CombinedInvWrapper combined;
 	
@@ -69,13 +72,14 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();
-		this.entityData.define(DATA_HUNGRY, 0);
+		this.entityData.define(DATA_HUNGRY, 4);
 		this.entityData.define(DATA_HUNGRY_TIMER, 0);
 			
 		this.entityData.define(DATA_PREGNANT, false);
 		this.entityData.define(DATA_SAVAGE, true);
 		this.entityData.define(DATA_ANGRY, false);
 		this.entityData.define(DATA_WAITING, false);
+		this.entityData.define(DATA_PANIC, false);
 		
 		this.entityData.define(DATA_PREGNANCY_TIMER, 0);
 		this.entityData.define(DATA_MAX_PREGNANCY_STAGE, PregnancyStage.P0);
@@ -96,7 +100,8 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 		compound.putBoolean("DataSavage", this.entityData.get(DATA_SAVAGE));
 		compound.putBoolean("DataWaiting", this.entityData.get(DATA_WAITING));
 		compound.putBoolean("DataAngry", this.entityData.get(DATA_ANGRY));
-
+		compound.putBoolean("DataPanic", this.entityData.get(DATA_PANIC));
+		
 		compound.putInt("DataPregnancyTimer", this.entityData.get(DATA_PREGNANCY_TIMER));
 		compound.putInt("DataMaxPregnancyStage", this.entityData.get(DATA_MAX_PREGNANCY_STAGE).ordinal());
 		compound.putInt("DataPregnancySymptom", this.entityData.get(DATA_PREGNANCY_SYMPTOM).ordinal());	
@@ -118,7 +123,8 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 		this.entityData.set(DATA_PREGNANT, compound.getBoolean("DataPregnant"));		
 		this.entityData.set(DATA_SAVAGE, compound.getBoolean("DataSavage"));		
 		this.entityData.set(DATA_WAITING, compound.getBoolean("DataWaiting"));		
-		this.entityData.set(DATA_ANGRY, compound.getBoolean("DataAngry"));		
+		this.entityData.set(DATA_ANGRY, compound.getBoolean("DataAngry"));	
+		this.entityData.set(DATA_PANIC, compound.getBoolean("DataPanic"));	
 		this.entityData.set(DATA_PREGNANCY_TIMER, compound.getInt("DataPregnancyTimer"));
 		this.entityData.set(DATA_PREGNANCY_SYMPTOM, PregnancySymptom.values()[compound.getInt("DataPregnancySymptom")]);
 		this.entityData.set(DATA_PREGNANCY_ILLNESS_TIMER, compound.getInt("DataPregnancySymptomTimer"));
@@ -204,7 +210,14 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	public boolean hurt(DamageSource damagesource, float amount) {				
 		boolean result = super.hurt(damagesource, amount);	
 		if (result) {
-			PreggoMobHelper.defaultHurt(this, damagesource, amount);
+			PreggoMobHelper.defaultHurt(this, damagesource, amount);			
+			if (this.isWaiting() 
+					&& !this.isPanic()
+					&& damagesource.is(DamageTypes.GENERIC)
+					&& !this.isOwnedBy(this.getLastHurtByMob())) {			
+					this.setTarget(this.getLastHurtByMob());							
+					this.setPanic(true);
+			}										
 		}		
 		return result;
 	}
@@ -235,9 +248,16 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	
 	@Override
 	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {				
-		super.mobInteract(sourceentity, hand);		
-		if (isIgnited()) return InteractionResult.SUCCESS;
-			
+		super.mobInteract(sourceentity, hand);	
+		
+		if (this.isIgnited()) {
+			return InteractionResult.SUCCESS;
+		}
+		
+		if (this.isTame()) {
+			this.setSavage(false);
+		}	
+
 		return InteractionResult.CONSUME;
 	}
 
@@ -307,6 +327,16 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	@Override
 	public void setAngry(boolean angry) {
 	    this.entityData.set(DATA_ANGRY, angry);
+	}
+	
+	@Override
+	public boolean isPanic() {
+		return this.entityData.get(DATA_PANIC);
+	}
+
+	@Override
+	public void setPanic(boolean panic) {
+	    this.entityData.set(DATA_PANIC, panic);
 	}
 	
 	@Override

@@ -9,9 +9,9 @@ import dev.dixmk.minepreggo.entity.preggo.Craving;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancySystem;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyPain;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySymptom;
-import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -38,13 +38,19 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 	protected static final EntityDataAccessor<Craving> DATA_CRAVING_CHOSEN = SynchedEntityData.defineId(AbstractTamablePregnantZombieGirl.class, MinepreggoModEntityDataSerializers.CRAVING);
 	protected static final EntityDataAccessor<Integer> DATA_PREGNANCY_STATE_TIMER = SynchedEntityData.defineId(AbstractTamablePregnantZombieGirl.class, EntityDataSerializers.INT);
 
+	protected int cravingTimer = 0;
+	protected int milkingTimer = 0;
+	protected int bellyRubsTimer = 0;
+	protected int hornyTimer = 0;
+	protected int pregnancyPainTimer = 0;
+	
 	protected static final ImmutableMap<Craving, @NotNull Item> CRAVING_ENUM_MAP = ImmutableMap.of(
 			Craving.SALTY, MinepreggoModItems.BRAIN_WITH_SALT.get(), 
 			Craving.SWEET, MinepreggoModItems.BRAIN_WITH_CHOCOLATE.get(), 
 			Craving.SOUR, MinepreggoModItems.SOUR_BRAIN.get(),
 			Craving.SPICY, MinepreggoModItems.BRAIN_WITH_HOT_SAUCE.get());	
 	
-	protected AbstractTamablePregnantZombieGirl(EntityType<? extends AbstractTamableCreeperGirl> p_21803_, Level p_21804_) {
+	protected AbstractTamablePregnantZombieGirl(EntityType<? extends AbstractTamablePregnantZombieGirl> p_21803_, Level p_21804_) {
 		super(p_21803_, p_21804_);
 	}
 		

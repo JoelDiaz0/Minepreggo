@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.creeper;
 
-import dev.dixmk.minepreggo.client.entity.animation.preggo.creeper.CreeperGirlP0Animation;
+import dev.dixmk.minepreggo.client.entity.animation.preggo.creeper.CreeperGirlAnimation;
 import dev.dixmk.minepreggo.entity.preggo.creeper.MonsterCreeperGirlP0;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -24,15 +24,15 @@ public class AnimatedMonsterCreeperGirlP0Model extends AbstractAnimatedCreeperGi
 						
 				if (entity.walkAnimation.isMoving()) {
 					if (entity.isAggressive()) {
-						this.animateWalk(CreeperGirlP0Animation.AGGRESSION, limbSwing, limbSwingAmount * 4F, 1f, 1f);
+						this.animateWalk(CreeperGirlAnimation.AGGRESSION, limbSwing, limbSwingAmount * 4F, 1f, 1f);
 					}
 					else {
-						this.animateWalk(CreeperGirlP0Animation.WALK, limbSwing, limbSwingAmount * 4F, 1f, 1f);
+						this.animateWalk(CreeperGirlAnimation.WALK, limbSwing, limbSwingAmount * 4F, 1f, 1f);
 					}
 				} 
 				
-				this.animate(entity.loopAnimationState, CreeperGirlP0Animation.IDLE, ageInTicks, 1f);						
-			    this.animate(entity.attackAnimationState, CreeperGirlP0Animation.ATTACK, ageInTicks, 1f);
+				this.animate(entity.loopAnimationState, CreeperGirlAnimation.IDLE, ageInTicks, 1f);						
+			    this.animate(entity.attackAnimationState, CreeperGirlAnimation.ATTACK, ageInTicks, 1f);
 			}	
 		});
 	}

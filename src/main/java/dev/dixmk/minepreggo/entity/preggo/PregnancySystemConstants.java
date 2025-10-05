@@ -53,7 +53,7 @@ public class PregnancySystemConstants {
 	
 	public static final int BELLY_RUBBING_VALUE = 3;
 	public static final int ACTIVATE_BELLY_RUBS_SYMPTOM = 12;
-	public static final int DESACTIVATE_FULL_BELLY_RUBS_STAGE = 0;
+	public static final int DESACTIVATE_FULL_BELLY_RUBS_STAGE = 4;
 	
 	public static final int ACTIVATE_HORNY_SYMPTOM = 17;
 	

@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.zombie;
 
-import dev.dixmk.minepreggo.client.entity.animation.preggo.zombie.ZombieGirlP0Animation;
+import dev.dixmk.minepreggo.client.entity.animation.preggo.zombie.ZombieGirlAnimation;
 import dev.dixmk.minepreggo.entity.preggo.zombie.MonsterZombieGirlP0;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -24,15 +24,15 @@ public class AnimatedMonsterZombieGirlP0Model extends AbstractAnimatedZombieGirl
 						
 				if (entity.walkAnimation.isMoving()) {
 					if (entity.isAggressive()) {
-						this.animateWalk(ZombieGirlP0Animation.AGGRESSION, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
+						this.animateWalk(ZombieGirlAnimation.AGGRESSION, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
 					}
 					else {
-						this.animateWalk(ZombieGirlP0Animation.WALK, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
+						this.animateWalk(ZombieGirlAnimation.WALK, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
 					}
 				} 
 				
-				this.animate(entity.idleAnimationState, ZombieGirlP0Animation.IDLE, ageInTicks, 1f);						
-			    this.animate(entity.attackAnimationState, ZombieGirlP0Animation.ATTACK, ageInTicks, 1f);	
+				this.animate(entity.idleAnimationState, ZombieGirlAnimation.IDLE, ageInTicks, 1f);						
+			    this.animate(entity.attackAnimationState, ZombieGirlAnimation.ATTACK, ageInTicks, 1f);	
 			}	
 		});
 	}

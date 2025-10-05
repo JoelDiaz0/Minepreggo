@@ -2,17 +2,19 @@ package dev.dixmk.minepreggo.utils;
 
 import com.google.common.collect.ImmutableMap;
 
+import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
+import dev.dixmk.minepreggo.entity.preggo.IPregnancySystem;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
 
 public class PreggoMessageHelper {
 
 	private PreggoMessageHelper() {}
 	
-
-	public static final Int2ObjectMap<String[]> ARMOR_MESSAGES = customToIntMap(ImmutableMap.of(
+	public static final Int2ObjectMap<String[]> ARMOR_MESSAGES = new Int2ObjectOpenHashMap<>(ImmutableMap.of(
 			0, new String[] {"Your boobs don't fit in this armor!", "%s's boobs don't fit in this armor!"},
 			1, new String[] {"Your slightly swollen belly doesn't fit in this armor!", "%s's slightly swollen belly doesn't fit in this armor!"},
 			2, new String[] {"Your swollen belly can't fit in this armor...", "%s's swollen belly couldn't fit in this armor..."},
@@ -26,18 +28,15 @@ public class PreggoMessageHelper {
 	));
 	
 
-	private static Int2ObjectMap<String[]> customToIntMap(ImmutableMap<Integer, String[]> p_35631_) {
-		return new Int2ObjectOpenHashMap<>(p_35631_);
-	}
-	
-	/*
-	public static<T extends TamableAnimal & PreggoP1> void warningOwnerPossibleMiscarriageEvent(T preggoMob) {	
-		if (preggoMob.isTame() && !preggoMob.level().isClientSide) {		
+	public static<T extends TamableAnimal & IPreggoMob & IPregnancySystem> void warningOwnerPossibleMiscarriageEvent(T preggoMob) {	
+		if (preggoMob.isTame() && !preggoMob.level().isClientSide()) {		
 			sendMessagePlayer((Player) preggoMob.getOwner(), String.format("%s feels pain below her pregnant belly, something isn't right...", preggoMob.getPreggoName()));
 			
 		}			
 	}
 	
+	
+	/*
 	public static<T extends TamableAnimal & PostPregnancy> void warningOwnerPospartumEvent(T preggoMob) {	
 		if (preggoMob.isTame() && !preggoMob.level().isClientSide) {		
 			var owner = (Player) preggoMob.getOwner();  
@@ -53,10 +52,8 @@ public class PreggoMessageHelper {
 	 */
 	
 	public static void sendMessagePlayer(Player player, String message) {
-		if (!player.level().isClientSide) {		
+		if (!player.level().isClientSide()) {		
 			player.displayClientMessage(Component.literal(message), true);
 		}	
 	}
-	
-	
 }

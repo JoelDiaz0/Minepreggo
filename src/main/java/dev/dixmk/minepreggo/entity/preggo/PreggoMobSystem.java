@@ -71,10 +71,11 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 	            }
 	        }
 	    } else {
-	        if (preggoMob.isTame() && Math.random() < 0.0065) {
-	            // SpawnBrainParticlesProcedure.execute(world, zombieGirl, 0);
+	    	/*
+	    	if (preggoMob.isTame() && Math.random() < 0.0065) {
 	        }
-
+	    	 */
+	    	
 	        if (preggoMob.isTame() && preggoMob.getTarget() == null) {
 	            final var center = new Vec3(x, y, z);
 	        		
@@ -156,14 +157,19 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 	        	foodValue = foodProperties.getNutrition();      
 	        }
          
-	        if (foodValue > 0) {
-                if (!world.isClientSide()) {
-                	world.playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.generic.eat")), SoundSource.NEUTRAL, 0.75f, 1);	
-                }
-                
+	        if (foodValue > 0) {        	
                 source.getInventory().clearOrCountMatchingItems(p -> mainHandItem.getItem() == p.getItem(), 1, source.inventoryMenu.getCraftSlots());
-	            preggoMob.setHungry(currentHunger + foodValue);
-	            
+                currentHunger += foodValue;          
+                preggoMob.setHungry(currentHunger);
+	        	        	
+                if (!world.isClientSide()) {
+                	world.playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.generic.eat")), SoundSource.NEUTRAL, 0.75f, 1);	          	
+                
+                	if (preggoMob.isSavage() && preggoMob.isTame() && currentHunger >= MIN_HUNGRY_TO_TAME_AGAIN) {
+                		preggoMob.setSavage(false);
+                	} 
+                }
+ 
 	            return Result.SUCCESS;
 	        }
 	    }

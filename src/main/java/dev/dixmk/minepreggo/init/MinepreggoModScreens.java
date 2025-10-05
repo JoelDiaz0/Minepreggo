@@ -2,8 +2,12 @@ package dev.dixmk.minepreggo.init;
 
 import dev.dixmk.minepreggo.client.gui.preggo.creeper.CreeperGirlP0InventaryGUIScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.creeper.CreeperGirlP0MainGUIScreen;
+import dev.dixmk.minepreggo.client.gui.preggo.creeper.CreeperGirlP1InventaryGUIScreen;
+import dev.dixmk.minepreggo.client.gui.preggo.creeper.CreeperGirlP1MainGUIScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.zombie.ZombieGirlP0InventaryGUIScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.zombie.ZombieGirlP0MainGUIScreen;
+import dev.dixmk.minepreggo.client.gui.preggo.zombie.ZombieGirlP1InventaryGUIScreen;
+import dev.dixmk.minepreggo.client.gui.preggo.zombie.ZombieGirlP1MainGUIScreen;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -20,10 +24,13 @@ public class MinepreggoModScreens {
 		event.enqueueWork(() -> {
 			MenuScreens.register(MinepreggoModMenus.ZOMBIE_GIRL_P0_MAIN_GUI.get(), ZombieGirlP0MainGUIScreen::new);
 			MenuScreens.register(MinepreggoModMenus.ZOMBIE_GIRL_P0_INVENTARY_GUI.get(), ZombieGirlP0InventaryGUIScreen::new);
+			MenuScreens.register(MinepreggoModMenus.ZOMBIE_GIRL_P1_MAIN_GUI.get(), ZombieGirlP1MainGUIScreen::new);
+			MenuScreens.register(MinepreggoModMenus.ZOMBIE_GIRL_P1_INVENTARY_GUI.get(), ZombieGirlP1InventaryGUIScreen::new);
+			
 			MenuScreens.register(MinepreggoModMenus.CREEPER_GIRL_P0_MAIN_GUI.get(), CreeperGirlP0MainGUIScreen::new);
 			MenuScreens.register(MinepreggoModMenus.CREEPER_GIRL_P0_INVENTARY_GUI.get(), CreeperGirlP0InventaryGUIScreen::new);
-
+			MenuScreens.register(MinepreggoModMenus.CREEPER_GIRL_P1_MAIN_GUI.get(), CreeperGirlP1MainGUIScreen::new);
+			MenuScreens.register(MinepreggoModMenus.CREEPER_GIRL_P1_INVENTARY_GUI.get(), CreeperGirlP1InventaryGUIScreen::new);
 		});
 	}
-	
 }

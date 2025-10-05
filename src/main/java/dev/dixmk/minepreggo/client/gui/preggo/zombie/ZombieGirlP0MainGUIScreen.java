@@ -44,7 +44,7 @@ public class ZombieGirlP0MainGUIScreen extends AbstractZombieGirlMainGUIScreen<T
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
 		if (this.zombieGirl != null)
-			PreggoGUIHelper.renderDefaultPreggoP0LabelMainGUI(guiGraphics, this.font, this.zombieGirl, false);
+			PreggoGUIHelper.renderDefaultPreggoP0LabelMainGUI(guiGraphics, this.font, this.zombieGirl);
 	}
 
 }

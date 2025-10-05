@@ -38,7 +38,7 @@ public abstract class AbstractCreeperGirlInventaryGUIScreen<E extends AbstractTa
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		guiGraphics.blit(PreggoGUIHelper.DEFAULT_INVENTARY_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+		guiGraphics.blit(PreggoGUIHelper.CREEPER_GIRL_INVENTARY_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
 		RenderSystem.disableBlend();
 	}
 

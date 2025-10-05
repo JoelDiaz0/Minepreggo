@@ -7,7 +7,6 @@ import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractTamablePregnantCreeper
 import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractTamableZombieGirl;
 
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.FleeSunGoal;
@@ -309,12 +308,7 @@ public class PreggoAIHelper {
 	private static<T extends TamableAnimal & IPreggoMob> void setBasicPreggoMobGoals(T preggoMob) {	
 		preggoMob.targetSelector.addGoal(3, new HurtByTargetGoal(preggoMob));	
 		
-		preggoMob.goalSelector.addGoal(5, new MeleeAttackGoal(preggoMob, 1.1D, false){
-			@Override
-			protected double getAttackReachSqr(LivingEntity entity) {
-				return this.mob.getBbWidth() * this.mob.getBbWidth() + entity.getBbWidth();
-			};
-		});
+		preggoMob.goalSelector.addGoal(5, new MeleeAttackGoal(preggoMob, 1.1D, false));
 			
 		preggoMob.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(preggoMob, 1.0D) {
 			@Override
@@ -336,13 +330,7 @@ public class PreggoAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& !PreggoMobHelper.hasValidTarget(preggoMob);
-			}
-
-			@Override
-			public boolean canContinueToUse() {
-				return super.canContinueToUse() 
-				&& !PreggoMobHelper.isTargetStillValid(preggoMob);
+				&& !preggoMob.isWaiting() ;
 			}
 		});			
 		
@@ -373,11 +361,6 @@ public class PreggoAIHelper {
 		});	
 		
 		preggoMob.goalSelector.addGoal(5, new MeleeAttackGoal(preggoMob, 1.1D, false){
-			@Override
-			protected double getAttackReachSqr(LivingEntity entity) {
-				return this.mob.getBbWidth() * this.mob.getBbWidth() + entity.getBbWidth();
-			}
-
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
@@ -425,14 +408,12 @@ public class PreggoAIHelper {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& !PreggoMobHelper.hasValidTarget(preggoMob)
-				&& !preggoMob.isIncapacitated();
+				&& !preggoMob.isIncapacitated() || !preggoMob.isWaiting();
 			}
 
 			@Override
 			public boolean canContinueToUse() {
 				return super.canContinueToUse() 
-				&& !PreggoMobHelper.isTargetStillValid(preggoMob)	
 				&& !preggoMob.isIncapacitated();
 			}
 		});			

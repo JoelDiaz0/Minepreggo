@@ -284,7 +284,7 @@ public class MinepreggoModConfig {
 
             ticksToStartPregnancy = builder
                     .comment("Maximum number of entities allowed.")
-                    .defineInRange("ticksToStartPregnancy", 24000, 100, 24000);
+                    .defineInRange("ticksToStartPregnancy", 6000, 100, 24000);
             
             totalTicksOfHungry = builder
                     .comment("Maximum number of entities allowed.")

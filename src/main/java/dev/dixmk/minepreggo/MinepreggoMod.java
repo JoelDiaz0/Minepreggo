@@ -7,6 +7,7 @@ import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.init.MinepreggoModMenus;
+import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.init.MinepreggoModTabs;
 
@@ -42,6 +43,7 @@ public class MinepreggoMod {
 		MinepreggoModSounds.REGISTRY.register(modEventBus);
 		MinepreggoModTabs.REGISTRY.register(modEventBus);
 		MinepreggoModMenus.REGISTRY.register(modEventBus);
+		MinepreggoModMobEffects.REGISTRY.register(modEventBus);
 		MinepreggoModEntityDataSerializers.register();
        	
 		context.registerConfig(ModConfig.Type.CLIENT, MinepreggoModConfig.CLIENT_SPEC);

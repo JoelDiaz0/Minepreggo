@@ -26,7 +26,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -57,11 +60,18 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	protected static final EntityDataAccessor<Boolean> DATA_SAVAGE = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> DATA_ANGRY = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> DATA_WAITING = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
+	protected static final EntityDataAccessor<Boolean> DATA_PANIC = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<PreggoMobState> DATA_STATE = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, MinepreggoModEntityDataSerializers.STATE);
 
 	protected final ItemStackHandler inventory;
 	protected final CombinedInvWrapper combined;
-	public static final int INVENTORY_SIZE = 14;
+	public static final int INVENTORY_SIZE = 15;
+	
+	private int pregnancyTimer = 0;
+	private int hungryTimer = 0;
+	private int pregnancyIllnessTimer = 0;
+	private int healingCooldownTimer = 0;
+	
 	
 	protected AbstractTamableZombieGirl(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_) {
 	      super(p_21803_, p_21804_);
@@ -73,13 +83,14 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();
-		this.entityData.define(DATA_HUNGRY, 0);
+		this.entityData.define(DATA_HUNGRY, 4);
 		this.entityData.define(DATA_HUNGRY_TIMER, 0);
 			
 		this.entityData.define(DATA_PREGNANT, false);
 		this.entityData.define(DATA_SAVAGE, true);
 		this.entityData.define(DATA_ANGRY, false);
 		this.entityData.define(DATA_WAITING, false);
+		this.entityData.define(DATA_PANIC, false);
 		
 		this.entityData.define(DATA_PREGNANCY_TIMER, 0);
 		this.entityData.define(DATA_MAX_PREGNANCY_STAGE, PregnancyStage.P0);
@@ -100,7 +111,8 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 		compound.putBoolean("DataSavage", this.entityData.get(DATA_SAVAGE));
 		compound.putBoolean("DataWaiting", this.entityData.get(DATA_WAITING));
 		compound.putBoolean("DataAngry", this.entityData.get(DATA_ANGRY));
-
+		compound.putBoolean("DataPanic", this.entityData.get(DATA_PANIC));
+		
 		compound.putInt("DataPregnancyTimer", this.entityData.get(DATA_PREGNANCY_TIMER));
 		compound.putInt("DataMaxPregnancyStage", this.entityData.get(DATA_MAX_PREGNANCY_STAGE).ordinal());
 		compound.putInt("DataPregnancySymptom", this.entityData.get(DATA_PREGNANCY_SYMPTOM).ordinal());	
@@ -120,7 +132,8 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 		this.entityData.set(DATA_PREGNANT, compound.getBoolean("DataPregnant"));		
 		this.entityData.set(DATA_SAVAGE, compound.getBoolean("DataSavage"));		
 		this.entityData.set(DATA_WAITING, compound.getBoolean("DataWaiting"));		
-		this.entityData.set(DATA_ANGRY, compound.getBoolean("DataAngry"));		
+		this.entityData.set(DATA_ANGRY, compound.getBoolean("DataAngry"));	
+		this.entityData.set(DATA_PANIC, compound.getBoolean("DataPanic"));	
 		this.entityData.set(DATA_PREGNANCY_TIMER, compound.getInt("DataPregnancyTimer"));
 		this.entityData.set(DATA_PREGNANCY_SYMPTOM, PregnancySymptom.values()[compound.getInt("DataPregnancySymptom")]);
 		this.entityData.set(DATA_PREGNANCY_ILLNESS_TIMER, compound.getInt("DataPregnancySymptomTimer"));
@@ -128,6 +141,17 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 		this.entityData.set(DATA_STATE, PreggoMobState.values()[compound.getInt("DataStage")]);
 	}
 
+	
+	@Override
+	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {	
+		InteractionResult retval = super.mobInteract(sourceentity, hand); 	
+		if (this.isTame()) {
+			this.setSavage(false);
+		}	
+		return retval;
+	}
+	
+	
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
 		if (this.isAlive() && capability == ForgeCapabilities.ITEM_HANDLER && side == null)
@@ -164,8 +188,23 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 		boolean result = super.hurt(damagesource, amount);	
 		if (result) {
 			PreggoMobHelper.defaultHurt(this, damagesource, amount);
+			
+			if (canBePanicking()) {	
+				if ((damagesource.is(DamageTypes.GENERIC))
+						&& !this.isOwnedBy(this.getLastHurtByMob())) {
+					this.setTarget(this.getLastHurtByMob());							
+					this.setPanic(true);
+				}
+				else if(damagesource.is(DamageTypes.IN_FIRE) || damagesource.is(DamageTypes.ON_FIRE)) {
+					this.setPanic(true);
+				}								
+			}									
 		}		
 		return result;
+	}
+	
+	public boolean canBePanicking() {
+		return this.isWaiting() && !this.isPanic();
 	}
 	
 	@Override
@@ -225,7 +264,7 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	
 	@Override
 	public boolean hasCustomHeadAnimation() {
-		return isWaiting();
+		return this.isWaiting() && !this.isPanic();
 	}
 	
 	@Override
@@ -281,6 +320,16 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	@Override
 	public void setAngry(boolean angry) {
 	    this.entityData.set(DATA_ANGRY, angry);
+	}
+	
+	@Override
+	public boolean isPanic() {
+		return this.entityData.get(DATA_PANIC);
+	}
+
+	@Override
+	public void setPanic(boolean panic) {
+	    this.entityData.set(DATA_PANIC, panic);
 	}
 	
 	@Override

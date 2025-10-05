@@ -189,12 +189,17 @@ public class MonsterCreeperGirlP0 extends AbstractMonsterCreeperGirl {
 	}
 
 	@Override
-	public PregnancyStage getCurrentStage() {
+	public PregnancyStage getCurrentPregnancyStage() {
 		return PregnancyStage.P0;
 	}
 	
 	@Override
+	public PregnancyStage getMaxPregnancyStage() {
+		return PregnancyStage.P4;
+	}
+	
+	@Override
 	public SimplePregnancyData getSimplePregnancyData() {
-		return new SimplePregnancyData(0, 0, 0);
+		return new SimplePregnancyData(0, 0);
 	}
 }

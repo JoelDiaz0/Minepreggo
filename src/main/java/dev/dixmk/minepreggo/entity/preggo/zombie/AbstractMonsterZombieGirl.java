@@ -1,6 +1,7 @@
 package dev.dixmk.minepreggo.entity.preggo.zombie;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.entity.preggo.ISimplePregnancy;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
@@ -26,7 +27,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public abstract class AbstractMonsterZombieGirl extends AbstractZombieGirl {
+public abstract class AbstractMonsterZombieGirl extends AbstractZombieGirl implements ISimplePregnancy {
 
 	public final AnimationState idleAnimationState = new AnimationState();
 	public final AnimationState attackAnimationState = new AnimationState();

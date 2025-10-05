@@ -47,7 +47,7 @@ public class CreeperGirlP0MainGUIScreen extends AbstractCreeperGirlMainGUIScreen
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
 		if (this.creeperGirl != null)
-			PreggoGUIHelper.renderDefaultPreggoP0LabelMainGUI(guiGraphics, this.font, this.creeperGirl, false);
+			PreggoGUIHelper.renderDefaultPreggoP0LabelMainGUI(guiGraphics, this.font, this.creeperGirl);
 	}
 
 }

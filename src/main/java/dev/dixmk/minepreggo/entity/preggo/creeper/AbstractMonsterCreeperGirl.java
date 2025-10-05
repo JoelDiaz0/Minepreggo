@@ -38,7 +38,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class AbstractMonsterCreeperGirl extends AbstractCreeperGirl implements ISimplePregnancy {
 	private CombatMode basicCombatMode = CombatMode.EXPLODE;
-	
+
 	protected AbstractMonsterCreeperGirl(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_) {
 		super(p_21803_, p_21804_);	
 	}
@@ -105,17 +105,17 @@ public abstract class AbstractMonsterCreeperGirl extends AbstractCreeperGirl imp
 		int basicExplosionItensity = this.explosionItensity;
 		int basicExplosionRadius = this.explosionRadius;
 
-		if (getCurrentStage() == PregnancyStage.P2
-				|| getCurrentStage() == PregnancyStage.P3) {
+		if (getCurrentPregnancyStage() == PregnancyStage.P2
+				|| getCurrentPregnancyStage() == PregnancyStage.P3) {
 			++basicExplosionRadius;
 		}
-		else if (getCurrentStage() == PregnancyStage.P4
-				|| getCurrentStage() == PregnancyStage.P5) {
+		else if (getCurrentPregnancyStage() == PregnancyStage.P4
+				|| getCurrentPregnancyStage() == PregnancyStage.P5) {
 			++basicExplosionItensity;
 			++basicExplosionRadius;
 		}
-		else if (getCurrentStage() == PregnancyStage.P6
-				|| getCurrentStage() == PregnancyStage.P7) {
+		else if (getCurrentPregnancyStage() == PregnancyStage.P6
+				|| getCurrentPregnancyStage() == PregnancyStage.P7) {
 			basicExplosionItensity += 2;
 			basicExplosionRadius += 2;
 		}

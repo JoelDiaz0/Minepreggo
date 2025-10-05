@@ -39,6 +39,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 
 public class MonsterZombieGirlP0 extends AbstractMonsterZombieGirl {
@@ -191,5 +192,19 @@ public class MonsterZombieGirlP0 extends AbstractMonsterZombieGirl {
 	public static AttributeSupplier.Builder createAttributes() {
 		return getBasicAttributes(0.235);
 	}
-
+	
+	@Override
+	public PregnancyStage getCurrentPregnancyStage() {
+		return PregnancyStage.P0;
+	}
+	
+	@Override
+	public PregnancyStage getMaxPregnancyStage() {
+		return PregnancyStage.P4;
+	}
+	
+	@Override
+	public SimplePregnancyData getSimplePregnancyData() {
+		return new SimplePregnancyData(0, 0);
+	}
 }

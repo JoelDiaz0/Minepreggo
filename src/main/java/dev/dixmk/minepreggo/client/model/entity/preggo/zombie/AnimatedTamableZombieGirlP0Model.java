@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.zombie;
 
-import dev.dixmk.minepreggo.client.entity.animation.preggo.zombie.ZombieGirlP0Animation;
+import dev.dixmk.minepreggo.client.entity.animation.preggo.zombie.ZombieGirlAnimation;
 import dev.dixmk.minepreggo.entity.preggo.zombie.TamableZombieGirlP0;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -23,31 +23,34 @@ public class AnimatedTamableZombieGirlP0Model extends AbstractAnimatedZombieGirl
 				this.root().getAllParts().forEach(ModelPart::resetPose);
 					
 			    if (zombieGirl.isAttacking()) {
-				    this.animate(zombieGirl.attackAnimationState, ZombieGirlP0Animation.ATTACK, ageInTicks, 1f);	
-			        return; // attack overrides walk/idle
+				    this.animate(zombieGirl.attackAnimationState, ZombieGirlAnimation.ATTACK, ageInTicks, 1f);	
 			    }
 				
 				if (zombieGirl.walkAnimation.isMoving()) {
 					if (zombieGirl.isAggressive()) {
-						this.animateWalk(ZombieGirlP0Animation.AGGRESSION, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
+						this.animateWalk(ZombieGirlAnimation.AGGRESSION, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
 					}
 					else {
-						this.animateWalk(ZombieGirlP0Animation.WALK, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
+						this.animateWalk(ZombieGirlAnimation.WALK, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
 					}
 				}
-				
-				switch (zombieGirl.getState()) {
-				case WAIT: {
-					this.animate(zombieGirl.loopAnimationState, ZombieGirlP0Animation.WAIT, ageInTicks, 1f);						
-					break;
+			
+				if (zombieGirl.isPanic()) {
+					this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.IDLE, ageInTicks, 1f);						
+				} else {
+					switch (zombieGirl.getState()) {
+					case WAIT: {
+						this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.WAIT, ageInTicks, 1f);										
+						break;
+					}
+					case SIT: {
+						this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.RIDING, ageInTicks, 1f);						
+						break;
+					}		
+					default:
+						this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.IDLE, ageInTicks, 1f);						
+					}	
 				}
-				case SIT: {
-					this.animate(zombieGirl.loopAnimationState, ZombieGirlP0Animation.RIDING, ageInTicks, 1f);						
-					break;
-				}		
-				default:
-					this.animate(zombieGirl.loopAnimationState, ZombieGirlP0Animation.IDLE, ageInTicks, 1f);						
-				}		
 			}	
 		});
 	}
@@ -56,7 +59,12 @@ public class AnimatedTamableZombieGirlP0Model extends AbstractAnimatedZombieGirl
 	@Override
 	public void setupAnim(TamableZombieGirlP0 entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+				
+		if (entity.hasCustomHeadAnimation()) {
+			this.hat.copyFrom(this.head);
+		}
+		else {
+			super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+		}	
 	}
-	
 }

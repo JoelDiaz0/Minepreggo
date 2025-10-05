@@ -59,10 +59,17 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 	            else {
 	            	preggoMob.setHungryTimer(currentHungryTimer + timerIncrement);
 	            }
-
-	            if (currentHungry >= MIN_HUNGRY_TO_HEAL && preggoMob.getHealth() < preggoMob.getMaxHealth()) {
-	            	preggoMob.heal(1F);
-	            	preggoMob.setHungry(currentHungry - 1);
+	                    
+	            if (currentHungry >= MIN_HUNGRY_TO_HEAL
+	            		&& preggoMob.getHealth() < preggoMob.getMaxHealth()) {     	
+	            	if (preggoMob.getHealingTimer() >= IPreggoMob.HEALING_COOLDOWN_DURATION) {
+		            	preggoMob.heal(1F);
+		            	preggoMob.setHungry(currentHungry - 1);
+		            	preggoMob.setHealingTimer(0);
+	            	}
+	            	else {
+		            	preggoMob.setHealingTimer(preggoMob.getHealingTimer() + 1);
+	            	}
 	            }            
 	        } 
 	        else {
@@ -134,8 +141,13 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 		final var level = preggoMob.level();	
 		if (!preggoMob.isOwnedBy(source) || level.isClientSide()) {
 			return;
-		}			
-		spawnParticles(level, evaluateHungry(level, source));
+		}	
+		
+		Result result;
+		
+		if ((result = evaluateHungry(level, source)) != Result.NOTHING) {
+			spawnParticles(level, result);
+		}
 	}
 	
 	

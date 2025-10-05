@@ -16,7 +16,6 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -90,15 +89,6 @@ public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl {
 	protected void registerGoals() {
 		super.registerGoals();
 		PreggoAIHelper.setTamableCreeperGirlGoals(this);
-	}
-
-	@Override
-	public boolean hurt(DamageSource source, float amount) {	
-		boolean success = super.hurt(source, amount);	
-		if(!success) return false;	
-		//CreeperGirlP0EntityIsHurtProcedure.execute(source, this);
-		
-		return success;
 	}
 	
 	@Override

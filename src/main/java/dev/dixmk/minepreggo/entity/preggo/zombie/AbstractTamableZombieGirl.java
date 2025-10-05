@@ -15,7 +15,6 @@ import dev.dixmk.minepreggo.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
-
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -296,6 +295,16 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	    this.hungryTimer = ticks;
 	}
 		
+	@Override
+	public int getHealingTimer() {
+		return healingCooldownTimer;
+	}
+
+	@Override
+	public void setHealingTimer(int ticks) {
+		this.healingCooldownTimer = ticks;
+	}
+	
 	@Override
 	public boolean isPregnant() {
 	    return this.entityData.get(DATA_PREGNANT);

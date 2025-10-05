@@ -149,5 +149,4 @@ public class TamableZombieGirlP0 extends AbstractTamableZombieGirl {
 	public static AttributeSupplier.Builder createAttributes() {
 		return AbstractTamableZombieGirl.getBasicAttributes(0.235);
 	}
-
 }

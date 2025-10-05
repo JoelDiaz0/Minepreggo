@@ -11,7 +11,6 @@ import dev.dixmk.minepreggo.entity.preggo.PregnancyPain;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -191,5 +190,4 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 	public boolean isIncapacitated() {
 		return getPregnancySymptom() != PregnancySymptom.NONE;
 	}
-	
 }

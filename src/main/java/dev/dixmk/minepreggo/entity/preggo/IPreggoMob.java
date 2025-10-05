@@ -6,7 +6,7 @@ import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
 public interface IPreggoMob {
 		
-	static final int HEALING_COOLDOWN_DURATION = 100;
+	static final int HEALING_COOLDOWN_DURATION = 60;
 	
 	static final int HEAD_INVENTARY_SLOT = EquipmentSlot.HEAD.getFilterFlag();
 	static final int CHEST_INVENTARY_SLOT = EquipmentSlot.CHEST.getFilterFlag();
@@ -38,6 +38,9 @@ public interface IPreggoMob {
     int getHungryTimer();
     void setHungryTimer(int ticks);
 
+    int getHealingTimer();
+    void setHealingTimer(int ticks);
+    
     boolean isPregnant();
 
     boolean isPanic();

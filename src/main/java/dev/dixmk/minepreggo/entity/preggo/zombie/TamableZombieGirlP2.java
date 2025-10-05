@@ -78,15 +78,7 @@ public class TamableZombieGirlP2 extends AbstractTamablePregnantZombieGirl imple
 	}
 	
 	@Override
-	protected void registerGoals() {
-		super.registerGoals();
-		PreggoAIHelper.setTamablePregnantZombieGirlGoals(this);
-	}
-	
-	@Override
-	public void baseTick() {
-		super.baseTick();
-		this.refreshDimensions();	
+	public void tick() {
 		this.preggoMobSystem.evaluateOnTick();
 	}
 	

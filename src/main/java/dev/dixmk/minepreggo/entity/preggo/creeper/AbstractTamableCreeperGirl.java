@@ -301,6 +301,16 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	}
 		
 	@Override
+	public int getHealingTimer() {
+		return healingCooldownTimer;
+	}
+
+	@Override
+	public void setHealingTimer(int ticks) {
+		this.healingCooldownTimer = ticks;
+	}
+	
+	@Override
 	public boolean isPregnant() {
 	    return this.entityData.get(DATA_PREGNANT);
 	}

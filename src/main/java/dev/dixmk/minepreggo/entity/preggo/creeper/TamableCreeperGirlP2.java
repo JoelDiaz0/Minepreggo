@@ -83,16 +83,8 @@ public class TamableCreeperGirlP2 extends AbstractTamablePregnantCreeperGirl imp
 	}
 	
 	@Override
-	public void baseTick() {
-		super.baseTick();
-		this.refreshDimensions();	
-		this.preggoMobSystem.evaluateBaseTick();
-	}
-	
-	@Override
-	public void aiStep() {
-		super.aiStep();
-		this.updateSwingTime();
+	public void tick() {
+		this.preggoMobSystem.evaluateOnTick();
 	}
 
 	@Override
@@ -130,12 +122,12 @@ public class TamableCreeperGirlP2 extends AbstractTamablePregnantCreeperGirl imp
 	
 	@Override
 	public int getCravingTimer() {
-		return this.entityData.get(DATA_CRAVING_TIMER);
+		return this.cravingTimer;
 	}
 
 	@Override
 	public void setCravingTimer(int timer) {
-		this.entityData.set(DATA_CRAVING_TIMER, timer);
+		this.cravingTimer = timer;
 	}
 
 	@Override
@@ -160,11 +152,11 @@ public class TamableCreeperGirlP2 extends AbstractTamablePregnantCreeperGirl imp
 	
 	@Override
 	public int getMilkingTimer() {
-	    return this.entityData.get(DATA_MILKING_TIMER);
+	    return this.milkingTimer;
 	}
 	
 	@Override
 	public void setMilkingTimer(int timer) {
-	    this.entityData.set(DATA_MILKING_TIMER, timer);
+	    this.milkingTimer = timer;
 	}
 }

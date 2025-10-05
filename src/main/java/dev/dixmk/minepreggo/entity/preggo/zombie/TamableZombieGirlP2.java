@@ -33,6 +33,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
 
@@ -86,7 +87,7 @@ public class TamableZombieGirlP2 extends AbstractTamablePregnantZombieGirl imple
 	public void baseTick() {
 		super.baseTick();
 		this.refreshDimensions();	
-		this.preggoMobSystem.evaluateBaseTick();
+		this.preggoMobSystem.evaluateOnTick();
 	}
 	
 	@Override
@@ -129,12 +130,12 @@ public class TamableZombieGirlP2 extends AbstractTamablePregnantZombieGirl imple
 	
 	@Override
 	public int getCravingTimer() {
-		return this.entityData.get(DATA_CRAVING_TIMER);
+		return this.cravingTimer;
 	}
 
 	@Override
 	public void setCravingTimer(int timer) {
-		this.entityData.set(DATA_CRAVING_TIMER, timer);
+		this.cravingTimer = timer;
 	}
 
 	@Override
@@ -159,11 +160,11 @@ public class TamableZombieGirlP2 extends AbstractTamablePregnantZombieGirl imple
 	
 	@Override
 	public int getMilkingTimer() {
-	    return this.entityData.get(DATA_MILKING_TIMER);
+	    return this.milkingTimer;
 	}
 	
 	@Override
 	public void setMilkingTimer(int timer) {
-	    this.entityData.set(DATA_MILKING_TIMER, timer);
+	    this.milkingTimer = timer;
 	}
 }

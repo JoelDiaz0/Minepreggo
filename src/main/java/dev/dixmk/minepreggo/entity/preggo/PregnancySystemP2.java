@@ -6,6 +6,7 @@ import dev.dixmk.minepreggo.MinepreggoModConfig;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
@@ -33,15 +34,13 @@ public abstract class PregnancySystemP2<E extends TamableAnimal
 	}
 	
 	@Override
-	protected void evaluatePregnancySymptoms(Level level) {		
+	protected void evaluatePregnancySymptoms() {		
 		if (preggoMob.getPregnancySymptom() == PregnancySymptom.NONE) {		
-			if (!level.isClientSide()) {			
-				if (preggoMob.getCraving() >= PregnancySystemConstants.ACTIVATE_CRAVING_SYMPTOM) {		
-					preggoMob.setPregnancySymptom(PregnancySymptom.CRAVING);	
-				}
-				else if (preggoMob.getMilking() >= PregnancySystemConstants.ACTIVATE_MILKING_SYMPTOM) {
-					preggoMob.setPregnancySymptom(PregnancySymptom.MILKING);
-				}
+			if (preggoMob.getCraving() >= PregnancySystemConstants.ACTIVATE_CRAVING_SYMPTOM) {		
+				preggoMob.setPregnancySymptom(PregnancySymptom.CRAVING);	
+			}
+			else if (preggoMob.getMilking() >= PregnancySystemConstants.ACTIVATE_MILKING_SYMPTOM) {
+				preggoMob.setPregnancySymptom(PregnancySymptom.MILKING);
 			}
 		}
 		else {
@@ -53,10 +52,9 @@ public abstract class PregnancySystemP2<E extends TamableAnimal
 	}
 	
 	@Override
-	protected void evaluatePregnancyPains(Level level) {
+	protected void evaluatePregnancyPains() {
 		if (preggoMob.getPregnancyPain() == PregnancyPain.NONE) {		
-			if (!level.isClientSide()
-				&& randomSource.nextFloat() < PregnancySystemConstants.MEDIUM_MORNING_SICKNESS_PROBABILITY) {
+			if (randomSource.nextFloat() < PregnancySystemConstants.MEDIUM_MORNING_SICKNESS_PROBABILITY) {
 				preggoMob.setPregnancyPain(PregnancyPain.MORNING_SICKNESS);		
 			}		
 		} 
@@ -77,18 +75,25 @@ public abstract class PregnancySystemP2<E extends TamableAnimal
 	}
 	
 	@Override
-	public void evaluateBaseTick() {
-		if (evaluatePregnancyStageChange() == Result.SUCCESS) {
+	public void evaluateOnTick() {
+		
+		final var level = preggoMob.level();
+	
+		if (level.isClientSide()) {
 			return;
 		}
 		
-		final var level = preggoMob.level();
+		if (evaluatePregnancyStageChange() == Result.SUCCESS) {
+			return;
+		}
+			
 		final var x =  preggoMob.getX();
 		final var y = preggoMob.getY();
 		final var z = preggoMob.getZ();
 		
-		if (evaluateMiscarriage(level, x, y, z, PregnancySystemConstants.TOTAL_TICKS_MISCARRIAGE) == Result.SUCCESS) {
-			return;
+		if (level instanceof ServerLevel serverLevel
+				&& evaluateMiscarriage(serverLevel, x, y, z, PregnancySystemConstants.TOTAL_TICKS_MISCARRIAGE) == Result.SUCCESS) {
+			return; 
 		}
 		
 		this.evaluatePregnancyTimer();
@@ -97,38 +102,44 @@ public abstract class PregnancySystemP2<E extends TamableAnimal
 		this.evaluateMilkingTimer(MinepreggoModConfig.getTotalTicksOfMilkingP2());
 		this.evaluateAngry(level, x, y, z, PregnancySystemConstants.LOW_ANGER_PROBABILITY);
 		
-		this.evaluatePregnancySymptoms(level);
-		this.evaluatePregnancyPains(level);
+		this.evaluatePregnancySymptoms();
+		this.evaluatePregnancyPains();
 	}
 
 	@Override
 	public void evaluateRightClick(Player source) {	
-		super.evaluateRightClick(source);
-		spawnParticles(evaluateMilking(source));
+		final var level = preggoMob.level();	
+		if (!preggoMob.isOwnedBy(source) || level.isClientSide()) {
+			return;
+		}			
+		
+		Result result;
+		
+		if ((result = evaluateHungry(level, source)) != Result.NOTHING
+				|| (result = evaluateCraving(level, source)) != Result.NOTHING
+				|| (result = evaluateMilking(level, source)) != Result.NOTHING) {
+			spawnParticles(level, result);
+		}	
 	}
 	
-	public Result evaluateMilking(Player source) {
+	public Result evaluateMilking(Level level, Player source) {
 			
 	    var mainHandItem = source.getMainHandItem().getItem();
 	    var currentMilking = preggoMob.getMilking();
 		
 	    if (currentMilking >= PregnancySystemConstants.MILKING_VALUE
 	    		&& mainHandItem == Items.GLASS_BOTTLE) {    	
-        
-		    var level = preggoMob.level();
-    		
+        		
             source.getInventory().clearOrCountMatchingItems(p -> mainHandItem == p.getItem(), 1, source.inventoryMenu.getCraftSlots());
             currentMilking = Math.max(0, currentMilking - PregnancySystemConstants.MILKING_VALUE);
             preggoMob.setMilking(currentMilking);
                 
-            if (!level.isClientSide()) {
-            	level.playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.cow.milk")), SoundSource.NEUTRAL, 0.75f, 1);	
+        	level.playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.cow.milk")), SoundSource.NEUTRAL, 0.75f, 1);	
 
-                if (preggoMob.getPregnancySymptom() == PregnancySymptom.MILKING
-                		&& currentMilking <= PregnancySystemConstants.DESACTIVATE_MILKING_SYMPTOM) {
-        	    	preggoMob.setPregnancySymptom(PregnancySymptom.NONE);
-                }
-            }      
+            if (preggoMob.getPregnancySymptom() == PregnancySymptom.MILKING
+            		&& currentMilking <= PregnancySystemConstants.DESACTIVATE_MILKING_SYMPTOM) {
+    	    	preggoMob.setPregnancySymptom(PregnancySymptom.NONE);
+            }    
 
             return Result.SUCCESS;   
 	    }

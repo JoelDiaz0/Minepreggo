@@ -95,7 +95,7 @@ public class TamableZombieGirlP1 extends AbstractTamablePregnantZombieGirl imple
 	public void baseTick() {
 		super.baseTick();
 		this.refreshDimensions();	
-		this.preggoMobSystem.evaluateBaseTick();
+		this.preggoMobSystem.evaluateOnTick();
 	}
 	
 	@Override
@@ -186,19 +186,19 @@ public class TamableZombieGirlP1 extends AbstractTamablePregnantZombieGirl imple
 	
 	@Override
 	public int getCravingTimer() {
-		return this.entityData.get(DATA_CRAVING_TIMER);
+		return this.cravingTimer;
 	}
 
 	@Override
 	public void setCravingTimer(int timer) {
-		this.entityData.set(DATA_CRAVING_TIMER, timer);
+		this.cravingTimer = timer;
 	}
 
 	@Override
 	public Craving getCravingChosen() {
 		return this.entityData.get(DATA_CRAVING_CHOSEN);
 	}
-
+	
 	@Override
 	public void setCravingChosen(Craving craving) {
 		this.entityData.set(DATA_CRAVING_CHOSEN, craving);

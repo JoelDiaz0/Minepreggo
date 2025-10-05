@@ -45,11 +45,8 @@ import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
 public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl implements IPreggoMob {
 
 	protected static final EntityDataAccessor<Integer> DATA_HUNGRY = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.INT);
-	protected static final EntityDataAccessor<Integer> DATA_HUNGRY_TIMER = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.INT);
-	protected static final EntityDataAccessor<Integer> DATA_PREGNANCY_TIMER = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.INT);	
 	protected static final EntityDataAccessor<PregnancyStage> DATA_MAX_PREGNANCY_STAGE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.PREGNANCY_STAGE);
 	protected static final EntityDataAccessor<PregnancySymptom> DATA_PREGNANCY_SYMPTOM = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.PREGNANCY_SYMPTOM);
-	protected static final EntityDataAccessor<Integer> DATA_PREGNANCY_ILLNESS_TIMER = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<Boolean> DATA_PREGNANT = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> DATA_SAVAGE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> DATA_ANGRY = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
@@ -62,6 +59,11 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	protected final ItemStackHandler inventory;
 	protected final CombinedInvWrapper combined;
 	
+	private int pregnancyTimer = 0;
+	private int hungryTimer = 0;
+	private int healingCooldownTimer = 0;
+	
+	
 	protected AbstractTamableCreeperGirl(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_) {
 	      super(p_21803_, p_21804_);
 	      this.reassessTameGoals();	   
@@ -73,7 +75,6 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	protected void defineSynchedData() {
 		super.defineSynchedData();
 		this.entityData.define(DATA_HUNGRY, 4);
-		this.entityData.define(DATA_HUNGRY_TIMER, 0);
 			
 		this.entityData.define(DATA_PREGNANT, false);
 		this.entityData.define(DATA_SAVAGE, true);
@@ -81,10 +82,9 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 		this.entityData.define(DATA_WAITING, false);
 		this.entityData.define(DATA_PANIC, false);
 		
-		this.entityData.define(DATA_PREGNANCY_TIMER, 0);
 		this.entityData.define(DATA_MAX_PREGNANCY_STAGE, PregnancyStage.P0);
 		this.entityData.define(DATA_PREGNANCY_SYMPTOM, PregnancySymptom.NONE);
-		this.entityData.define(DATA_PREGNANCY_ILLNESS_TIMER, 0);
+
 		this.entityData.define(DATA_STATE, PreggoMobState.IDLE);
 		this.entityData.define(DATA_COMBAT_MODE, CombatMode.FIGHT_AND_EXPLODE);
 	}
@@ -94,7 +94,7 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 		super.addAdditionalSaveData(compound);
 		compound.put("InventoryCustom", inventory.serializeNBT());
 		compound.putInt("DataHungry", this.entityData.get(DATA_HUNGRY));
-		compound.putInt("DataHungryTimer", this.entityData.get(DATA_HUNGRY_TIMER));
+		compound.putInt("DataHungryTimer", this.hungryTimer);
 		
 		compound.putBoolean("DataPregnant", this.entityData.get(DATA_PREGNANT));
 		compound.putBoolean("DataSavage", this.entityData.get(DATA_SAVAGE));
@@ -102,10 +102,9 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 		compound.putBoolean("DataAngry", this.entityData.get(DATA_ANGRY));
 		compound.putBoolean("DataPanic", this.entityData.get(DATA_PANIC));
 		
-		compound.putInt("DataPregnancyTimer", this.entityData.get(DATA_PREGNANCY_TIMER));
+		compound.putInt("DataPregnancyTimer", this.pregnancyTimer);
 		compound.putInt("DataMaxPregnancyStage", this.entityData.get(DATA_MAX_PREGNANCY_STAGE).ordinal());
 		compound.putInt("DataPregnancySymptom", this.entityData.get(DATA_PREGNANCY_SYMPTOM).ordinal());	
-		compound.putInt("DataPregnancySymptomTimer", this.entityData.get(DATA_PREGNANCY_ILLNESS_TIMER));	
 	
 		compound.putInt("DataStage", this.entityData.get(DATA_STATE).ordinal());
 		
@@ -119,15 +118,14 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 		if (inventoryCustom instanceof CompoundTag inventoryTag)
 			inventory.deserializeNBT(inventoryTag);	
 		this.entityData.set(DATA_HUNGRY, compound.getInt("DataHungry"));
-		this.entityData.set(DATA_HUNGRY_TIMER, compound.getInt("DataHungryTimer"));
+		this.hungryTimer = compound.getInt("DataHungryTimer");
 		this.entityData.set(DATA_PREGNANT, compound.getBoolean("DataPregnant"));		
 		this.entityData.set(DATA_SAVAGE, compound.getBoolean("DataSavage"));		
 		this.entityData.set(DATA_WAITING, compound.getBoolean("DataWaiting"));		
 		this.entityData.set(DATA_ANGRY, compound.getBoolean("DataAngry"));	
 		this.entityData.set(DATA_PANIC, compound.getBoolean("DataPanic"));	
-		this.entityData.set(DATA_PREGNANCY_TIMER, compound.getInt("DataPregnancyTimer"));
+		this.pregnancyTimer = compound.getInt("DataPregnancyTimer");
 		this.entityData.set(DATA_PREGNANCY_SYMPTOM, PregnancySymptom.values()[compound.getInt("DataPregnancySymptom")]);
-		this.entityData.set(DATA_PREGNANCY_ILLNESS_TIMER, compound.getInt("DataPregnancySymptomTimer"));
 		this.entityData.set(DATA_MAX_PREGNANCY_STAGE, PregnancyStage.values()[compound.getInt("DataMaxPregnancyStage")]);
 		this.entityData.set(DATA_STATE, PreggoMobState.values()[compound.getInt("DataStage")]);
 		this.entityData.set(DATA_COMBAT_MODE, CombatMode.values()[compound.getInt("DataCombatMode")]);
@@ -177,6 +175,14 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
     		  && this.isLeashed()) {
     	  this.dropLeash(true, true);
       }
+      
+      this.updateSwingTime();
+	}
+	
+	@Override
+	public void baseTick() {
+		super.baseTick();
+		this.refreshDimensions();
 	}
 
 	@Override
@@ -286,12 +292,12 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 
 	@Override
 	public int getHungryTimer() {
-	    return this.entityData.get(DATA_HUNGRY_TIMER);
+	    return this.hungryTimer;
 	}
 
 	@Override
 	public void setHungryTimer(int ticks) {
-	    this.entityData.set(DATA_HUNGRY_TIMER, ticks);
+	    this.hungryTimer = ticks;
 	}
 		
 	@Override
@@ -341,12 +347,12 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	
 	@Override
 	public int getPregnancyTimer() {
-	    return this.entityData.get(DATA_PREGNANCY_TIMER);
+	    return this.pregnancyTimer;
 	}
 	
 	@Override
 	public void setPregnancyTimer(int ticks) {
-	    this.entityData.set(DATA_PREGNANCY_TIMER, ticks);
+	    this.pregnancyTimer = ticks;
 	}
 	
 	@Override

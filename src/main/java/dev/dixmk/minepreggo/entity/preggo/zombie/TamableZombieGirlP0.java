@@ -83,16 +83,8 @@ public class TamableZombieGirlP0 extends AbstractTamableZombieGirl {
 	}
 
 	@Override
-	public void baseTick() {
-		super.baseTick();
-		this.refreshDimensions();	
-		this.preggoMobSystem.evaluateBaseTick();
-	}
-
-	@Override
-	public void aiStep() {
-		super.aiStep();
-		this.updateSwingTime();
+	public void tick() {
+		this.preggoMobSystem.evaluateOnTick();
 	}
 
 	@Override

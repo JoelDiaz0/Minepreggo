@@ -99,6 +99,12 @@ public abstract class AbstractZombieGirl extends TamableAnimal {
     }
 	
 	@Override
+	public void baseTick() {
+		super.baseTick();
+		this.refreshDimensions();
+	}
+    
+	@Override
    	public void aiStep() {
       super.aiStep();
       if (this.isAlive()) {

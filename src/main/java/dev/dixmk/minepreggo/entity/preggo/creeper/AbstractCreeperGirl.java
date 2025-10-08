@@ -113,12 +113,9 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 	@Override
 	public void readAdditionalSaveData(CompoundTag compoundTag) {
 		super.readAdditionalSaveData(compoundTag);	
-		if (compoundTag.contains("DataSwell"))
-			this.entityData.set(DATA_SWELL_DIR, compoundTag.getInt("DataSwell"));
-		if (compoundTag.contains("DataIsPowered"))
-			this.entityData.set(DATA_IS_POWERED, compoundTag.getBoolean("DataIsPowered"));
-		if (compoundTag.contains("DataIsIgnited"))
-			this.entityData.set(DATA_IS_IGNITED, compoundTag.getBoolean("DataIsIgnited"));	
+		this.entityData.set(DATA_SWELL_DIR, compoundTag.getInt("DataSwell"));
+		this.entityData.set(DATA_IS_POWERED, compoundTag.getBoolean("DataIsPowered"));
+		this.entityData.set(DATA_IS_IGNITED, compoundTag.getBoolean("DataIsIgnited"));	
 	}
 	
 	@Override
@@ -282,6 +279,12 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 	    return ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "entities/abstract_creeper_girl_loot");
 	}
 		
+	@Override
+	public void baseTick() {
+		super.baseTick();
+		this.refreshDimensions();
+	}
+	
 	@Override
 	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {	
 				

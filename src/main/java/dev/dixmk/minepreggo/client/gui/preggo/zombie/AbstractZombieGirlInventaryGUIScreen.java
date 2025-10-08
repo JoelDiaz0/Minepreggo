@@ -12,7 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 
-public abstract class AbstractZombieGirlInventaryGUIScreen<E extends AbstractTamableZombieGirl,
+public abstract class AbstractZombieGirlInventaryGUIScreen<E extends AbstractTamableZombieGirl<?>,
 T extends AbstractZombieGirlInventaryGUIMenu<E>> extends AbstractContainerScreen<T> {
 
 	private final E zombieGirl;

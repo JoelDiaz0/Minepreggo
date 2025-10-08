@@ -5,21 +5,15 @@ import dev.dixmk.minepreggo.entity.preggo.IPregnancyP3;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySystemP3;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
-import dev.dixmk.minepreggo.utils.PreggoAIHelper;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
 
-public class TamableCreeperGirlP3 extends AbstractTamablePregnantCreeperGirl implements IPregnancyP3 {
-
-	private final PregnancySystemP3<TamableCreeperGirlP3> preggoMobSystem;
+public class TamableCreeperGirlP3 extends AbstractTamablePregnantCreeperGirl<PregnancySystemP3<TamableCreeperGirlP3>> implements IPregnancyP3 {
 	
 	public TamableCreeperGirlP3(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P3.get(), world);
@@ -30,7 +24,11 @@ public class TamableCreeperGirlP3 extends AbstractTamablePregnantCreeperGirl imp
 		xpReward = 10;
 		setNoAi(false);
 		setMaxUpStep(0.6f);
-		preggoMobSystem = new PregnancySystemP3<TamableCreeperGirlP3>(this) {
+	}
+	
+	@Override
+	protected PregnancySystemP3<TamableCreeperGirlP3> createPreggoMobSystem() {
+		return new PregnancySystemP3<TamableCreeperGirlP3>(this) {
 			@Override
 			protected void changePregnancyStage() {	
 			}
@@ -45,28 +43,6 @@ public class TamableCreeperGirlP3 extends AbstractTamablePregnantCreeperGirl imp
 	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
-	
-	@Override
-	protected void registerGoals() {
-		super.registerGoals();
-		PreggoAIHelper.setTamablePregnantCreeperGirlGoals(this);
-	}
-	
-	@Override
-	public void tick() {
-		this.preggoMobSystem.evaluateOnTick();
-	}
-
-	@Override
-	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {
-	
-		if (super.mobInteract(sourceentity, hand) == InteractionResult.SUCCESS) 
-			return InteractionResult.SUCCESS;
-		
-		
-		return InteractionResult.SUCCESS;
-	}
-	
 	
 	public static void init() {
 	}
@@ -149,4 +125,5 @@ public class TamableCreeperGirlP3 extends AbstractTamablePregnantCreeperGirl imp
 	public void setBellyRubsTimer(int timer) {
         this.bellyRubsTimer = timer;
     }
+
 }

@@ -51,4 +51,8 @@ public class ToggleableCheckbox extends Checkbox {
         }
     }
     
+    public static class Builder {
+    	
+    }
+    
 }

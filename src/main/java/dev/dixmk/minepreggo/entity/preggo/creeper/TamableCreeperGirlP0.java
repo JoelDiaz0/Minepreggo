@@ -6,16 +6,12 @@ import net.minecraftforge.network.NetworkHooks;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -23,29 +19,25 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 
 import java.util.UUID;
 
+import javax.annotation.Nonnull;
+
 import dev.dixmk.minepreggo.entity.preggo.PreggoMobSystem;
+import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.utils.CreeperGirlGUIMenuFactory;
 import dev.dixmk.minepreggo.utils.PreggoAIHelper;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
-import dev.dixmk.minepreggo.utils.PreggoTags;
-import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP0InventaryGUIMenu;
-import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP0MainGUIMenu;
-import io.netty.buffer.Unpooled;
 
-public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl {
+public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl<PreggoMobSystem<TamableCreeperGirlP0>> {
 
 	private static final UUID SPEED_MODIFIER_TIRENESS_UUID = UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D836");
 	private static final AttributeModifier SPEED_MODIFIER_TIRENESS = new AttributeModifier(SPEED_MODIFIER_TIRENESS_UUID, "Tireness speed boost", -0.2D, AttributeModifier.Operation.MULTIPLY_BASE);
 	private static final EntityDataAccessor<Boolean> DATA_TIRENESS_ID = SynchedEntityData.defineId(TamableCreeperGirlP0.class, EntityDataSerializers.BOOLEAN);
 	
-	private final PreggoMobSystem<TamableCreeperGirlP0> preggoMobSystem;
-		
 	public TamableCreeperGirlP0(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P0.get(), world);
 	}
@@ -55,12 +47,19 @@ public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl {
 		xpReward = 10;
 		setNoAi(false);
 		setMaxUpStep(0.6f);
-		preggoMobSystem = new PreggoMobSystem<>(this) {
+	}
+	
+	@Override
+	@Nonnull
+	protected PreggoMobSystem<TamableCreeperGirlP0> createPreggoMobSystem() {
+		return new PreggoMobSystem<>(this) {
 			@Override
 			protected void startPregnancy() {		
 				if (preggoMob.level() instanceof ServerLevel serverLevel) {
 					var creeperGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P1.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);		
 					PreggoMobHelper.transferPreggoMobBasicData(preggoMob, creeperGirl);			
+					PreggoMobHelper.transferPreggoMobInventary(preggoMob, creeperGirl);
+					PreggoMobHelper.transferAttackTarget(preggoMob, creeperGirl);
 					preggoMob.discard();
 				}			
 			}
@@ -80,85 +79,23 @@ public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl {
 		return retval;
 	}
 	
-	@Override
-	protected void registerGoals() {
-		super.registerGoals();
-		PreggoAIHelper.setTamableCreeperGirlGoals(this);
-	}
-	
-	@Override
-	public void tick() {
-		this.preggoMobSystem.evaluateOnTick();
-	}
-
-	@Override
-	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {
-	
-		if (super.mobInteract(sourceentity, hand) == InteractionResult.SUCCESS) 
-			return InteractionResult.SUCCESS;
-		
-		if (sourceentity instanceof ServerPlayer serverPlayer
-				&& preggoMobSystem.canOwnerAccessGUI(sourceentity)) {
-
-			final var entityId = this.getId();
-			final var blockPos = serverPlayer.blockPosition();
-				
-			if (serverPlayer.isShiftKeyDown()) {
-				NetworkHooks.openScreen(serverPlayer, new MenuProvider() {
-					@Override
-					public Component getDisplayName() {
-						return Component.literal("CreeperGirlInventaryGUI");
-					}
-
-					@Override
-					public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-						FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
-						packetBuffer.writeBlockPos(blockPos);
-						packetBuffer.writeVarInt(entityId);			
-						return new CreeperGirlP0InventaryGUIMenu(id, inventory, packetBuffer);
-					}
-				}, buf -> {
-					buf.writeBlockPos(blockPos);
-					buf.writeVarInt(entityId);
-				});
-			}
-			else {				
-				NetworkHooks.openScreen(serverPlayer, new MenuProvider() {		
-					@Override
-					public Component getDisplayName() {
-						return Component.literal("CreeperGirlMainGUI");
-					}
-					@Override
-					public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-						FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
-						packetBuffer.writeBlockPos(blockPos);
-						packetBuffer.writeVarInt(entityId);					
-						return new CreeperGirlP0MainGUIMenu(id, inventory, packetBuffer);				
-					}
-				}, buf -> {
-				    buf.writeBlockPos(blockPos);         
-				    buf.writeVarInt(entityId);
-				});		
-			}
-		}
-		else {		
-			preggoMobSystem.evaluateRightClick(sourceentity);
-		}	
-		
-		return InteractionResult.SUCCESS;
-	}
-	
-	
 	public static void init() {
 	}
 
+	
 	public static AttributeSupplier.Builder createAttributes() {
 		return getBasicAttributes(0.24);
 	}
 	
 	public static TamableCreeperGirlP0 spawnPostMiscarriage(ServerLevel serverLevel, double x, double y, double z) {
-		var zombieGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
+		var creeperGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 		
-		return zombieGirl;
+		return creeperGirl;
 	}
+	
+	@Override
+	public PregnancyStage getCurrentPregnancyStage() {
+		return PregnancyStage.P0;
+	}
+
 }

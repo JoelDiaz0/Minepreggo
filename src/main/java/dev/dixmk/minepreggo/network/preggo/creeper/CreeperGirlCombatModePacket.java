@@ -14,7 +14,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public class UpdateCreeperGirlCombatModePacket {
+public class CreeperGirlCombatModePacket {
 
 	private final int x;
 	private final int y;
@@ -22,7 +22,7 @@ public class UpdateCreeperGirlCombatModePacket {
 	private final CombatMode combatMode;
 	private final int creeperGirlId;
 	
-	public UpdateCreeperGirlCombatModePacket(int x, int y, int z, CombatMode combatMode, int creeperGirlId) {
+	public CreeperGirlCombatModePacket(int x, int y, int z, CombatMode combatMode, int creeperGirlId) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -30,8 +30,8 @@ public class UpdateCreeperGirlCombatModePacket {
 		this.creeperGirlId = creeperGirlId;
 	}
 	
-	public static UpdateCreeperGirlCombatModePacket decode(FriendlyByteBuf buffer) {	
-		return new UpdateCreeperGirlCombatModePacket(
+	public static CreeperGirlCombatModePacket decode(FriendlyByteBuf buffer) {	
+		return new CreeperGirlCombatModePacket(
 				buffer.readInt(),
 				buffer.readInt(),
 				buffer.readInt(),
@@ -40,7 +40,7 @@ public class UpdateCreeperGirlCombatModePacket {
 	}
 	
 	
-	public static void encode(UpdateCreeperGirlCombatModePacket message, FriendlyByteBuf buffer) {
+	public static void encode(CreeperGirlCombatModePacket message, FriendlyByteBuf buffer) {
 		buffer.writeInt(message.x);
 		buffer.writeInt(message.y);
 		buffer.writeInt(message.z);
@@ -49,11 +49,13 @@ public class UpdateCreeperGirlCombatModePacket {
 	}
 
 	@SuppressWarnings("deprecation")
-	public static void handler(UpdateCreeperGirlCombatModePacket message, Supplier<NetworkEvent.Context> contextSupplier) {
+	public static void handler(CreeperGirlCombatModePacket message, Supplier<NetworkEvent.Context> contextSupplier) {
 		NetworkEvent.Context context = contextSupplier.get();
 		context.enqueueWork(() -> {
-			var player = context.getSender();
-			var world = player.level();
+			var serverPlayer = context.getSender();		
+			if (serverPlayer == null) return;
+			
+			var world = serverPlayer.level();
 			
 			// security measure to prevent arbitrary chunk generation
 			if (!world.hasChunkAt(new BlockPos(message.x, message.y, message.z))) return;
@@ -67,6 +69,6 @@ public class UpdateCreeperGirlCombatModePacket {
 
 	@SubscribeEvent
 	public static void registerMessage(FMLCommonSetupEvent event) {
-		MinepreggoModPacketHandler.addNetworkMessage(UpdateCreeperGirlCombatModePacket.class, UpdateCreeperGirlCombatModePacket::encode, UpdateCreeperGirlCombatModePacket::decode, UpdateCreeperGirlCombatModePacket::handler);
+		MinepreggoModPacketHandler.addNetworkMessage(CreeperGirlCombatModePacket.class, CreeperGirlCombatModePacket::encode, CreeperGirlCombatModePacket::decode, CreeperGirlCombatModePacket::handler);
 	}
 }

@@ -14,10 +14,11 @@ import dev.dixmk.minepreggo.entity.preggo.IPregnancyP3;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancyP4;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancySystem;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
+import dev.dixmk.minepreggo.entity.preggo.PregnancySystemConstants;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractCreeperGirl;
-import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractMonsterCreeperGirl;
+import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractMonsterPregnantCreeperGirl;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
-import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractMonsterZombieGirl;
+import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractMonsterPregnantZombieGirl;
 import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractZombieGirl;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
@@ -201,12 +202,12 @@ public class PreggoMobHelper {
 		
 	@Nonnegative
 	public static int getNumberOfDaysByMaxPregnancyStage(PregnancyStage maxPregnancyStage, RandomSource randomSource) {
-		return (60 + randomSource.nextInt(10)) / maxPregnancyStage.getValue();
+		return (60 + randomSource.nextInt(10)) / maxPregnancyStage.ordinal();
 	}
 	
 	public static<E extends TamableAnimal & IPreggoMob & IPregnancySystem & IPregnancyP1> void startPregnancy(E preggoMob, PregnancyStage maxPregnancyStage) {	
 		final int daysByStage = getNumberOfDaysByMaxPregnancyStage(maxPregnancyStage, preggoMob.getRandom());
-		final int daysToBirth = (maxPregnancyStage.getValue() - preggoMob.getCurrentPregnancyStage().getValue() + 1) * daysByStage;
+		final int daysToBirth = (maxPregnancyStage.ordinal() - preggoMob.getCurrentPregnancyStage().ordinal() + 1) * daysByStage;
 		
 		preggoMob.setDaysPassed(0);
 		preggoMob.setMaxPregnancyStage(maxPregnancyStage);
@@ -251,8 +252,8 @@ public class PreggoMobHelper {
 	}
 	
 	private static<E extends TamableAnimal & IPreggoMob & IPregnancySystem> float getSpawnProbabilityBasedPregnancy(E preggoMob, float t0, float k, float pMin, float pMax) {
-		final int totalDays = preggoMob.getMaxPregnancyStage().getValue() * preggoMob.getDaysByStage();
-		final int totalDaysPassed = Math.max(0, preggoMob.getCurrentPregnancyStage().getValue() - 1) * preggoMob.getDaysByStage() + preggoMob.getDaysPassed();  				
+		final int totalDays = preggoMob.getMaxPregnancyStage().ordinal() * preggoMob.getDaysByStage();
+		final int totalDaysPassed = Math.max(0, preggoMob.getCurrentPregnancyStage().ordinal() - 1) * preggoMob.getDaysByStage() + preggoMob.getDaysPassed();  				
 		final float t = Mth.clamp(totalDaysPassed / (float) totalDays, 0, 1);	
 		return PreggoMathHelper.sigmoid(pMin, pMax, k, t, t0);
 	}
@@ -344,7 +345,7 @@ public class PreggoMobHelper {
 		}
 	}
 		
-	public static void spawnFetusesAndBabiesZombie(AbstractTamablePregnantZombieGirl zombieGirl) {		
+	public static void spawnFetusesAndBabiesZombie(AbstractTamablePregnantZombieGirl<?> zombieGirl) {		
 
 		final var numOfBabies = getNumberOfChildrens(zombieGirl.getMaxPregnancyStage());
 		
@@ -358,7 +359,7 @@ public class PreggoMobHelper {
 		}
 	}
 	
-	public static void spawnFetusesAndBabiesCreeper(AbstractTamablePregnantCreeperGirl creeperGirl) {
+	public static void spawnFetusesAndBabiesCreeper(AbstractTamablePregnantCreeperGirl<?> creeperGirl) {
 		
 		final var numOfBabies = getNumberOfChildrens(creeperGirl.getMaxPregnancyStage());
 	
@@ -373,19 +374,18 @@ public class PreggoMobHelper {
 	}
 	
 	
-	public static void spawnFetusesAndBabiesCreeper(AbstractMonsterCreeperGirl creeperGirl) {	
+	public static void spawnFetusesAndBabiesCreeper(AbstractMonsterPregnantCreeperGirl creeperGirl) {	
 		
 		final var currentPregnancyStage = creeperGirl.getCurrentPregnancyStage();
 		
 		if (currentPregnancyStage == PregnancyStage.P0) {
 			return;
 		}
-		
-		final var pregnancyData = creeperGirl.getSimplePregnancyData();		
+			
 		final var numOfBabies = getNumberOfChildrens(creeperGirl.getCurrentPregnancyStage());
-		final var t = Mth.clamp(pregnancyData.totalDays() / (float) pregnancyData.totalDaysPassed(), 0, 1);
+		final var t = Mth.clamp(PregnancySystemConstants.TOTAL_PREGNANCY_DAYS / (float) creeperGirl.getTotalDaysPassed(), 0, 1);
 		
-		if (currentPregnancyStage.getValue() > 2) {
+		if (currentPregnancyStage.ordinal() > 2) {
 			spawnBabiesOrFetusesCreeper(PreggoMathHelper.sigmoid(0.2F, 0.9F, 0.5F, t, 0.6F), numOfBabies, creeperGirl);
 		}
 		else {
@@ -393,7 +393,7 @@ public class PreggoMobHelper {
 		}
 	}
 	
-	public static void spawnFetusesAndBabiesZombie(AbstractMonsterZombieGirl zombie) {	
+	public static void spawnFetusesAndBabiesZombie(AbstractMonsterPregnantZombieGirl zombie) {	
 		
 		final var currentPregnancyStage = zombie.getCurrentPregnancyStage();
 		
@@ -401,11 +401,10 @@ public class PreggoMobHelper {
 			return;
 		}
 		
-		final var pregnancyData = zombie.getSimplePregnancyData();		
 		final var numOfBabies = getNumberOfChildrens(zombie.getCurrentPregnancyStage());
-		final var t = Mth.clamp(pregnancyData.totalDays() / (float) pregnancyData.totalDaysPassed(), 0, 1);
+		final var t = Mth.clamp(PregnancySystemConstants.TOTAL_PREGNANCY_DAYS / (float) zombie.getTotalDaysPassed(), 0, 1);
 		
-		if (currentPregnancyStage.getValue() > 2) {
+		if (currentPregnancyStage.ordinal() > 2) {
 			spawnBabiesOrFetusesZombie(PreggoMathHelper.sigmoid(0.2F, 0.9F, 0.5F, t, 0.6F), numOfBabies, zombie);
 		}
 		else {

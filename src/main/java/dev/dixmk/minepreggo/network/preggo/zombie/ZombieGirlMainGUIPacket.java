@@ -58,15 +58,16 @@ public class ZombieGirlMainGUIPacket {
 	public static void handler(ZombieGirlMainGUIPacket message, Supplier<NetworkEvent.Context> contextSupplier) {
 		NetworkEvent.Context context = contextSupplier.get();
 		context.enqueueWork(() -> {
-			var player = context.getSender();
+			var serverPlayer = context.getSender();		
+			if (serverPlayer == null) return;
+					
 			int x = message.x;
 			int y = message.y;
 			int z = message.z;
-			var world = player.level();
+			var world = serverPlayer.level();
 			
 			// security measure to prevent arbitrary chunk generation
-			if (!world.hasChunkAt(new BlockPos(x, y, z)))
-				return;
+			if (!world.hasChunkAt(new BlockPos(x, y, z))) return;
 
 			if (world.getEntity(message.zombieGirlId) instanceof AbstractTamableZombieGirl zombieGirl) {
 				int buttonId = message.buttonId;

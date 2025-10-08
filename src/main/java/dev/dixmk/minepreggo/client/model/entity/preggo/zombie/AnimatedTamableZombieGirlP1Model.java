@@ -1,7 +1,6 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.zombie;
 
 import dev.dixmk.minepreggo.client.entity.animation.preggo.zombie.ZombieGirlAnimation;
-import dev.dixmk.minepreggo.entity.preggo.zombie.TamableZombieGirlP0;
 import dev.dixmk.minepreggo.entity.preggo.zombie.TamableZombieGirlP1;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;

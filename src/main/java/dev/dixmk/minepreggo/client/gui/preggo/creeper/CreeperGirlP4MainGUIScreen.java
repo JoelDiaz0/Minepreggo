@@ -9,7 +9,6 @@ import dev.dixmk.minepreggo.entity.preggo.creeper.TamableCreeperGirlP4;
 import dev.dixmk.minepreggo.utils.PreggoGUIHelper;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP4MainGUIMenu;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 
 public class CreeperGirlP4MainGUIScreen extends AbstractCreeperGirlMainGUIScreen<TamableCreeperGirlP4, CreeperGirlP4MainGUIMenu> {
 
@@ -18,18 +17,6 @@ public class CreeperGirlP4MainGUIScreen extends AbstractCreeperGirlMainGUIScreen
 		this.imageWidth = 178;
 		this.imageHeight = 139;
 	}
-
-	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		this.renderBackground(guiGraphics);
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
-		if (creeperGirl != null) {
-			InventoryScreen.renderEntityInInventoryFollowsAngle(guiGraphics, this.leftPos + -35, this.topPos + 124, 60, 0f + (float) Math.atan((this.leftPos + -35 - mouseX) / 40.0), (float) Math.atan((this.topPos + 69 - mouseY) / 40.0),
-					creeperGirl);
-		}
-		this.renderTooltip(guiGraphics, mouseX, mouseY);
-	}
-
 
 	@Override
 	protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int gx, int gy) {

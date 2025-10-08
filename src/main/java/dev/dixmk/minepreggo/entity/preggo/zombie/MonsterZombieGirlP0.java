@@ -28,7 +28,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -39,7 +38,6 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 
 public class MonsterZombieGirlP0 extends AbstractMonsterZombieGirl {
@@ -88,13 +86,6 @@ public class MonsterZombieGirlP0 extends AbstractMonsterZombieGirl {
 	protected float getStandingEyeHeight(Pose p_34313_, EntityDimensions p_34314_) {
 		return this.isBaby() ? 0.93F : 1.74F;
 	}
-	
-	@Override
-	public SoundEvent getDeathSound() {
-		return getDefaultSoundEvent();
-	}
-	
-
 	
 	@Override
 	public void setBaby(boolean p_34309_) {
@@ -157,20 +148,8 @@ public class MonsterZombieGirlP0 extends AbstractMonsterZombieGirl {
 	}
 
 	@Override
-	public void baseTick() {
-		super.baseTick();
-		this.refreshDimensions();
-	}
-
-	@Override
 	public EntityDimensions getDimensions(Pose p_33597_) {
 		return super.getDimensions(p_33597_).scale(1F);
-	}
-
-	@Override
-	public void aiStep() {
-		super.aiStep();
-		this.updateSwingTime();
 	}
 
 	@SuppressWarnings("deprecation")
@@ -191,20 +170,5 @@ public class MonsterZombieGirlP0 extends AbstractMonsterZombieGirl {
 
 	public static AttributeSupplier.Builder createAttributes() {
 		return getBasicAttributes(0.235);
-	}
-	
-	@Override
-	public PregnancyStage getCurrentPregnancyStage() {
-		return PregnancyStage.P0;
-	}
-	
-	@Override
-	public PregnancyStage getMaxPregnancyStage() {
-		return PregnancyStage.P4;
-	}
-	
-	@Override
-	public SimplePregnancyData getSimplePregnancyData() {
-		return new SimplePregnancyData(0, 0);
 	}
 }

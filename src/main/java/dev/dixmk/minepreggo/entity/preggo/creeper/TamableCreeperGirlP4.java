@@ -5,33 +5,15 @@ import dev.dixmk.minepreggo.entity.preggo.IPregnancyP4;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySystemP4;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
-import dev.dixmk.minepreggo.utils.PreggoAIHelper;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
 
-public class TamableCreeperGirlP4 extends AbstractTamablePregnantCreeperGirl implements IPregnancyP4 {
-
-	private final PregnancySystemP4<TamableCreeperGirlP4> preggoMobSystem = new PregnancySystemP4<TamableCreeperGirlP4>(this) {
-		@Override
-		protected void changePregnancyStage() {	
-		}
-		
-		@Override
-		protected void finishMiscarriage() {
-		}
-		
-		@Override
-		protected void finishBirth() {
-		}
-	};
+public class TamableCreeperGirlP4 extends AbstractTamablePregnantCreeperGirl<PregnancySystemP4<TamableCreeperGirlP4>> implements IPregnancyP4 {
 	
 	public TamableCreeperGirlP4(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P4.get(), world);
@@ -45,31 +27,26 @@ public class TamableCreeperGirlP4 extends AbstractTamablePregnantCreeperGirl imp
 	}
 	
 	@Override
+	protected PregnancySystemP4<TamableCreeperGirlP4> createPreggoMobSystem() {
+		return new PregnancySystemP4<>(this) {
+			@Override
+			protected void changePregnancyStage() {	
+			}
+			
+			@Override
+			protected void finishMiscarriage() {
+			}
+			
+			@Override
+			protected void finishBirth() {
+			}
+		};
+	}
+	
+	@Override
 	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
-	
-	@Override
-	protected void registerGoals() {
-		super.registerGoals();
-		PreggoAIHelper.setTamablePregnantCreeperGirlGoals(this);
-	}
-	
-	@Override
-	public void tick() {
-		this.preggoMobSystem.evaluateOnTick();
-	}
-
-	@Override
-	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {
-	
-		if (super.mobInteract(sourceentity, hand) == InteractionResult.SUCCESS) 
-			return InteractionResult.SUCCESS;
-		
-		
-		return InteractionResult.SUCCESS;
-	}
-	
 	
 	public static void init() {
 	}

@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
-import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
-import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractTamableZombieGirl;
 import dev.dixmk.minepreggo.utils.PreggoArmorHelper;
 import dev.dixmk.minepreggo.utils.PreggoGUIHelper;
@@ -33,7 +31,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 @Mod.EventBusSubscriber
-public abstract class AbstractZombieGirlInventaryGUIMenu<T extends AbstractTamableZombieGirl> extends AbstractContainerMenu implements Supplier<Map<Integer, Slot>> {
+public abstract class AbstractZombieGirlInventaryGUIMenu<T extends AbstractTamableZombieGirl<?>> extends AbstractContainerMenu implements Supplier<Map<Integer, Slot>> {
 	public final Level world;
 	public final Player entity;
 	protected ContainerLevelAccess access = ContainerLevelAccess.NULL;
@@ -73,10 +71,7 @@ public abstract class AbstractZombieGirlInventaryGUIMenu<T extends AbstractTamab
 		this.customSlots.put(IPreggoMob.CHEST_INVENTARY_SLOT, this.addSlot(new SlotItemHandler(internal, 3, 8, 26) {
 			@Override
 			public boolean mayPlace(ItemStack itemstack) {		
-				var stage = PregnancyStage.P0;
-				
-				if (zombieGirl instanceof AbstractTamablePregnantZombieGirl z)
-					stage = z.getCurrentPregnancyStage();
+				final var stage = zombieGirl.getCurrentPregnancyStage();
 									
 				if (!PreggoArmorHelper.canPreggoMobUseChestplate(itemstack, stage)) {
 	                final var message = PreggoMessageHelper.ARMOR_MESSAGES.get(stage.ordinal());                                
@@ -91,10 +86,7 @@ public abstract class AbstractZombieGirlInventaryGUIMenu<T extends AbstractTamab
 		this.customSlots.put(IPreggoMob.LEGS_INVENTARY_SLOT, this.addSlot(new SlotItemHandler(internal, 2, 8, 44) {
 			@Override
 			public boolean mayPlace(ItemStack itemstack) {
-				var stage = PregnancyStage.P0;
-				
-				if (zombieGirl instanceof AbstractTamablePregnantZombieGirl z)
-					stage = z.getCurrentPregnancyStage();
+				final var stage = zombieGirl.getCurrentPregnancyStage();
 									
 				if (!PreggoArmorHelper.canPreggoMobUseLegging(itemstack, stage)) {
 	                final var message = PreggoMessageHelper.ARMOR_MESSAGES.get(-1);                                
@@ -277,7 +269,7 @@ public abstract class AbstractZombieGirlInventaryGUIMenu<T extends AbstractTamab
 		return customSlots;
 	}
 	
-    private T create(AbstractTamableZombieGirl entity) {
+    private T create(AbstractTamableZombieGirl<?> entity) {
         if (zombieGirlClass.isInstance(entity)) {
             return zombieGirlClass.cast(entity);
         }

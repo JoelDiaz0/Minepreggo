@@ -31,7 +31,7 @@ public class AnimatedMonsterZombieGirlP0Model extends AbstractAnimatedZombieGirl
 					}
 				} 
 				
-				this.animate(entity.idleAnimationState, ZombieGirlAnimation.IDLE, ageInTicks, 1f);						
+				this.animate(entity.loopAnimationState, ZombieGirlAnimation.IDLE, ageInTicks, 1f);						
 			    this.animate(entity.attackAnimationState, ZombieGirlAnimation.ATTACK, ageInTicks, 1f);	
 			}	
 		});

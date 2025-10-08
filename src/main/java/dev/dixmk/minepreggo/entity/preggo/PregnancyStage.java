@@ -1,22 +1,22 @@
 package dev.dixmk.minepreggo.entity.preggo;
 
+import net.minecraft.util.RandomSource;
+
 public enum PregnancyStage {
-    P0(0),
-    P1(1),
-    P2(2),
-    P3(3),
-    P4(4),
-    P5(5),
-    P6(6),
-    P7(7);
-    
-    private final int value;
-  
-	PregnancyStage(int value) {
-		this.value = value;
+    P0,
+    P1,
+    P2,
+    P3,
+    P4,
+    P5,
+    P6,
+    P7;
+
+    static PregnancyStage getRandomStage(int begin, int end, RandomSource randomSource) {
+    	return PregnancyStage.values()[randomSource.nextInt(begin, end)];
     }
     
-    public int getValue() {
-        return value;
+    static PregnancyStage getRandomFinalStage(RandomSource randomSource) {
+    	return getRandomStage(4, 7, randomSource);
     }
 }

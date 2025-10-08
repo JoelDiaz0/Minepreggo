@@ -20,7 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public abstract class AbstractZombieGirlMainGUIMenu<T extends AbstractTamableZombieGirl> extends AbstractContainerMenu implements Supplier<Map<Integer, Slot>> {	
+public abstract class AbstractZombieGirlMainGUIMenu<T extends AbstractTamableZombieGirl<?>> extends AbstractContainerMenu implements Supplier<Map<Integer, Slot>> {	
 	public final Level world;
 	public final Player entity;
 	private T zombieGirl = null;
@@ -54,7 +54,7 @@ public abstract class AbstractZombieGirlMainGUIMenu<T extends AbstractTamableZom
 		}
 	}
 	
-    public T create(AbstractTamableZombieGirl entity) {
+    public T create(AbstractTamableZombieGirl<?> entity) {
         if (zombieGirlClass.isInstance(entity)) {
             return zombieGirlClass.cast(entity);
         }

@@ -169,7 +169,7 @@ public abstract class PregnancySystemP1<
 		if ((result = evaluateHungry(level, source)) != Result.NOTHING
 				|| (result = evaluateCraving(level, source)) != Result.NOTHING) {
 			spawnParticles(level, result);
-		}		
+		}
 	}
 	
 	
@@ -196,7 +196,8 @@ public abstract class PregnancySystemP1<
 	            source.getInventory().clearOrCountMatchingItems(p -> mainHandItem == p.getItem(), 1, source.inventoryMenu.getCraftSlots());
 	            currentCraving = Math.max(0, currentCraving - craving.getGratification());
                 preggoMob.setCraving(currentCraving);
-	            
+	            preggoMob.setHungry(Math.min(preggoMob.getHungry() + 2, 20));
+                
             	level.playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.generic.eat")), SoundSource.NEUTRAL, 0.75f, 1);	
                 
 	            if (currentCraving <= PregnancySystemConstants.DESACTIVATE_CRAVING_SYMPTOM) {
@@ -204,7 +205,9 @@ public abstract class PregnancySystemP1<
 	            }
 	            
 	            return Result.SUCCESS; 
-	    	}    
+	    	} else {
+	    		return Result.FAIL;
+	    	}
 	    }
 	    
 	    return Result.NOTHING;

@@ -1,0 +1,183 @@
+package dev.dixmk.minepreggo.entity.preggo.zombie;
+
+import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.entity.preggo.ISimplePregnancy;
+import dev.dixmk.minepreggo.utils.PreggoMobHelper;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.ai.goal.FleeSunGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.goal.MoveThroughVillageGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.RestrictSunGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.animal.Turtle;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.registries.ForgeRegistries;
+
+public abstract class AbstractMonsterPregnantZombieGirl extends AbstractMonsterZombieGirl implements ISimplePregnancy {
+
+	private static final EntityDataAccessor<Boolean> DATA_HAS_PREGNANCY_PAIN = SynchedEntityData.defineId(AbstractMonsterPregnantZombieGirl.class, EntityDataSerializers.BOOLEAN);
+	private int pregnancyPainTimer = 0;
+	
+	protected AbstractMonsterPregnantZombieGirl(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_) {
+		super(p_21803_, p_21804_);
+	}
+
+	@Override
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(DATA_HAS_PREGNANCY_PAIN, false);
+	}
+	
+	@Override
+	public void addAdditionalSaveData(CompoundTag compoundTag) {
+		super.addAdditionalSaveData(compoundTag);
+		compoundTag.putBoolean("DataHasPregnancyPain", this.getEntityData().get(DATA_HAS_PREGNANCY_PAIN));
+	}
+	
+	@Override
+	public void readAdditionalSaveData(CompoundTag compoundTag) {
+		super.readAdditionalSaveData(compoundTag);	
+		this.entityData.set(DATA_HAS_PREGNANCY_PAIN, compoundTag.getBoolean("DataHasPregnancyPain"));
+	}
+	
+	@Override
+	public void die(DamageSource source) {
+		super.die(source);			
+		PreggoMobHelper.spawnFetusesAndBabiesZombie(this);
+	}
+	
+	@Override
+	public SoundEvent getDeathSound() {
+		return ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "preggo_death"));
+	}
+	
+	@Override
+	protected void registerGoals() {
+		this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.2, false) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+					&& !hasPregnancyPain();		
+			}
+		});	
+		this.targetSelector.addGoal(1, new HurtByTargetGoal(this) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+					&& !hasPregnancyPain();		
+			}
+		}.setAlertOthers(AbstractMonsterZombieGirl.class));	
+		this.goalSelector.addGoal(2, new RestrictSunGoal(this) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+					&& !hasPregnancyPain();		
+			}
+		});
+		this.goalSelector.addGoal(2, new FleeSunGoal(this, 1.1D) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+					&& !hasPregnancyPain();		
+			}
+		});	
+	    this.goalSelector.addGoal(6, new MoveThroughVillageGoal(this, 1.0D, true, 4, this::canBreakDoors) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+					&& !hasPregnancyPain();		
+			}
+	    });
+		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, false, false) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+					&& !hasPregnancyPain();		
+			}
+		});
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false, false) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+					&& !hasPregnancyPain();		
+			}
+		});
+		this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, IronGolem.class, false, false) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+					&& !hasPregnancyPain();		
+			}
+		});
+		this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, Turtle.class, 10, true, false, Turtle.BABY_ON_LAND_SELECTOR) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+					&& !hasPregnancyPain();		
+			}
+		});	
+		this.goalSelector.addGoal(7, new AbstractZombieGirl.ZombieGirlAttackTurtleEggGoal(this, 1.0, 3) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+					&& !hasPregnancyPain();		
+			}
+		});
+		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8F) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+					&& !hasPregnancyPain();		
+			}
+		});
+		this.goalSelector.addGoal(9, new WaterAvoidingRandomStrollGoal(this, 1.0) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+					&& !hasPregnancyPain();		
+			}
+		});
+		this.goalSelector.addGoal(10, new RandomLookAroundGoal(this) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+					&& !hasPregnancyPain();		
+			}
+		});
+	}
+	
+	@Override
+	public boolean hasPregnancyPain() {
+		return this.entityData.get(DATA_HAS_PREGNANCY_PAIN);
+	}
+	
+	@Override
+	public void setPregnancyPain(boolean value) {
+		this.entityData.set(DATA_HAS_PREGNANCY_PAIN, value);
+	}
+	
+	@Override
+	public int getPregnancyPainTimer() {
+		return this.pregnancyPainTimer;
+	}
+
+	@Override
+	public void setPregnancyPainTimer(int tick) {
+		this.pregnancyPainTimer = tick;
+	}
+}

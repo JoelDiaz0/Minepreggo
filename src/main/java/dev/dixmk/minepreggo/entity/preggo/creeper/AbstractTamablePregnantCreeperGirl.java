@@ -7,9 +7,10 @@ import dev.dixmk.minepreggo.entity.preggo.Craving;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancySystem;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyPain;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySymptom;
+import dev.dixmk.minepreggo.entity.preggo.PregnancySystemP1;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
-
+import dev.dixmk.minepreggo.utils.PreggoAIHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -18,7 +19,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 
-public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamableCreeperGirl implements IPregnancySystem {
+public abstract class AbstractTamablePregnantCreeperGirl<S extends PregnancySystemP1<?>> extends AbstractTamableCreeperGirl<S> implements IPregnancySystem {
 
 	protected static final EntityDataAccessor<Integer> DATA_PREGNANCY_HEALTH = SynchedEntityData.defineId(AbstractTamablePregnantCreeperGirl.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<Integer> DATA_DAYS_PASSED = SynchedEntityData.defineId(AbstractTamablePregnantCreeperGirl.class, EntityDataSerializers.INT);
@@ -45,7 +46,7 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 			Craving.SPICY, MinepreggoModItems.ACTIVATED_GUNPOWDER_WITH_HOT_SAUCE.get(),
 			Craving.NONE, null);	
 	
-	protected AbstractTamablePregnantCreeperGirl(EntityType<? extends AbstractTamableCreeperGirl> p_21803_, Level p_21804_) {
+	protected AbstractTamablePregnantCreeperGirl(EntityType<? extends AbstractTamableCreeperGirl<?>> p_21803_, Level p_21804_) {
 		super(p_21803_, p_21804_);
 	}
 	
@@ -108,101 +109,22 @@ public abstract class AbstractTamablePregnantCreeperGirl extends AbstractTamable
 	}
 	
 	@Override
+	protected void registerGoals() {
+		this.goalSelector.addGoal(1, new AbstractCreeperGirl.SwellGoal<>(this) {
+			@Override
+			public boolean canUse() {				
+				return super.canUse() 
+				&& getCanExplote()
+				&& !isIncapacitated();								
+			}
+		});
+		PreggoAIHelper.setTamablePregnantCreeperGirlGoals(this);
+	}
+	
+	@Override
 	public boolean isValidCraving(Craving kindOfCraving, Item item) {
 		return item == CRAVING_ENUM_MAP.get(kindOfCraving);
 	}
-	
-	/*
-	@Override
-	public int getCraving() {
-		return this.entityData.get(DATA_CRAVING);
-	}
-
-	@Override
-	public void setCraving(int craving) {
-		this.entityData.set(DATA_CRAVING, craving);
-	}
-	
-	@Override
-	public int getCravingTimer() {
-		return this.entityData.get(DATA_CRAVING_TIMER);
-	}
-
-	@Override
-	public void setCravingTimer(int timer) {
-		this.entityData.set(DATA_CRAVING_TIMER, timer);
-	}
-	
-	@Override
-	public Craving getCravingChosen() {
-		return this.entityData.get(DATA_CRAVING_CHOSEN);
-	}
-
-	@Override
-	public void setCravingChosen(Craving craving) {
-		this.entityData.set(DATA_CRAVING_CHOSEN, craving);
-	}
-	
-	@Override
-	public int getMilking() {
-	    return this.entityData.get(DATA_MILKING);
-	}
-	
-	@Override
-	public void setMilking(int milking) {
-	    this.entityData.set(DATA_MILKING, milking);
-	}
-	
-	@Override
-	public int getMilkingTimer() {
-	    return this.entityData.get(DATA_MILKING_TIMER);
-	}
-	
-	@Override
-	public void setMilkingTimer(int timer) {
-	    this.entityData.set(DATA_MILKING_TIMER, timer);
-	}
-	
-	@Override
-	public int getBellyRubs() {
-	    return this.entityData.get(DATA_BELLY_RUBS);
-	}
-	
-	@Override
-	public void setBellyRubs(int bellyRubs) {
-	    this.entityData.set(DATA_BELLY_RUBS, bellyRubs);
-	}
-	
-	@Override
-	public int getBellyRubsTimer() {
-	    return this.entityData.get(DATA_BELLY_RUBS_TIMER);
-	}
-	
-	@Override
-	public void setBellyRubsTimer(int timer) {
-        this.entityData.set(DATA_BELLY_RUBS_TIMER, timer);
-    }
-	
-	@Override
-	public int getHorny() {
-        return this.entityData.get(DATA_HORNY);
-    }
-	
-	@Override
-	public void setHorny(int horny) {
-        this.entityData.set(DATA_HORNY, horny);
-    }
-	
-	@Override
-	public int getHornyTimer() {
-        return this.entityData.get(DATA_HORNY_TIMER);
-    }
-	
-	@Override
-	public void setHornyTimer(int timer) {
-        this.entityData.set(DATA_HORNY_TIMER, timer);
-    }
-	 */
 	
 	@Override
 	public boolean hasCustomHeadAnimation() {

@@ -11,7 +11,7 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-public abstract class AbstractCreeperGirlInventaryGUIScreen<E extends AbstractTamableCreeperGirl,
+public abstract class AbstractCreeperGirlInventaryGUIScreen<E extends AbstractTamableCreeperGirl<?>,
 	T extends AbstractCreeperGirlInventaryGUIMenu<E>> extends AbstractContainerScreen<T> {
 
 	private E creeperGirl;

@@ -3,18 +3,24 @@ package dev.dixmk.minepreggo.client.gui.preggo.zombie;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractTamableZombieGirl;
+import dev.dixmk.minepreggo.network.preggo.zombie.ZombieGirlInventaryMenuPacket;
 import dev.dixmk.minepreggo.network.preggo.zombie.ZombieGirlMainGUIPacket;
+import dev.dixmk.minepreggo.utils.PreggoGUIHelper;
 import dev.dixmk.minepreggo.world.inventory.preggo.zombie.AbstractZombieGirlMainGUIMenu;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.registries.ForgeRegistries;
 
-public abstract class AbstractZombieGirlMainGUIScreen<E extends AbstractTamableZombieGirl,
+public abstract class AbstractZombieGirlMainGUIScreen<E extends AbstractTamableZombieGirl<?>,
 	T extends AbstractZombieGirlMainGUIMenu<E>> extends AbstractContainerScreen<T> {
 	
 	protected final Level world;
@@ -27,7 +33,8 @@ public abstract class AbstractZombieGirlMainGUIScreen<E extends AbstractTamableZ
 	protected Button buttonRide;
 	protected Button buttonDismount;
 	protected final E zombieGirl;
-		
+	protected ImageButton inventoryButton;
+	
 	protected AbstractZombieGirlMainGUIScreen(T container, Inventory inventory, Component text) {
 		super(container, inventory, text);
 		this.world = container.world;
@@ -49,6 +56,8 @@ public abstract class AbstractZombieGirlMainGUIScreen<E extends AbstractTamableZ
 		this.renderBackground(guiGraphics);
 		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
+		if (mouseX > leftPos + -28 && mouseX < leftPos + -4 && mouseY > topPos + 2 && mouseY < topPos + 26)
+			guiGraphics.renderTooltip(font, Component.translatable("gui.minepreggo.main.tooltip_tooltip"), mouseX, mouseY);
 	}
 	
 	@Override
@@ -125,6 +134,13 @@ public abstract class AbstractZombieGirlMainGUIScreen<E extends AbstractTamableZ
 			}
 		});
 		this.addRenderableWidget(buttonDismount);
+		
+		inventoryButton = new ImageButton(this.leftPos + -24, this.topPos + 6, 1, 57, 16, 16, 16, PreggoGUIHelper.ICONS_TEXTURE, 256, 256, e -> {
+			entity.level().playLocalSound(x, y, z, ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("ui.button.click")), SoundSource.NEUTRAL, 1, 1, false);
+			this.minecraft.player.closeContainer();
+			MinepreggoModPacketHandler.INSTANCE.sendToServer(new ZombieGirlInventaryMenuPacket(x, y, z, zombieGirlId));		
+		});	
+		this.addRenderableWidget(inventoryButton);
 	}
 
 }

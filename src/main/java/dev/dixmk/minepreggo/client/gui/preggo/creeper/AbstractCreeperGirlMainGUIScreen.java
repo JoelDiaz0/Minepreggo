@@ -3,27 +3,34 @@ package dev.dixmk.minepreggo.client.gui.preggo.creeper;
 import java.util.ArrayList;
 import java.util.List;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.gui.components.ToggleableCheckbox;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractCreeperGirl.CombatMode;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import dev.dixmk.minepreggo.network.preggo.creeper.CreeperGirlMainGUIPacket;
-import dev.dixmk.minepreggo.network.preggo.creeper.UpdateCreeperGirlCombatModePacket;
+import dev.dixmk.minepreggo.utils.PreggoGUIHelper;
+import dev.dixmk.minepreggo.network.preggo.creeper.CreeperGirlCombatModePacket;
+import dev.dixmk.minepreggo.network.preggo.creeper.CreeperGirlInventaryMenuPacket;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.AbstractCreeperGirlMainGUIMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.registries.ForgeRegistries;
 
-public abstract class AbstractCreeperGirlMainGUIScreen<E extends AbstractTamableCreeperGirl 
+public abstract class AbstractCreeperGirlMainGUIScreen<E extends AbstractTamableCreeperGirl<?> 
 	,T extends AbstractCreeperGirlMainGUIMenu<E>> extends AbstractContainerScreen<T> {
 
 	protected final Level world;
-	protected final int x, y, z;
+	protected final int x;
+	protected final int y;
+	protected final int z;
 	protected final Player entity;
 	protected final E creeperGirl;
 	
@@ -31,6 +38,8 @@ public abstract class AbstractCreeperGirlMainGUIScreen<E extends AbstractTamable
 	protected Button buttonFollow;
 	protected Button buttonRide;
 	protected Button buttonDismount;
+	protected ImageButton inventoryButton;
+
 	
 	private final List<ToggleableCheckbox> checkboxes = new ArrayList<>();
 	
@@ -54,6 +63,9 @@ public abstract class AbstractCreeperGirlMainGUIScreen<E extends AbstractTamable
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		this.renderBackground(guiGraphics);	
 		super.render(guiGraphics, mouseX, mouseY, partialTicks);
+		
+		if (mouseX > leftPos + -28 && mouseX < leftPos + -4 && mouseY > topPos + 2 && mouseY < topPos + 26)
+			guiGraphics.renderTooltip(font, Component.translatable("gui.minepreggo.main.tooltip_tooltip"), mouseX, mouseY);
 	}
 	
 	@Override
@@ -69,22 +81,20 @@ public abstract class AbstractCreeperGirlMainGUIScreen<E extends AbstractTamable
 	public void init() {
 		super.init();
 					
-		if (creeperGirl == null) {
-			MinepreggoMod.LOGGER.error("Creepergirl was null");
-			return;
-		}
+		if (creeperGirl == null) return;
+		
 			
-		var combatMode = creeperGirl.getcombatMode();		
-		var creeperGirlId = creeperGirl.getId();
+		final var combatMode = creeperGirl.getcombatMode();		
+		final var creeperGirlId = creeperGirl.getId();
 	
 		addCheckbox(this.leftPos + 200, this.topPos, 20, 20, Component.translatable("gui.minepreggo.abstract_creeper_girl_main_gui.explode"), combatMode == CombatMode.EXPLODE,() -> 
-			MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdateCreeperGirlCombatModePacket(x, y, z, CombatMode.EXPLODE, creeperGirlId))
+			MinepreggoModPacketHandler.INSTANCE.sendToServer(new CreeperGirlCombatModePacket(x, y, z, CombatMode.EXPLODE, creeperGirlId))
 		);				
 		addCheckbox(this.leftPos + 200, this.topPos + 36, 20, 20, Component.translatable("gui.minepreggo.abstract_creeper_girl_main_gui.dont_explode"), combatMode == CombatMode.DONT_EXPLODE, () -> 
-			MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdateCreeperGirlCombatModePacket(x, y, z, CombatMode.DONT_EXPLODE, creeperGirlId))
+			MinepreggoModPacketHandler.INSTANCE.sendToServer(new CreeperGirlCombatModePacket(x, y, z, CombatMode.DONT_EXPLODE, creeperGirlId))
 		);				
 		addCheckbox(this.leftPos + 200, this.topPos + 72, 20, 20, Component.translatable("gui.minepreggo.abstract_creeper_girl_main_gui.fight_and_explode"), combatMode == CombatMode.FIGHT_AND_EXPLODE, () -> 
-			MinepreggoModPacketHandler.INSTANCE.sendToServer(new UpdateCreeperGirlCombatModePacket(x, y, z, CombatMode.FIGHT_AND_EXPLODE, creeperGirlId))
+			MinepreggoModPacketHandler.INSTANCE.sendToServer(new CreeperGirlCombatModePacket(x, y, z, CombatMode.FIGHT_AND_EXPLODE, creeperGirlId))
 		);				
 
 		
@@ -142,6 +152,13 @@ public abstract class AbstractCreeperGirlMainGUIScreen<E extends AbstractTamable
 		});
 		this.addRenderableWidget(buttonDismount);
 	
+		inventoryButton = new ImageButton(this.leftPos + -24, this.topPos + 6, 1, 57, 16, 16, 16, PreggoGUIHelper.ICONS_TEXTURE, 256, 256, e -> {
+			entity.level().playLocalSound(x, y, z, ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("ui.button.click")), SoundSource.NEUTRAL, 1, 1, false);
+			this.minecraft.player.closeContainer();
+			MinepreggoModPacketHandler.INSTANCE.sendToServer(new CreeperGirlInventaryMenuPacket(x, y, z, creeperGirlId));		
+		});
+		
+		this.addRenderableWidget(inventoryButton);
 	}	
 
 	private void addCheckbox(int p_93826_, int p_93827_, int p_93828_, int p_93829_, Component p_93830_, boolean p_93831_, Runnable action) {

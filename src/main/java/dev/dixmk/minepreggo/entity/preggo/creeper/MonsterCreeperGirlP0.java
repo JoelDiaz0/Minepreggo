@@ -29,7 +29,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -41,7 +40,6 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 
 public class MonsterCreeperGirlP0 extends AbstractMonsterCreeperGirl {
@@ -76,8 +74,7 @@ public class MonsterCreeperGirlP0 extends AbstractMonsterCreeperGirl {
 	@Override
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
-		if (compound.contains("IsBaby"))
-			this.setBaby(compound.getBoolean("IsBaby"));
+		this.setBaby(compound.getBoolean("IsBaby"));
 	}
 	
 	@Override
@@ -102,7 +99,7 @@ public class MonsterCreeperGirlP0 extends AbstractMonsterCreeperGirl {
 	@Override
 	public int getExperienceReward() {
 		if (this.isBaby()) {
-			this.xpReward = (int)((double)this.xpReward * 2.5D);
+			this.xpReward = (int)(this.xpReward * 2.5D);
 		}
 
 		return super.getExperienceReward();
@@ -125,7 +122,6 @@ public class MonsterCreeperGirlP0 extends AbstractMonsterCreeperGirl {
 		        this.explosionRadius = 1;
 			}
 		}
-
 	}
 	
 	@Override
@@ -133,13 +129,7 @@ public class MonsterCreeperGirlP0 extends AbstractMonsterCreeperGirl {
 		if (DATA_BABY_ID.equals(p_34307_)) {
 			this.refreshDimensions();
 		}
-
 		super.onSyncedDataUpdated(p_34307_);
-	}
-	
-	@Override
-	public SoundEvent getDeathSound() {
-		return getDefaultSoundEvent();
 	}
 	
 	@Override
@@ -155,17 +145,6 @@ public class MonsterCreeperGirlP0 extends AbstractMonsterCreeperGirl {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
-	@Override
-	public void baseTick() {
-		super.baseTick();
-		this.refreshDimensions();
-	}
-
-	@Override
-	public void aiStep() {
-		super.aiStep();
-		this.updateSwingTime();
-	}
 
 	@SuppressWarnings("deprecation")
 	public static void init() {
@@ -186,20 +165,5 @@ public class MonsterCreeperGirlP0 extends AbstractMonsterCreeperGirl {
 	
 	public static AttributeSupplier.Builder createAttributes() {
 		return getBasicAttributes(0.24);
-	}
-
-	@Override
-	public PregnancyStage getCurrentPregnancyStage() {
-		return PregnancyStage.P0;
-	}
-	
-	@Override
-	public PregnancyStage getMaxPregnancyStage() {
-		return PregnancyStage.P4;
-	}
-	
-	@Override
-	public SimplePregnancyData getSimplePregnancyData() {
-		return new SimplePregnancyData(0, 0);
 	}
 }

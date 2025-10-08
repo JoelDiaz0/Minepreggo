@@ -15,6 +15,9 @@ public abstract class PregnancySystemP7<E extends TamableAnimal
 	}
 	
 	@Override
+	protected final void changePregnancyStage() {}
+	
+	@Override
 	public void evaluateOnTick() {
 		
 		final var level = preggoMob.level();

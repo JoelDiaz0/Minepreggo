@@ -11,10 +11,13 @@ import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
 import dev.dixmk.minepreggo.entity.preggo.PreggoMobState;
+import dev.dixmk.minepreggo.entity.preggo.PreggoMobSystem;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
+import dev.dixmk.minepreggo.utils.PreggoAIHelper;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
+import dev.dixmk.minepreggo.utils.ZombieGirlGUIMenuFactory;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -22,6 +25,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
@@ -46,8 +50,9 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.EntityArmorInvWrapper;
 import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
+import net.minecraftforge.network.NetworkHooks;
 
-public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl implements IPreggoMob {
+public abstract class AbstractTamableZombieGirl<S extends PreggoMobSystem<?>> extends AbstractZombieGirl implements IPreggoMob {
 
 	protected static final EntityDataAccessor<Integer> DATA_HUNGRY = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<PregnancyStage> DATA_MAX_PREGNANCY_STAGE = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, MinepreggoModEntityDataSerializers.PREGNANCY_STAGE);
@@ -67,13 +72,18 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	private int hungryTimer = 0;
 	private int healingCooldownTimer = 0;
 	
+	protected final S preggoMobSystem;
 	
 	protected AbstractTamableZombieGirl(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_) {
 	      super(p_21803_, p_21804_);
 	      this.reassessTameGoals();	     
 	      this.inventory = new ItemStackHandler(INVENTORY_SIZE);
 	      this.combined = new CombinedInvWrapper(inventory, new EntityHandsInvWrapper(this), new EntityArmorInvWrapper(this));
+	      this.preggoMobSystem = createPreggoMobSystem();
 	}
+	
+	@Nonnull
+	protected abstract S createPreggoMobSystem();
 	
 	@Override
 	protected void defineSynchedData() {
@@ -131,17 +141,6 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 		this.entityData.set(DATA_STATE, PreggoMobState.values()[compound.getInt("DataStage")]);
 	}
 
-	
-	@Override
-	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {	
-		InteractionResult retval = super.mobInteract(sourceentity, hand); 	
-		if (this.isTame()) {
-			this.setSavage(false);
-		}	
-		return retval;
-	}
-	
-	
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
 		if (this.isAlive() && capability == ForgeCapabilities.ITEM_HANDLER && side == null)
@@ -213,7 +212,7 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
 	
 	@Override
 	protected void registerGoals() {
-		super.registerGoals();
+		PreggoAIHelper.setTamableZombieGirlGoals(this);
 		this.goalSelector.addGoal(8, new AbstractZombieGirl.ZombieGirlAttackTurtleEggGoal(this, 1.0D, 3){
 			@Override
 			public boolean canUse() {
@@ -243,12 +242,34 @@ public abstract class AbstractTamableZombieGirl extends AbstractZombieGirl imple
       }
       
       this.updateSwingTime();
+      
+      this.preggoMobSystem.evaluateOnTick();
 	}
 	
 	@Override
-	public void baseTick() {
-		super.baseTick();
-		this.refreshDimensions();
+	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {	
+		InteractionResult retval = super.mobInteract(sourceentity, hand); 	
+		if (this.isTame()) {
+			this.setSavage(false);
+			return retval;
+		}	
+	
+		if (sourceentity instanceof ServerPlayer serverPlayer
+				&& preggoMobSystem.canOwnerAccessGUI(sourceentity)) {
+
+			final var entityId = this.getId();
+			final var blockPos = serverPlayer.blockPosition();
+			
+			NetworkHooks.openScreen(serverPlayer, ZombieGirlGUIMenuFactory.createMainGUIMenuProvider(this.getClass(), blockPos, entityId), buf -> {
+			    buf.writeBlockPos(blockPos);
+			    buf.writeVarInt(entityId);
+			});
+		}
+		else {		
+			preggoMobSystem.evaluateRightClick(sourceentity);
+		}
+				
+		return InteractionResult.CONSUME;
 	}
 	
 	@Override

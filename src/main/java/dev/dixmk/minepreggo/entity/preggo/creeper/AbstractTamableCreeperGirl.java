@@ -5,9 +5,12 @@ import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
 import dev.dixmk.minepreggo.entity.preggo.PreggoMobState;
+import dev.dixmk.minepreggo.entity.preggo.PreggoMobSystem;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
+import dev.dixmk.minepreggo.utils.CreeperGirlGUIMenuFactory;
+import dev.dixmk.minepreggo.utils.PreggoAIHelper;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
 
 import net.minecraft.core.Direction;
@@ -17,6 +20,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -41,8 +45,9 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.EntityArmorInvWrapper;
 import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
+import net.minecraftforge.network.NetworkHooks;
 
-public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl implements IPreggoMob {
+public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> extends AbstractCreeperGirl implements IPreggoMob {
 
 	protected static final EntityDataAccessor<Integer> DATA_HUNGRY = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<PregnancyStage> DATA_MAX_PREGNANCY_STAGE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.PREGNANCY_STAGE);
@@ -62,15 +67,19 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	private int pregnancyTimer = 0;
 	private int hungryTimer = 0;
 	private int healingCooldownTimer = 0;
-	
+	protected final S preggoMobSystem;
 	
 	protected AbstractTamableCreeperGirl(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_) {
 	      super(p_21803_, p_21804_);
 	      this.reassessTameGoals();	   
 	      this.inventory = new ItemStackHandler(INVENTARY_SIZE);
 	      this.combined = new CombinedInvWrapper(inventory, new EntityHandsInvWrapper(this), new EntityArmorInvWrapper(this));
+	      this.preggoMobSystem = createPreggoMobSystem();
 	}
-		
+		 
+	@Nonnull
+	protected abstract S createPreggoMobSystem();
+	
 	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();
@@ -133,7 +142,6 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 	
 	@Override
 	protected void registerGoals() {
-		super.registerGoals();
 		this.goalSelector.addGoal(1, new AbstractCreeperGirl.SwellGoal<>(this) {
 			@Override
 			public boolean canUse() {				
@@ -141,6 +149,7 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 				&& getCanExplote();								
 			}
 		});
+		PreggoAIHelper.setTamableCreeperGirlGoals(this);
 	}
 	
 	public void setcombatMode(CombatMode value) {
@@ -176,7 +185,8 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
     	  this.dropLeash(true, true);
       }
       
-      this.updateSwingTime();
+      this.updateSwingTime();   
+      this.preggoMobSystem.evaluateOnTick();
 	}
 	
 	@Override
@@ -260,10 +270,21 @@ public abstract class AbstractTamableCreeperGirl extends AbstractCreeperGirl imp
 			return InteractionResult.SUCCESS;
 		}
 		
-		if (this.isTame()) {
-			this.setSavage(false);
-		}	
+		if (sourceentity instanceof ServerPlayer serverPlayer
+				&& preggoMobSystem.canOwnerAccessGUI(sourceentity)) {
 
+			final var entityId = this.getId();
+			final var blockPos = serverPlayer.blockPosition();
+			
+			NetworkHooks.openScreen(serverPlayer, CreeperGirlGUIMenuFactory.createMainGUIMenuProvider(this.getClass(), blockPos, entityId), buf -> {
+			    buf.writeBlockPos(blockPos);
+			    buf.writeVarInt(entityId);
+			});
+		}
+		else {		
+			preggoMobSystem.evaluateRightClick(sourceentity);
+		}	
+			
 		return InteractionResult.CONSUME;
 	}
 

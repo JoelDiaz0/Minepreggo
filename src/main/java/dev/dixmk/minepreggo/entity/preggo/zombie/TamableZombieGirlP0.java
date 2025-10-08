@@ -6,61 +6,46 @@ import net.minecraftforge.network.NetworkHooks;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 
 import java.util.UUID;
 
 import dev.dixmk.minepreggo.entity.preggo.PreggoMobSystem;
+import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
-import dev.dixmk.minepreggo.utils.PreggoAIHelper;
-import dev.dixmk.minepreggo.utils.PreggoMobHelper;
-import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlP0InventaryGUIMenu;
-import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlP0MainGUIMenu;
-import io.netty.buffer.Unpooled;
 
-public class TamableZombieGirlP0 extends AbstractTamableZombieGirl {
+public class TamableZombieGirlP0 extends AbstractTamableZombieGirl<PreggoMobSystem<TamableZombieGirlP0>> {
 
 	private static final UUID SPEED_MODIFIER_TIRENESS_UUID = UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D836");
 	private static final AttributeModifier SPEED_MODIFIER_TIRENESS = new AttributeModifier(SPEED_MODIFIER_TIRENESS_UUID, "Tireness speed boost", -0.2D, AttributeModifier.Operation.MULTIPLY_BASE);
 	private static final EntityDataAccessor<Boolean> DATA_TIRENESS_ID = SynchedEntityData.defineId(TamableZombieGirlP0.class, EntityDataSerializers.BOOLEAN);
 	
-	private final PreggoMobSystem<TamableZombieGirlP0> preggoMobSystem;
-
 	public TamableZombieGirlP0(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get(), world);
 	}
 	
 	public TamableZombieGirlP0(EntityType<TamableZombieGirlP0> type, Level world) {
-		super(type, world);
+		super(type, world);	
 		xpReward = 10;
 		setNoAi(false);
 		setMaxUpStep(0.6f);
-		preggoMobSystem = new PreggoMobSystem<>(this) {
+	}
+	
+	@Override
+	protected PreggoMobSystem<TamableZombieGirlP0> createPreggoMobSystem() {
+		return new PreggoMobSystem<>(this) {
 			@Override
 			protected void startPregnancy() {
-				if (preggoMob.level() instanceof ServerLevel serverLevel) {
-					var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P1.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);		
-					PreggoMobHelper.transferPreggoMobBasicData(preggoMob, zombieGirl);			
-					preggoMob.discard();
-				}	
-			}
+				
+			}		
 		};
 	}
 	
@@ -68,76 +53,8 @@ public class TamableZombieGirlP0 extends AbstractTamableZombieGirl {
 	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
-
-	@Override
-	protected void registerGoals() {
-		super.registerGoals();
-		PreggoAIHelper.setTamableZombieGirlGoals(this);
-	}
-
-	@Override
-	public void tick() {
-		this.preggoMobSystem.evaluateOnTick();
-	}
-
-	@Override
-	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {
 	
-		InteractionResult retval = super.mobInteract(sourceentity, hand);
-
-		if (sourceentity instanceof ServerPlayer serverPlayer
-				&& preggoMobSystem.canOwnerAccessGUI(sourceentity)) {
-					
-			final var entityId = this.getId();
-			final var blockPos = serverPlayer.blockPosition();
-			
-			if (serverPlayer.isShiftKeyDown()) {
-				NetworkHooks.openScreen(serverPlayer, new MenuProvider() {
-					@Override
-					public Component getDisplayName() {
-						return Component.literal("ZombieGirlInventaryGUI");
-					}
-
-					@Override
-					public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-						FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
-						packetBuffer.writeBlockPos(serverPlayer.blockPosition());
-						packetBuffer.writeVarInt(entityId);			
-						return new ZombieGirlP0InventaryGUIMenu(id, inventory, packetBuffer);
-					}
-				}, buf -> {
-					buf.writeBlockPos(blockPos);
-					buf.writeVarInt(entityId);
-				});
-			}
-			else {				
-				NetworkHooks.openScreen(serverPlayer, new MenuProvider() {		
-					@Override
-					public Component getDisplayName() {
-						return Component.literal("ZombieGirlMainGUI");
-					}
-					@Override
-					public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-						FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-						buf.writeBlockPos(blockPos);
-						buf.writeVarInt(entityId);										
-						return new ZombieGirlP0MainGUIMenu(id, inventory, buf);				
-					}
-				}, buf -> {
-				    buf.writeBlockPos(blockPos);         
-				    buf.writeVarInt(entityId);
-				});			
-			}		
-		}
-		else {
-			preggoMobSystem.evaluateRightClick(sourceentity);
-		}
-				
-		return retval;
-	}
-	
-	public static void init() {
-	}
+	public static void init() {}
 
 	public static AttributeSupplier.Builder createAttributes() {
 		return AbstractTamableZombieGirl.getBasicAttributes(0.235);
@@ -147,5 +64,10 @@ public class TamableZombieGirlP0 extends AbstractTamableZombieGirl {
 		var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 		
 		return zombieGirl;
+	}
+	
+	@Override
+	public PregnancyStage getCurrentPregnancyStage() {
+		return PregnancyStage.P0;
 	}
 }

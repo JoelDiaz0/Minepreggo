@@ -7,12 +7,18 @@ import dev.dixmk.minepreggo.entity.preggo.creeper.TamableCreeperGirlP1;
 import dev.dixmk.minepreggo.entity.preggo.creeper.TamableCreeperGirlP2;
 import dev.dixmk.minepreggo.entity.preggo.creeper.TamableCreeperGirlP3;
 import dev.dixmk.minepreggo.entity.preggo.creeper.TamableCreeperGirlP4;
+import dev.dixmk.minepreggo.entity.preggo.creeper.TamableCreeperGirlP5;
+import dev.dixmk.minepreggo.entity.preggo.creeper.TamableCreeperGirlP6;
+import dev.dixmk.minepreggo.entity.preggo.creeper.TamableCreeperGirlP7;
 import dev.dixmk.minepreggo.entity.preggo.zombie.MonsterZombieGirlP0;
 import dev.dixmk.minepreggo.entity.preggo.zombie.TamableZombieGirlP0;
 import dev.dixmk.minepreggo.entity.preggo.zombie.TamableZombieGirlP1;
 import dev.dixmk.minepreggo.entity.preggo.zombie.TamableZombieGirlP2;
 import dev.dixmk.minepreggo.entity.preggo.zombie.TamableZombieGirlP3;
 import dev.dixmk.minepreggo.entity.preggo.zombie.TamableZombieGirlP4;
+import dev.dixmk.minepreggo.entity.preggo.zombie.TamableZombieGirlP5;
+import dev.dixmk.minepreggo.entity.preggo.zombie.TamableZombieGirlP6;
+import dev.dixmk.minepreggo.entity.preggo.zombie.TamableZombieGirlP7;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -52,6 +58,15 @@ public class MinepreggoModEntities {
 	public static final RegistryObject<EntityType<TamableZombieGirlP4>> TAMABLE_ZOMBIE_GIRL_P4 = register("tamable_zombie_girl_p4",
 			EntityType.Builder.<TamableZombieGirlP4>of(TamableZombieGirlP4::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamableZombieGirlP4::new).sized(0.6f, 1.8f));
 	
+	public static final RegistryObject<EntityType<TamableZombieGirlP5>> TAMABLE_ZOMBIE_GIRL_P5 = register("tamable_zombie_girl_p5",
+			EntityType.Builder.<TamableZombieGirlP5>of(TamableZombieGirlP5::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamableZombieGirlP5::new).sized(0.6f, 1.8f));
+	
+	public static final RegistryObject<EntityType<TamableZombieGirlP6>> TAMABLE_ZOMBIE_GIRL_P6 = register("tamable_zombie_girl_p6",
+			EntityType.Builder.<TamableZombieGirlP6>of(TamableZombieGirlP6::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamableZombieGirlP6::new).sized(0.6f, 1.8f));
+	
+	public static final RegistryObject<EntityType<TamableZombieGirlP7>> TAMABLE_ZOMBIE_GIRL_P7 = register("tamable_zombie_girl_p7",
+			EntityType.Builder.<TamableZombieGirlP7>of(TamableZombieGirlP7::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamableZombieGirlP7::new).sized(0.6f, 1.8f));
+	
 	/*Creeper Girl*/
 	public static final RegistryObject<EntityType<MonsterCreeperGirlP0>> MONSTER_CREEPER_GIRL_P0 = register("monster_creeper_girl_p0",
 			EntityType.Builder.<MonsterCreeperGirlP0>of(MonsterCreeperGirlP0::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(MonsterCreeperGirlP0::new).sized(0.6f, 1.8f));
@@ -70,6 +85,15 @@ public class MinepreggoModEntities {
 	
 	public static final RegistryObject<EntityType<TamableCreeperGirlP4>> TAMABLE_CREEPER_GIRL_P4 = register("tamable_creeper_girl_p4",
 			EntityType.Builder.<TamableCreeperGirlP4>of(TamableCreeperGirlP4::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamableCreeperGirlP4::new).sized(0.6f, 1.8f));
+	
+	public static final RegistryObject<EntityType<TamableCreeperGirlP5>> TAMABLE_CREEPER_GIRL_P5 = register("tamable_creeper_girl_p5",
+			EntityType.Builder.<TamableCreeperGirlP5>of(TamableCreeperGirlP5::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamableCreeperGirlP5::new).sized(0.6f, 1.8f));
+	
+	public static final RegistryObject<EntityType<TamableCreeperGirlP6>> TAMABLE_CREEPER_GIRL_P6 = register("tamable_creeper_girl_p6",
+			EntityType.Builder.<TamableCreeperGirlP6>of(TamableCreeperGirlP6::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamableCreeperGirlP6::new).sized(0.6f, 1.8f));
+	
+	public static final RegistryObject<EntityType<TamableCreeperGirlP7>> TAMABLE_CREEPER_GIRL_P7 = register("tamable_creeper_girl_p7",
+			EntityType.Builder.<TamableCreeperGirlP7>of(TamableCreeperGirlP7::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamableCreeperGirlP7::new).sized(0.6f, 1.8f));
 	
 	private static <T extends Entity> RegistryObject<EntityType<T>> register(String registryname, EntityType.Builder<T> entityTypeBuilder) {
 		return REGISTRY.register(registryname, () -> entityTypeBuilder.build(registryname));

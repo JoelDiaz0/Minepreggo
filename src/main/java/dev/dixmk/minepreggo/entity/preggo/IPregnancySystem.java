@@ -28,7 +28,5 @@ public interface IPregnancySystem {
 	
 	boolean isIncapacitated();
 	
-	PregnancyStage getCurrentPregnancyStage();
-	
 	boolean isValidCraving(Craving kindOfCraving, Item item);
 }

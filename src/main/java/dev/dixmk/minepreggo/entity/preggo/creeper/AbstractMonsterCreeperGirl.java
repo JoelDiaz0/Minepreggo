@@ -1,20 +1,12 @@
 package dev.dixmk.minepreggo.entity.preggo.creeper;
 
-
 import javax.annotation.Nullable;
 
-import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.entity.preggo.ISimplePregnancy;
-import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
-
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -34,11 +26,10 @@ import net.minecraft.world.entity.animal.Ocelot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraftforge.registries.ForgeRegistries;
 
-public abstract class AbstractMonsterCreeperGirl extends AbstractCreeperGirl implements ISimplePregnancy {
+public abstract class AbstractMonsterCreeperGirl extends AbstractCreeperGirl {
 	private CombatMode basicCombatMode = CombatMode.EXPLODE;
-
+	
 	protected AbstractMonsterCreeperGirl(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_) {
 		super(p_21803_, p_21804_);	
 	}
@@ -83,55 +74,10 @@ public abstract class AbstractMonsterCreeperGirl extends AbstractCreeperGirl imp
 	}
 	
 	@Override
-	public SoundEvent getDeathSound() {
-		return ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "preggo_death"));
-	}
-	
-	public SoundEvent getDefaultSoundEvent() {
-		return super.getDeathSound();
-	}
-	
-	/*
-	@Override
-	public void die(DamageSource source) {
-		super.die(source);			
-		if (getCurrentStage() != PregnancyStage.P0) {		
-			PreggoMobHelper.simpleSpawnFetusesAndBabiesCreeper(this);
-		}
-	}
-	*/
-	
-	protected void setExplosion() {	
-		int basicExplosionItensity = this.explosionItensity;
-		int basicExplosionRadius = this.explosionRadius;
-
-		if (getCurrentPregnancyStage() == PregnancyStage.P2
-				|| getCurrentPregnancyStage() == PregnancyStage.P3) {
-			++basicExplosionRadius;
-		}
-		else if (getCurrentPregnancyStage() == PregnancyStage.P4
-				|| getCurrentPregnancyStage() == PregnancyStage.P5) {
-			++basicExplosionItensity;
-			++basicExplosionRadius;
-		}
-		else if (getCurrentPregnancyStage() == PregnancyStage.P6
-				|| getCurrentPregnancyStage() == PregnancyStage.P7) {
-			basicExplosionItensity += 2;
-			basicExplosionRadius += 2;
-		}
-		
-		this.explosionItensity = basicExplosionItensity;
-		this.explosionRadius = basicExplosionRadius;
-	}
-	
-	@Override
 	@Nullable	
 	public SpawnGroupData finalizeSpawn(ServerLevelAccessor p_34297_, DifficultyInstance p_34298_, MobSpawnType p_34299_, @Nullable SpawnGroupData p_34300_, @Nullable CompoundTag p_34301_) {
-		p_34300_ = super.finalizeSpawn(p_34297_, p_34298_, p_34299_, p_34300_, p_34301_);
-	      
+		p_34300_ = super.finalizeSpawn(p_34297_, p_34298_, p_34299_, p_34300_, p_34301_); 
 		this.setRandomCombatMode();
-		this.setExplosion();
-		
 		return p_34300_;
 	}
 	
@@ -139,16 +85,7 @@ public abstract class AbstractMonsterCreeperGirl extends AbstractCreeperGirl imp
 	@Override
 	protected void registerGoals() {
 		super.registerGoals();		
-		this.setBasicGoals();
-	}
-	
-	private void setBasicGoals() {
-		this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.2, false) {
-			@Override
-			protected double getAttackReachSqr(LivingEntity entity) {
-				return this.mob.getBbWidth() * this.mob.getBbWidth() + entity.getBbWidth();
-			}
-		});
+		this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.2, false));
 		this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
 		this.goalSelector.addGoal(2, new AbstractCreeperGirl.SwellGoal<>(this) {		
 			@Override
@@ -164,7 +101,7 @@ public abstract class AbstractMonsterCreeperGirl extends AbstractCreeperGirl imp
 		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
 		this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true));
 	}
-		
+	
 	protected static AttributeSupplier.Builder getBasicAttributes(double movementSpeed) {
 		return Mob.createMobAttributes()
 		.add(Attributes.MAX_HEALTH, 20)

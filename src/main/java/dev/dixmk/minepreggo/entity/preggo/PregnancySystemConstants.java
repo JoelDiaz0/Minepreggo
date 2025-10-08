@@ -4,6 +4,10 @@ public class PregnancySystemConstants {
 	
 	private PregnancySystemConstants() {}
 	
+	/*Days*/
+	public static final int TOTAL_PREGNANCY_DAYS = 70;
+	
+	
 	/*Ticks*/
 	public static final int TOTAL_TICKS_MISCARRIAGE = 400;
 	public static final int TOTAL_TICKS_MORNING_SICKNESS = 200;

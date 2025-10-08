@@ -20,6 +20,8 @@ public interface IPreggoMob {
 	PregnancyStage getMaxPregnancyStage();
 	void setMaxPregnancyStage(PregnancyStage stage);
 
+	PregnancyStage getCurrentPregnancyStage();
+	
 	PreggoMobState getState();
 	void setState(PreggoMobState state);
 	

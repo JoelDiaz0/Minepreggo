@@ -5,9 +5,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
-import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractTamableCreeperGirl;
-import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import dev.dixmk.minepreggo.utils.PreggoArmorHelper;
 import dev.dixmk.minepreggo.utils.PreggoGUIHelper;
 import dev.dixmk.minepreggo.utils.PreggoMessageHelper;
@@ -32,7 +30,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 @Mod.EventBusSubscriber
-public abstract class AbstractCreeperGirlInventaryGUIMenu<T extends AbstractTamableCreeperGirl> extends AbstractContainerMenu implements Supplier<Map<Integer, Slot>> {
+public abstract class AbstractCreeperGirlInventaryGUIMenu<T extends AbstractTamableCreeperGirl<?>> extends AbstractContainerMenu implements Supplier<Map<Integer, Slot>> {
 	public final Level world;
 	public final Player entity;
 	protected ContainerLevelAccess access = ContainerLevelAccess.NULL;
@@ -72,10 +70,7 @@ public abstract class AbstractCreeperGirlInventaryGUIMenu<T extends AbstractTama
 		this.customSlots.put(IPreggoMob.CHEST_INVENTARY_SLOT, this.addSlot(new SlotItemHandler(internal, 3, 8, 26) {
 			@Override
 			public boolean mayPlace(ItemStack itemstack) {			
-				var stage = PregnancyStage.P0;
-				
-				if (creeperGirl instanceof AbstractTamablePregnantCreeperGirl c)
-					stage = c.getCurrentPregnancyStage();
+				final var stage = creeperGirl.getCurrentPregnancyStage();
 				
 				if (!PreggoArmorHelper.canPreggoMobUseChestplate(itemstack, stage)) {
 	                final var message = PreggoMessageHelper.ARMOR_MESSAGES.get(stage.ordinal());                                
@@ -90,10 +85,7 @@ public abstract class AbstractCreeperGirlInventaryGUIMenu<T extends AbstractTama
 		this.customSlots.put(IPreggoMob.LEGS_INVENTARY_SLOT, this.addSlot(new SlotItemHandler(internal, 2, 8, 44) {
 			@Override
 			public boolean mayPlace(ItemStack itemstack) {
-				var stage = PregnancyStage.P0;
-				
-				if (creeperGirl instanceof AbstractTamablePregnantCreeperGirl c)
-					stage = c.getCurrentPregnancyStage();
+				final var stage = creeperGirl.getCurrentPregnancyStage();
 				
 				if (!PreggoArmorHelper.canPreggoMobUseLegging(itemstack, stage)) {
 	                final var message = PreggoMessageHelper.ARMOR_MESSAGES.get(-1);     
@@ -276,7 +268,7 @@ public abstract class AbstractCreeperGirlInventaryGUIMenu<T extends AbstractTama
 	}
 
 	
-    private T create(AbstractTamableCreeperGirl entity) {
+    private T create(AbstractTamableCreeperGirl<?> entity) {
         if (creeperGirlClass.isInstance(entity)) {
             return creeperGirlClass.cast(entity);
         }

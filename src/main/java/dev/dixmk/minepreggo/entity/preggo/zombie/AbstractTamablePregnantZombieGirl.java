@@ -7,8 +7,10 @@ import dev.dixmk.minepreggo.entity.preggo.Craving;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancySystem;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyPain;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySymptom;
+import dev.dixmk.minepreggo.entity.preggo.PregnancySystemP1;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
+import dev.dixmk.minepreggo.utils.PreggoAIHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -17,7 +19,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 
-public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZombieGirl implements IPregnancySystem {
+public abstract class AbstractTamablePregnantZombieGirl<S extends PregnancySystemP1<?>> extends AbstractTamableZombieGirl<S> implements IPregnancySystem {
 	protected static final EntityDataAccessor<Integer> DATA_PREGNANCY_HEALTH = SynchedEntityData.defineId(AbstractTamablePregnantZombieGirl.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<Integer> DATA_DAYS_PASSED = SynchedEntityData.defineId(AbstractTamablePregnantZombieGirl.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<Integer> DATA_DAYS_BY_STAGE = SynchedEntityData.defineId(AbstractTamablePregnantZombieGirl.class, EntityDataSerializers.INT);
@@ -43,7 +45,7 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 			Craving.SPICY, MinepreggoModItems.BRAIN_WITH_HOT_SAUCE.get(),
 			Craving.NONE, null);	
 	
-	protected AbstractTamablePregnantZombieGirl(EntityType<? extends AbstractTamablePregnantZombieGirl> p_21803_, Level p_21804_) {
+	protected AbstractTamablePregnantZombieGirl(EntityType<? extends AbstractTamablePregnantZombieGirl<?>> p_21803_, Level p_21804_) {
 		super(p_21803_, p_21804_);
 	}
 		
@@ -103,6 +105,19 @@ public abstract class AbstractTamablePregnantZombieGirl extends AbstractTamableZ
 		this.entityData.set(DATA_PREGNANCY_PAIN, PregnancyPain.values()[compoundTag.getInt("DataPregnancyPain")]);
 		this.entityData.set(DATA_CRAVING_CHOSEN, Craving.values()[compoundTag.getInt("DataCravingChosen")]);
 		this.pregnancyPainTimer = compoundTag.getInt("DataPregnancyPainTimer");
+	}
+	
+	@Override
+	protected void registerGoals() {
+		super.registerGoals();
+		PreggoAIHelper.setTamablePregnantZombieGirlGoals(this);
+		this.goalSelector.addGoal(8, new AbstractZombieGirl.ZombieGirlAttackTurtleEggGoal(this, 1.0D, 3){
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !isWaiting() && !isIncapacitated();
+			}
+		});	
 	}
 	
 	@Override

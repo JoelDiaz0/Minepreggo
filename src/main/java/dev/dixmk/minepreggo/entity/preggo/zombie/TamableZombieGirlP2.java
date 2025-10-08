@@ -5,20 +5,15 @@ import dev.dixmk.minepreggo.entity.preggo.IPregnancyP2;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySystemP2;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
-import dev.dixmk.minepreggo.utils.PreggoAIHelper;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
 
-public class TamableZombieGirlP2 extends AbstractTamablePregnantZombieGirl implements IPregnancyP2 {
-	private final PregnancySystemP2<TamableZombieGirlP2> preggoMobSystem;
+public class TamableZombieGirlP2 extends AbstractTamablePregnantZombieGirl<PregnancySystemP2<TamableZombieGirlP2>> implements IPregnancyP2 {
 	
 	public TamableZombieGirlP2(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P2.get(), world);
@@ -29,7 +24,11 @@ public class TamableZombieGirlP2 extends AbstractTamablePregnantZombieGirl imple
 		xpReward = 10;
 		setNoAi(false);
 		setMaxUpStep(0.6f);
-		preggoMobSystem = new PregnancySystemP2<TamableZombieGirlP2>(this) {
+	}
+	
+	@Override
+	protected PregnancySystemP2<TamableZombieGirlP2> createPreggoMobSystem() {
+		return new PregnancySystemP2<>(this) {
 			@Override
 			protected void changePregnancyStage() {
 		
@@ -45,27 +44,6 @@ public class TamableZombieGirlP2 extends AbstractTamablePregnantZombieGirl imple
 	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
-	
-	@Override
-	protected void registerGoals() {
-		super.registerGoals();
-		PreggoAIHelper.setTamablePregnantZombieGirlGoals(this);
-	}
-	
-	@Override
-	public void tick() {
-		this.preggoMobSystem.evaluateOnTick();
-	}
-
-	@Override
-	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {
-	
-		if (super.mobInteract(sourceentity, hand) == InteractionResult.SUCCESS) 
-			return InteractionResult.SUCCESS;
-				
-		return InteractionResult.SUCCESS;
-	}
-	
 	
 	public static void init() {
 	}

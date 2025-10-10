@@ -8,7 +8,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class AnimatedTamableZombieGirlP0Model extends AbstractAnimatedZombieGirlP0Model<TamableZombieGirlP0> {
+public class AnimatedTamableZombieGirlP0Model extends AbstractTamableZombieGirlModel<TamableZombieGirlP0> {
 	
 	public AnimatedTamableZombieGirlP0Model(ModelPart root) {
 		super(root, new HierarchicalModel<TamableZombieGirlP0>() {
@@ -34,7 +34,7 @@ public class AnimatedTamableZombieGirlP0Model extends AbstractAnimatedZombieGirl
 						this.animateWalk(ZombieGirlAnimation.WALK, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
 					}
 				}
-			
+								
 				if (zombieGirl.isPanic()) {
 					this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.IDLE, ageInTicks, 1f);						
 				} else {
@@ -53,18 +53,5 @@ public class AnimatedTamableZombieGirlP0Model extends AbstractAnimatedZombieGirl
 				}
 			}	
 		});
-	}
-
-
-	@Override
-	public void setupAnim(TamableZombieGirlP0 entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-				
-		if (entity.hasCustomHeadAnimation()) {
-			this.hat.copyFrom(this.head);
-		}
-		else {
-			super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-		}	
 	}
 }

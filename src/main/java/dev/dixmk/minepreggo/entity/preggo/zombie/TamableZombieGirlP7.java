@@ -5,12 +5,9 @@ import dev.dixmk.minepreggo.entity.preggo.IPregnancyP7;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySystemP7;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
 
 public class TamableZombieGirlP7 extends AbstractTamablePregnantZombieGirl<PregnancySystemP7<TamableZombieGirlP7>> implements IPregnancyP7 {
@@ -29,25 +26,16 @@ public class TamableZombieGirlP7 extends AbstractTamablePregnantZombieGirl<Pregn
 	@Override
 	protected PregnancySystemP7<TamableZombieGirlP7> createPreggoMobSystem() {
 		return new PregnancySystemP7<>(this) {
-
 			@Override
-			protected void finishBirth() {	
+			protected void finishBirth() {
+				TamableZombieGirlP0.applyDefaultPostPartum(preggoMob);
 			}
 
 			@Override
 			protected void finishMiscarriage() {
-				// TODO Auto-generated method stub
-				
+				TamableZombieGirlP0.applyDefaultPostMiscarriage(preggoMob);
 			}
 		};
-	}
-	
-	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
-	
-	public static void init() {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {

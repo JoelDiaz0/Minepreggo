@@ -8,7 +8,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class AnimatedTamableZombieGirlP1Model extends AbstractAnimatedZombieGirlP0Model<TamableZombieGirlP1> {
+public class AnimatedTamableZombieGirlP1Model extends AbstractTamablePregnantZombieGirlModel<TamableZombieGirlP1> {
 	
 	public AnimatedTamableZombieGirlP1Model(ModelPart root) {
 		super(root, new HierarchicalModel<TamableZombieGirlP1>() {
@@ -34,10 +34,26 @@ public class AnimatedTamableZombieGirlP1Model extends AbstractAnimatedZombieGirl
 						this.animateWalk(ZombieGirlAnimation.WALK, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
 					}
 				}
-			
-				if (zombieGirl.isPanic()) {
-					this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.IDLE, ageInTicks, 1f);						
-				} else {
+						
+				if (zombieGirl.isIncapacitated()) {
+					switch (zombieGirl.getPregnancyPain()) {
+					case MORNING_SICKNESS: {
+						this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.MORNING_SICKNESS, ageInTicks, 1f);										
+						break;
+					}
+					case MISCARRIAGE: {
+						this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.MISCARRIAGE, ageInTicks, 1f);						
+						break;
+					}		
+					default:
+						break;						
+					}	
+				} else {								
+					if (zombieGirl.isPanic()) {
+						this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.IDLE, ageInTicks, 1f);						
+						return;
+					} 
+									
 					switch (zombieGirl.getState()) {
 					case WAIT: {
 						this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.WAIT, ageInTicks, 1f);										
@@ -49,23 +65,9 @@ public class AnimatedTamableZombieGirlP1Model extends AbstractAnimatedZombieGirl
 					}		
 					default:
 						this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.IDLE, ageInTicks, 1f);						
-					}	
+					}			
 				}
 			}	
 		});
 	}
-
-
-	@Override
-	public void setupAnim(TamableZombieGirlP1 entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-				
-		if (entity.hasCustomHeadAnimation()) {
-			this.hat.copyFrom(this.head);
-		}
-		else {
-			super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-		}	
-	}
-
 }

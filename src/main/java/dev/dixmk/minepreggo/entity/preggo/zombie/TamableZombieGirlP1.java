@@ -6,13 +6,12 @@ import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySystemP1;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
 
 public class TamableZombieGirlP1 extends AbstractTamablePregnantZombieGirl<PregnancySystemP1<TamableZombieGirlP1>> implements IPregnancyP1 {
@@ -33,25 +32,20 @@ public class TamableZombieGirlP1 extends AbstractTamablePregnantZombieGirl<Pregn
 		return new PregnancySystemP1<>(this) {
 			@Override
 			protected void changePregnancyStage() {
-		
+				if (preggoMob.level() instanceof ServerLevel serverLevel) {
+					var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P2.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);		
+					PreggoMobHelper.transferPregnancyP1Data(preggoMob, zombieGirl);			
+					PreggoMobHelper.transferPreggoMobInventary(preggoMob, zombieGirl);
+					PreggoMobHelper.transferAttackTarget(preggoMob, zombieGirl);
+					preggoMob.discard();
+				}
 			}
 			
 			@Override
 			protected void finishMiscarriage() {
-				if (preggoMob.level() instanceof ServerLevel serverLevel) {
-					PreggoMobHelper.transferPreggoMobBasicData(preggoMob, TamableZombieGirlP0.spawnPostMiscarriage(serverLevel, preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()));
-					preggoMob.discard();
-				}
+				TamableZombieGirlP0.applyDefaultPostMiscarriage(preggoMob);
 			}
 		};
-	}
-	
-	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
-	
-	public static void init() {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {

@@ -8,7 +8,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class AnimatedTamableCreeperGirlP0Model extends AbstractAnimatedCreeperGirlP0Model<TamableCreeperGirlP0> {
+public class AnimatedTamableCreeperGirlP0Model extends AbstractTamableCreeperGirlModel<TamableCreeperGirlP0> {
 
 	public AnimatedTamableCreeperGirlP0Model(ModelPart root) {
 		super(root, new HierarchicalModel<TamableCreeperGirlP0>() {
@@ -50,19 +50,4 @@ public class AnimatedTamableCreeperGirlP0Model extends AbstractAnimatedCreeperGi
 			}	
 		});
 	}
-
-
-	@Override
-	public void setupAnim(TamableCreeperGirlP0 entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		
-		animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-	
-		if (entity.hasCustomHeadAnimation()) {
-			this.hat.copyFrom(this.head);
-		}
-		else {
-			super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-		}
-	}
-	
 }

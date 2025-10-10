@@ -1,15 +1,12 @@
 package dev.dixmk.minepreggo.entity.preggo.creeper;
 
 import net.minecraftforge.network.PlayMessages;
-import net.minecraftforge.network.NetworkHooks;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.protocol.Packet;
 
 import dev.dixmk.minepreggo.entity.preggo.Craving;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancyP1;
@@ -46,22 +43,9 @@ public class TamableCreeperGirlP1 extends AbstractTamablePregnantCreeperGirl<Pre
 			
 			@Override
 			protected void finishMiscarriage() {
-				if (preggoMob.level() instanceof ServerLevel serverLevel) {
-					var post = TamableCreeperGirlP0.spawnPostMiscarriage(serverLevel, preggoMob.getX(), preggoMob.getY(), preggoMob.getZ());
-					PreggoMobHelper.transferPreggoMobBasicData(preggoMob, post);
-					preggoMob.discard();
-				}
+				TamableCreeperGirlP0.applyDefaultPostPartum(preggoMob);
 			}
 		};
-	}
-
-	
-	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
-	
-	public static void init() {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {

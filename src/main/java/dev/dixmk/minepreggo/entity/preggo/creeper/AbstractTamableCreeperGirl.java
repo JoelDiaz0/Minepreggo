@@ -215,11 +215,9 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	
 	@Override
 	public boolean wantsToAttack(LivingEntity target, LivingEntity owner) {	
-		if ((target instanceof TamableAnimal tamableTarget && tamableTarget.isOwnedBy(owner))
-				|| (target instanceof AbstractHorse houseTarget && houseTarget.isTamed())
-				|| (target instanceof Player pTarget && owner instanceof Player pOwmer && !(pOwmer).canHarmPlayer(pTarget)))
-			return false;	
-		return true;
+		return !(target instanceof TamableAnimal tamableTarget && tamableTarget.isOwnedBy(owner))
+				|| !(target instanceof AbstractHorse houseTarget && houseTarget.isTamed())
+				|| !(target instanceof Player pTarget && owner instanceof Player pOwmer && !(pOwmer).canHarmPlayer(pTarget));
 	}
 	
 	@Override

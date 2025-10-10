@@ -5,12 +5,13 @@ import dev.dixmk.minepreggo.entity.preggo.IPregnancyP2;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySystemP2;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import dev.dixmk.minepreggo.utils.PreggoMobHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
 
 public class TamableZombieGirlP2 extends AbstractTamablePregnantZombieGirl<PregnancySystemP2<TamableZombieGirlP2>> implements IPregnancyP2 {
@@ -31,21 +32,20 @@ public class TamableZombieGirlP2 extends AbstractTamablePregnantZombieGirl<Pregn
 		return new PregnancySystemP2<>(this) {
 			@Override
 			protected void changePregnancyStage() {
-		
+				if (preggoMob.level() instanceof ServerLevel serverLevel) {
+					var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P3.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);		
+					PreggoMobHelper.transferPregnancyP2Data(preggoMob, zombieGirl);			
+					PreggoMobHelper.transferPreggoMobInventary(preggoMob, zombieGirl);
+					PreggoMobHelper.transferAttackTarget(preggoMob, zombieGirl);
+					preggoMob.discard();
+				}
 			}
 			
 			@Override
 			protected void finishMiscarriage() {
+				TamableZombieGirlP0.applyDefaultPostMiscarriage(preggoMob);
 			}
 		};
-	}
-	
-	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
-	
-	public static void init() {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {

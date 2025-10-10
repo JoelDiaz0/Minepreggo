@@ -2,7 +2,6 @@ package dev.dixmk.minepreggo.client.renderer.preggo.creeper;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractAnimatedCreeperGirlP0Model;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractCreeperGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AnimatedMonsterCreeperGirlP0Model;
 import dev.dixmk.minepreggo.entity.preggo.creeper.MonsterCreeperGirlP0;
@@ -10,14 +9,15 @@ import dev.dixmk.minepreggo.entity.preggo.creeper.MonsterCreeperGirlP0;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MonsterCreeperGirlP0Renderer extends AbstractCreeperGirlP0Renderer<MonsterCreeperGirlP0> {
+public class MonsterCreeperGirlP0Renderer extends AbstractMonsterCreeperGirlRenderer<MonsterCreeperGirlP0, AnimatedMonsterCreeperGirlP0Model> {
 	
 	public MonsterCreeperGirlP0Renderer(EntityRendererProvider.Context context) {
-		this(context, AbstractAnimatedCreeperGirlP0Model.LAYER_LOCATION, AbstractCreeperGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION);
+		this(context, AbstractCreeperGirlModel.LAYER_LOCATION_P1, AbstractCreeperGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION);
 	}
 	
 	public MonsterCreeperGirlP0Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {
@@ -32,5 +32,10 @@ public class MonsterCreeperGirlP0Renderer extends AbstractCreeperGirlP0Renderer<
 		}
 				
 		super.render(p_115455_, p_115456_, p_115457_, p_115458_, p_115459_, p_115460_);
+	}
+
+	@Override
+	public ResourceLocation getTextureLocation(MonsterCreeperGirlP0 p_115812_) {
+		return AbstractCreeperGirlRenderer.CREEPER_GIRL_P0_LOCATION;
 	}
 }

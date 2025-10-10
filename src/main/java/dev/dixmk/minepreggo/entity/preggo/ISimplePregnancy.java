@@ -27,10 +27,12 @@ public interface ISimplePregnancy {
 		
 		if (current > max) {
 			current = max;
+		} else if (current == 0) {
+			current = 1;
 		}
 		
 		final int daysByStage = PregnancySystemConstants.TOTAL_PREGNANCY_DAYS / max;
 		
-		return randomSource.nextInt(daysByStage * current, daysByStage * (max + 1));
+		return daysByStage * (current - 1) + randomSource.nextInt(0, daysByStage);
 	}
 }

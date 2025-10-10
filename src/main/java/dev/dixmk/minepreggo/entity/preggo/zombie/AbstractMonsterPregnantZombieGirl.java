@@ -2,6 +2,7 @@ package dev.dixmk.minepreggo.entity.preggo.zombie;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.entity.preggo.ISimplePregnancy;
+import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -32,9 +33,17 @@ public abstract class AbstractMonsterPregnantZombieGirl extends AbstractMonsterZ
 
 	private static final EntityDataAccessor<Boolean> DATA_HAS_PREGNANCY_PAIN = SynchedEntityData.defineId(AbstractMonsterPregnantZombieGirl.class, EntityDataSerializers.BOOLEAN);
 	private int pregnancyPainTimer = 0;
+	private PregnancyStage currentPregnanctStage;
+	private PregnancyStage maxPregnanctStage;
+	private int totalDaysPassed;
+	private static final int PREGNANCY_PAIN_COOLDOWN = 80;
 	
-	protected AbstractMonsterPregnantZombieGirl(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_) {
+	
+	protected AbstractMonsterPregnantZombieGirl(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_, PregnancyStage currentPregnancyStage, PregnancyStage maxPregnancyStage) {
 		super(p_21803_, p_21804_);
+		this.currentPregnanctStage = currentPregnancyStage;
+		this.maxPregnanctStage = maxPregnancyStage;
+		this.totalDaysPassed = ISimplePregnancy.getRandomTotalDaysPassed(currentPregnancyStage, maxPregnancyStage, this.getRandom());
 	}
 
 	@Override
@@ -67,96 +76,147 @@ public abstract class AbstractMonsterPregnantZombieGirl extends AbstractMonsterZ
 	}
 	
 	@Override
+   	public void tick() {
+      super.tick();
+      
+      if (this.level().isClientSide()) {
+    	  return;
+      }
+
+      if (this.hasPregnancyPain()) {   	  
+    	  final var timer = this.getPregnancyPainTimer();
+    	  if (timer > PREGNANCY_PAIN_COOLDOWN) {
+    		  this.setPregnancyPainTimer(0);
+    		  this.setPregnancyPain(false);
+    	  }
+    	  else {
+        	  this.setPregnancyPainTimer(timer + 1);
+    	  }
+      }  
+	}
+	
+	@Override
 	protected void registerGoals() {
 		this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.2, false) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() 
-					&& !hasPregnancyPain();		
+				return super.canUse() && !hasPregnancyPain();		
+			}			
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() && !hasPregnancyPain();			   
 			}
 		});	
 		this.targetSelector.addGoal(1, new HurtByTargetGoal(this) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() 
-					&& !hasPregnancyPain();		
+				return super.canUse() && !hasPregnancyPain();		
+			}			
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() && !hasPregnancyPain();			   
 			}
 		}.setAlertOthers(AbstractMonsterZombieGirl.class));	
 		this.goalSelector.addGoal(2, new RestrictSunGoal(this) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() 
-					&& !hasPregnancyPain();		
+				return super.canUse() && !hasPregnancyPain();		
+			}		
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() && !hasPregnancyPain();			   
 			}
 		});
 		this.goalSelector.addGoal(2, new FleeSunGoal(this, 1.1D) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() 
-					&& !hasPregnancyPain();		
+				return super.canUse() && !hasPregnancyPain();		
 			}
-		});	
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() && !hasPregnancyPain();			   
+			}
+		});			
 	    this.goalSelector.addGoal(6, new MoveThroughVillageGoal(this, 1.0D, true, 4, this::canBreakDoors) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() 
-					&& !hasPregnancyPain();		
+				return super.canUse() && !hasPregnancyPain();		
+			}
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() && !hasPregnancyPain();			   
 			}
 	    });
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, false, false) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() 
-					&& !hasPregnancyPain();		
+				return super.canUse() && !hasPregnancyPain();		
+			}
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() && !hasPregnancyPain();			   
 			}
 		});
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false, false) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() 
-					&& !hasPregnancyPain();		
+				return super.canUse() && !hasPregnancyPain();		
+			}
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() && !hasPregnancyPain();			   
 			}
 		});
 		this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, IronGolem.class, false, false) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() 
-					&& !hasPregnancyPain();		
+				return super.canUse() && !hasPregnancyPain();		
+			}
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() && !hasPregnancyPain();			   
 			}
 		});
 		this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, Turtle.class, 10, true, false, Turtle.BABY_ON_LAND_SELECTOR) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() 
-					&& !hasPregnancyPain();		
+				return super.canUse() && !hasPregnancyPain();		
+			}
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() && !hasPregnancyPain();			   
 			}
 		});	
 		this.goalSelector.addGoal(7, new AbstractZombieGirl.ZombieGirlAttackTurtleEggGoal(this, 1.0, 3) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() 
-					&& !hasPregnancyPain();		
+				return super.canUse() && !hasPregnancyPain();		
+			}
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() && !hasPregnancyPain();			   
 			}
 		});
 		this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8F) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() 
-					&& !hasPregnancyPain();		
+				return super.canUse() && !hasPregnancyPain();		
 			}
 		});
 		this.goalSelector.addGoal(9, new WaterAvoidingRandomStrollGoal(this, 1.0) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() 
-					&& !hasPregnancyPain();		
+				return super.canUse() && !hasPregnancyPain();		
+			}
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() && !hasPregnancyPain();			   
 			}
 		});
 		this.goalSelector.addGoal(10, new RandomLookAroundGoal(this) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() 
-					&& !hasPregnancyPain();		
+				return super.canUse() && !hasPregnancyPain();		
 			}
 		});
 	}
@@ -179,5 +239,20 @@ public abstract class AbstractMonsterPregnantZombieGirl extends AbstractMonsterZ
 	@Override
 	public void setPregnancyPainTimer(int tick) {
 		this.pregnancyPainTimer = tick;
+	}
+	
+	@Override
+	public PregnancyStage getCurrentPregnancyStage() {
+		return currentPregnanctStage;
+	}
+
+	@Override
+	public PregnancyStage getMaxPregnancyStage() {
+		return maxPregnanctStage;
+	}
+
+	@Override
+	public int getTotalDaysPassed() {
+		return totalDaysPassed;
 	}
 }

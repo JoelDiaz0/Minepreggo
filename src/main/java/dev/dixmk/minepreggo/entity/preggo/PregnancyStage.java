@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.entity.preggo;
 
-import net.minecraft.util.RandomSource;
+import java.util.Random;
 
 public enum PregnancyStage {
     P0,
@@ -12,11 +12,15 @@ public enum PregnancyStage {
     P6,
     P7;
 
-    static PregnancyStage getRandomStage(int begin, int end, RandomSource randomSource) {
-    	return PregnancyStage.values()[randomSource.nextInt(begin, end)];
-    }
+	protected static final Random RANDOM =  new Random();
     
-    static PregnancyStage getRandomFinalStage(RandomSource randomSource) {
-    	return getRandomStage(4, 7, randomSource);
+	public static PregnancyStage getRandomFinalCurrentStage(PregnancyStage currentStage) {	
+		
+		int c = currentStage.ordinal();
+		if (c < 4) {
+			c = 4;
+		}
+		
+		return PregnancyStage.values()[RANDOM.nextInt(c, 7)];	
     }
 }

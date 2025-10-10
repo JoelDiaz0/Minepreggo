@@ -1,6 +1,7 @@
 package dev.dixmk.minepreggo.init;
 
 import dev.dixmk.minepreggo.entity.preggo.Craving;
+import dev.dixmk.minepreggo.entity.preggo.PostPregnancy;
 import dev.dixmk.minepreggo.entity.preggo.PreggoMobState;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
@@ -21,6 +22,8 @@ public class MinepreggoModEntityDataSerializers {
 	public static final EntityDataSerializer<PreggoMobState> STATE = EntityDataSerializer.simpleEnum(PreggoMobState.class);
 	public static final EntityDataSerializer<Craving> CRAVING = EntityDataSerializer.simpleEnum(Craving.class);
 	
+	public static final EntityDataSerializer<PostPregnancy> POST_PREGNANCY = EntityDataSerializer.simpleEnum(PostPregnancy.class);
+
     public static void register() {
         EntityDataSerializers.registerSerializer(PREGNANCY_SYMPTOM);
         EntityDataSerializers.registerSerializer(PREGNANCY_STAGE);
@@ -28,5 +31,6 @@ public class MinepreggoModEntityDataSerializers {
         EntityDataSerializers.registerSerializer(COMBAT_MODE);
         EntityDataSerializers.registerSerializer(STATE);
         EntityDataSerializers.registerSerializer(CRAVING);
+        EntityDataSerializers.registerSerializer(POST_PREGNANCY);
     }
 }

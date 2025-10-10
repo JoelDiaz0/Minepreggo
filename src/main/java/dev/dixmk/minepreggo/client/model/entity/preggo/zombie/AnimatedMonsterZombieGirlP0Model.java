@@ -8,7 +8,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class AnimatedMonsterZombieGirlP0Model extends AbstractAnimatedZombieGirlP0Model<MonsterZombieGirlP0> {
+public class AnimatedMonsterZombieGirlP0Model extends AbstractMonsterZombieGirlModel<MonsterZombieGirlP0> {
 
 	public AnimatedMonsterZombieGirlP0Model(ModelPart root) {
 		super(root, new HierarchicalModel<MonsterZombieGirlP0>() {
@@ -35,13 +35,5 @@ public class AnimatedMonsterZombieGirlP0Model extends AbstractAnimatedZombieGirl
 			    this.animate(entity.attackAnimationState, ZombieGirlAnimation.ATTACK, ageInTicks, 1f);	
 			}	
 		});
-	}
-	
-	@Override
-	public void setupAnim(MonsterZombieGirlP0 entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		this.animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-	}
-	
-	
+	}	
 }

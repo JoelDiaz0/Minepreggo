@@ -5,12 +5,13 @@ import dev.dixmk.minepreggo.entity.preggo.IPregnancyP4;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySystemP4;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import dev.dixmk.minepreggo.utils.PreggoMobHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
 
 public class TamableCreeperGirlP4 extends AbstractTamablePregnantCreeperGirl<PregnancySystemP4<TamableCreeperGirlP4>> implements IPregnancyP4 {
@@ -30,25 +31,24 @@ public class TamableCreeperGirlP4 extends AbstractTamablePregnantCreeperGirl<Pre
 	protected PregnancySystemP4<TamableCreeperGirlP4> createPreggoMobSystem() {
 		return new PregnancySystemP4<>(this) {
 			@Override
-			protected void changePregnancyStage() {	
+			protected void changePregnancyStage() {
+				if (preggoMob.level() instanceof ServerLevel serverLevel) {
+					var creeperGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P5.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);
+					PreggoMobHelper.transferPregnancyP4Data(preggoMob, creeperGirl);
+					preggoMob.discard();
+				}
 			}
 			
 			@Override
 			protected void finishMiscarriage() {
+				TamableCreeperGirlP0.applyDefaultPostPartum(preggoMob);
 			}
 			
 			@Override
 			protected void finishBirth() {
+				TamableCreeperGirlP0.applyDefaultPostPartum(preggoMob);
 			}
 		};
-	}
-	
-	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
-	
-	public static void init() {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {

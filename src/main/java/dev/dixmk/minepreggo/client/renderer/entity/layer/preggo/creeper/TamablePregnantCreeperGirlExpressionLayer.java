@@ -16,14 +16,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class TamablePregnantCreeperGirlExpressionLayer 
 	<E extends AbstractTamablePregnantCreeperGirl<?>, M extends AbstractTamablePregnantCreeperGirlModel<E>> extends TamableCreeperGirlExpressionLayer<E, M> {
 	
-	protected static final RenderType ANGRY = RenderType.armorCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/angry"));
-	protected static final RenderType SEX = RenderType.armorCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/sex"));
-	protected static final RenderType KICKING = RenderType.armorCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/kicking"));
-	protected static final RenderType CONTRACTION = RenderType.armorCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/contraction"));
-	protected static final RenderType PREBIRTH = RenderType.armorCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/prebirth"));
-	protected static final RenderType BIRTH = RenderType.armorCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/prebirth"));
-	protected static final RenderType MISCARRIAGE = RenderType.armorCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/miscarriage"));
-	protected static final RenderType SAD = RenderType.armorCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/sad"));
+	protected static final RenderType ANGRY = RenderType.armorCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/creeper_girl_face_angry1.png"));
+	protected static final RenderType SEX = RenderType.armorCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/creeper_girl_face_horny2.png"));
+	protected static final RenderType KICKING = RenderType.armorCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/creeper_girl_face_pain1.png"));
+	protected static final RenderType CONTRACTION = RenderType.armorCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/creeper_girl_face_pain2.png"));
+	protected static final RenderType PREBIRTH = RenderType.armorCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/creeper_girl_face_pain3.png"));
+	protected static final RenderType BIRTH = RenderType.armorCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/creeper_girl_face_pain4.png"));
+	protected static final RenderType MISCARRIAGE = RenderType.armorCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/creeper_girl_face_pain5.png"));
+	protected static final RenderType SAD = RenderType.armorCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/creeper_girl_face_sad1.png"));
 	
 	public TamablePregnantCreeperGirlExpressionLayer(RenderLayerParent<E, M> p_117346_) {
 		super(p_117346_);

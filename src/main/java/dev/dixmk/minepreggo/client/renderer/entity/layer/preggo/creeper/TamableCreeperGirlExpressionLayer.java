@@ -21,9 +21,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class TamableCreeperGirlExpressionLayer
 	<E extends AbstractTamableCreeperGirl<?>, M extends AbstractTamableCreeperGirlModel<E>> extends RenderLayer<E, M> {
 	
-	protected static final RenderType WAITING = RenderType.armorCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/waiting"));
-	protected static final RenderType SAVAGE = RenderType.armorCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/savage"));
-	protected static final RenderType NAUSEOUS = RenderType.armorCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/nauseous"));
+	protected static final RenderType WAITING = RenderType.armorCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/creeper_girl_face_sad2.png"));
+	protected static final RenderType SAVAGE = RenderType.armorCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/creeper_girl_face_sad2.png"));
+	protected static final RenderType NAUSEOUS = RenderType.armorCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/creeper_girl_face_pain3"));
 
 	public TamableCreeperGirlExpressionLayer(RenderLayerParent<E, M> p_117346_) {
 		super(p_117346_);

@@ -43,8 +43,7 @@ public abstract class AbstractTamablePregnantCreeperGirl<S extends PregnancySyst
 			Craving.SALTY, MinepreggoModItems.ACTIVATED_GUNPOWDER_WITH_SALT.get(), 
 			Craving.SWEET, MinepreggoModItems.ACTIVATED_GUNPOWDER_WITH_CHOCOLATE.get(), 
 			Craving.SOUR, MinepreggoModItems.SOUR_ACTIVATED_GUNPOWDER.get(),
-			Craving.SPICY, MinepreggoModItems.ACTIVATED_GUNPOWDER_WITH_HOT_SAUCE.get(),
-			Craving.NONE, null);	
+			Craving.SPICY, MinepreggoModItems.ACTIVATED_GUNPOWDER_WITH_HOT_SAUCE.get());	
 	
 	protected AbstractTamablePregnantCreeperGirl(EntityType<? extends AbstractTamableCreeperGirl<?>> p_21803_, Level p_21804_) {
 		super(p_21803_, p_21804_);

@@ -132,6 +132,7 @@ public class MonsterCreeperGirlP0 extends AbstractMonsterCreeperGirl {
 		return retval;
 	}
 
+	/*
 	@Override
 	@Nullable	
 	public SpawnGroupData finalizeSpawn(ServerLevelAccessor p_34297_, DifficultyInstance p_34298_, MobSpawnType p_34299_, @Nullable SpawnGroupData p_34300_, @Nullable CompoundTag p_34301_) {
@@ -142,6 +143,7 @@ public class MonsterCreeperGirlP0 extends AbstractMonsterCreeperGirl {
 	       
 		return p_34300_;
 	}
+	*/
 	
 	public static AttributeSupplier.Builder createAttributes() {
 		return getBasicAttributes(0.24);

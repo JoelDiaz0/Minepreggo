@@ -136,6 +136,7 @@ public class MonsterZombieGirlP0 extends AbstractMonsterZombieGirl {
 		return super.getDimensions(p_33597_).scale(1F);
 	}
 	
+	/*
 	@Override
 	@Nullable	
 	public SpawnGroupData finalizeSpawn(ServerLevelAccessor p_34297_, DifficultyInstance p_34298_, MobSpawnType p_34299_, @Nullable SpawnGroupData p_34300_, @Nullable CompoundTag p_34301_) {
@@ -144,6 +145,7 @@ public class MonsterZombieGirlP0 extends AbstractMonsterZombieGirl {
 	        this.setBaby(true);		
 		return p_34300_;
 	}
+	*/
 	
 	public static AttributeSupplier.Builder createAttributes() {
 		return getBasicAttributes(0.235);

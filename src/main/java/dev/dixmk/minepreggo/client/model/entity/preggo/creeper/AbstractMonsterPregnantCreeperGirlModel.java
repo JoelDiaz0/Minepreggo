@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.creeper;
 
-import dev.dixmk.minepreggo.client.entity.animation.preggo.zombie.ZombieGirlAnimation;
+import dev.dixmk.minepreggo.client.entity.animation.preggo.creeper.CreeperGirlAnimation;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractMonsterPregnantCreeperGirl;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -43,20 +43,20 @@ public abstract class AbstractMonsterPregnantCreeperGirlModel<E extends Abstract
 				this.root().getAllParts().forEach(ModelPart::resetPose);
 				
 				if (creeperGirl.hasPregnancyPain()) {
-					this.animateWalk(ZombieGirlAnimation.AGGRESSION, limbSwing, limbSwingAmount, 1f, 1f);
+					this.animateWalk(CreeperGirlAnimation.AGGRESSION, limbSwing, limbSwingAmount, 1f, 1f);
 					return;
 				}
 				
 			    if (creeperGirl.isAttacking()) {
-				    this.animate(creeperGirl.attackAnimationState, ZombieGirlAnimation.ATTACK, ageInTicks, 1f);	
+				    this.animate(creeperGirl.attackAnimationState, CreeperGirlAnimation.ATTACK, ageInTicks, 1f);	
 			    }
 				
 				if (creeperGirl.walkAnimation.isMoving()) {
 					if (creeperGirl.isAggressive()) {
-						this.animateWalk(ZombieGirlAnimation.AGGRESSION, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
+						this.animateWalk(CreeperGirlAnimation.AGGRESSION, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
 					}
 					else {
-						this.animateWalk(ZombieGirlAnimation.WALK, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
+						this.animateWalk(CreeperGirlAnimation.WALK, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
 					}
 				}						
 			}

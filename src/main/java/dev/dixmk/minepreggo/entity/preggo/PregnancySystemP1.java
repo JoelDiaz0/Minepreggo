@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
 import net.minecraft.core.BlockPos;
@@ -27,7 +28,10 @@ public abstract class PregnancySystemP1<
 	}
 	
 	protected Result evaluatePregnancyStageChange() {
-	    if (preggoMob.getDaysPassed() == preggoMob.getDaysByStage()) {
+	    if (preggoMob.getDaysPassed() >= preggoMob.getDaysByStage()) {
+	    	this.changePregnancyStage();
+	    	MinepreggoMod.LOGGER.debug("pregnancy stage change={}, preggomob={}, currentPregnancyStage={}",
+	    			true, preggoMob.getClass().getName(), preggoMob.getCurrentPregnancyStage());
 	        return Result.SUCCESS;
 	    }
 	    return Result.NOTHING;
@@ -79,12 +83,10 @@ public abstract class PregnancySystemP1<
 	    } else {
 	        if (!PreggoMobHelper.hasValidTarget(preggoMob) && randomSource.nextFloat() < angerProbability) {
 	            final Vec3 center = new Vec3(x, y, z);      
-	
 	            List<Player> owner = level.getEntitiesOfClass(Player.class, new AABB(center, center).inflate(12), preggoMob::isOwnedBy)
 	                    .stream()
 	                    .sorted(Comparator.comparingDouble(entcnd -> entcnd.distanceToSqr(center)))
-	                    .toList();
-	           
+	                    .toList();	           
 	            if (!owner.isEmpty()) {
 	            	preggoMob.setTarget(owner.get(0));
 	            }
@@ -127,7 +129,7 @@ public abstract class PregnancySystemP1<
 		
 		final var level = preggoMob.level();
 		
-		if (level.isClientSide()) {
+		if (level.isClientSide()) {			
 			return;
 		}
 		
@@ -138,7 +140,7 @@ public abstract class PregnancySystemP1<
 		final var x =  preggoMob.getX();
 		final var y = preggoMob.getY();
 		final var z = preggoMob.getZ();
-		
+				
 		if (level instanceof ServerLevel serverLevel
 				&& evaluateMiscarriage(serverLevel, x, y, z, PregnancySystemConstants.TOTAL_TICKS_MISCARRIAGE) == Result.SUCCESS) {
 			return; 
@@ -146,6 +148,8 @@ public abstract class PregnancySystemP1<
 		
 		this.evaluatePregnancyTimer();
 		this.evaluateHungryTimer(level, x, y, z, MinepreggoModConfig.getTotalTicksOfHungryP1());
+		
+		
 		this.evaluateCravingTimer(MinepreggoModConfig.getTotalTicksOfCravingP1());
 		this.evaluateAngry(level, x, y, z, PregnancySystemConstants.LOW_ANGER_PROBABILITY);
 		

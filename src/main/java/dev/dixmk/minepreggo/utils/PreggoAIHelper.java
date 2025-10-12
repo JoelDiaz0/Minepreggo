@@ -404,11 +404,12 @@ public class PreggoAIHelper {
 			}
 		});	
 		
+
 		preggoMob.goalSelector.addGoal(9, new LookAtPlayerGoal(preggoMob, Player.class, 6F) {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
-				&& !preggoMob.isIncapacitated() || !preggoMob.isWaiting();
+				&& (!preggoMob.isIncapacitated() || !preggoMob.isWaiting());
 			}
 
 			@Override
@@ -417,7 +418,7 @@ public class PreggoAIHelper {
 				&& !preggoMob.isIncapacitated();
 			}
 		});			
-		
+
 		preggoMob.goalSelector.addGoal(10, new RandomLookAroundGoal(preggoMob) {
 			@Override
 			public boolean canUse() {

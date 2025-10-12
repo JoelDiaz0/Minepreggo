@@ -40,9 +40,9 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 
 	    final var currentHungry = preggoMob.getHungry();
 	    final var currentHungryTimer = preggoMob.getHungryTimer();
-	    
+	      
 	    if (!preggoMob.isSavage()) {
-	        if (currentHungry > 0) {
+	        if (currentHungry > 0) {     	
 	            int timerIncrement = 1;
 	            if (preggoMob.getDeltaMovement().x() != 0 || preggoMob.getDeltaMovement().z() != 0) {
 	                timerIncrement += 1;              

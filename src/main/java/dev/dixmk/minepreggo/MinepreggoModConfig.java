@@ -354,13 +354,13 @@ public class MinepreggoModConfig {
     }
     
     private static void calculateHungryValues() { 	
-    	totalTicksOfHungryP1 = (int) Math.ceil(totalTicksOfHungryP0 * 0.05F - totalTicksOfHungryP0);
-    	totalTicksOfHungryP2 = (int) Math.ceil(totalTicksOfHungryP0 * 0.1F - totalTicksOfHungryP0);
-    	totalTicksOfHungryP3 = (int) Math.ceil(totalTicksOfHungryP0 * 0.15F - totalTicksOfHungryP0);
-    	totalTicksOfHungryP4 = (int) Math.ceil(totalTicksOfHungryP0 * 0.2F - totalTicksOfHungryP0);
-    	totalTicksOfHungryP5 = (int) Math.ceil(totalTicksOfHungryP0 * 0.25F - totalTicksOfHungryP0);
-    	totalTicksOfHungryP6 = (int) Math.ceil(totalTicksOfHungryP0 * 0.3F - totalTicksOfHungryP0);
-    	totalTicksOfHungryP7 = (int) Math.ceil(totalTicksOfHungryP0 * 0.35F - totalTicksOfHungryP0);
+    	totalTicksOfHungryP1 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0 * 0.05F);
+    	totalTicksOfHungryP2 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0 * 0.1F);
+    	totalTicksOfHungryP3 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0 * 0.15F);
+    	totalTicksOfHungryP4 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0 * 0.2F);
+    	totalTicksOfHungryP5 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0 * 0.25F);
+    	totalTicksOfHungryP6 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0  * 0.3F);
+    	totalTicksOfHungryP7 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0 * 0.35F);
     }
     
     private static void calculateCravingValues() { 	

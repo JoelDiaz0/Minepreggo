@@ -86,7 +86,7 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 		this.entityData.define(DATA_HUNGRY, 4);
 			
 		this.entityData.define(DATA_PREGNANT, false);
-		this.entityData.define(DATA_SAVAGE, true);
+		this.entityData.define(DATA_SAVAGE, false);
 		this.entityData.define(DATA_ANGRY, false);
 		this.entityData.define(DATA_WAITING, false);
 		this.entityData.define(DATA_PANIC, false);
@@ -179,14 +179,14 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	@Override
    	public void aiStep() {
       super.aiStep();
-      
-      if (this.isAlive()
-    		  && this.isLeashed()) {
-    	  this.dropLeash(true, true);
-      }
-      
       this.updateSwingTime();   
-      this.preggoMobSystem.evaluateOnTick();
+      
+      if (this.isAlive()) {
+          this.preggoMobSystem.evaluateOnTick();
+    	  if (this.isLeashed()) {
+    		  this.dropLeash(true, true);
+    	  }	  
+      }
 	}
 	
 	@Override

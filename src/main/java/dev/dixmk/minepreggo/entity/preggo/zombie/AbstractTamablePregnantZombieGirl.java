@@ -42,8 +42,7 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PregnancySyste
 			Craving.SALTY, MinepreggoModItems.BRAIN_WITH_SALT.get(), 
 			Craving.SWEET, MinepreggoModItems.BRAIN_WITH_CHOCOLATE.get(), 
 			Craving.SOUR, MinepreggoModItems.SOUR_BRAIN.get(),
-			Craving.SPICY, MinepreggoModItems.BRAIN_WITH_HOT_SAUCE.get(),
-			Craving.NONE, null);	
+			Craving.SPICY, MinepreggoModItems.BRAIN_WITH_HOT_SAUCE.get());	
 	
 	protected AbstractTamablePregnantZombieGirl(EntityType<? extends AbstractTamablePregnantZombieGirl<?>> p_21803_, Level p_21804_) {
 		super(p_21803_, p_21804_);

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+
+    <Appenders>
+        <!-- Appender para la consola (ideal para desarrollo) -->
+        <Console name="ConsoleAppender" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{20}.%M():%L - %msg%n" />
+        </Console>
+
+        <!-- Appender para archivo (ideal para producción) -->
+        <File name="FileAppender" fileName="logs/aplicacion.log" append="true">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+        </File>
+
+    </Appenders>
+
+    <Loggers>
+        <!-- Logger específico para tu paquete (ej: com.miempresa) -->
+        <!-- En desarrollo, puedes activar la consola; en producción, comenta esta sección -->
+        <Logger name="dev.dixmk.minepreggo" level="debug" additivity="false">
+            <AppenderRef ref="ConsoleAppender" />
+        </Logger>
+
+        <!-- Logger raíz (por defecto para todos los demás paquetes) -->
+        <Root level="info">
+            <AppenderRef ref="FileAppender" />
+            <!-- En producción, NO incluyas ConsoleAppender aquí -->
+        </Root>
+    </Loggers>
+</Configuration>

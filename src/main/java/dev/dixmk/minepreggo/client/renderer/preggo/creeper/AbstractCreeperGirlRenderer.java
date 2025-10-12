@@ -18,19 +18,19 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractCreeperGirlRenderer<E extends AbstractCreeperGirl, M extends AbstractCreeperGirlModel<E>> extends HumanoidMobRenderer<E, M> {
 	
-	protected static final ResourceLocation  CREEPER_GIRL_P0_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/creeper_girl_p0.png");
-	protected static final ResourceLocation  CREEPER_GIRL_P1_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/creeper_girl_p1.png");
-	protected static final ResourceLocation  CREEPER_GIRL_P2_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/creeper_girl_p2.png");
-	protected static final ResourceLocation  CREEPER_GIRL_P3_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/creeper_girl_p3.png");
-	protected static final ResourceLocation  CREEPER_GIRL_P4_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/creeper_girl_p4.png");
-	protected static final ResourceLocation  CREEPER_GIRL_P5_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/creeper_girl_p5.png");
-	protected static final ResourceLocation  CREEPER_GIRL_P6_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/creeper_girl_p6.png");
-	protected static final ResourceLocation  CREEPER_GIRL_P7_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/creeper_girl_p7.png");
+	protected static final ResourceLocation  CREEPER_GIRL_P0_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/creeper_girl_p0.png");
+	protected static final ResourceLocation  CREEPER_GIRL_P1_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/creeper_girl_p1.png");
+	protected static final ResourceLocation  CREEPER_GIRL_P2_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/creeper_girl_p2.png");
+	protected static final ResourceLocation  CREEPER_GIRL_P3_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/creeper_girl_p3.png");
+	protected static final ResourceLocation  CREEPER_GIRL_P4_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/creeper_girl_p4.png");
+	protected static final ResourceLocation  CREEPER_GIRL_P5_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/creeper_girl_p5.png");
+	protected static final ResourceLocation  CREEPER_GIRL_P6_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/creeper_girl_p6.png");
+	protected static final ResourceLocation  CREEPER_GIRL_P7_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/creeper_girl_p7.png");
 
-	protected AbstractCreeperGirlRenderer(EntityRendererProvider.Context context, M main, M inner, M outter) {
+	protected AbstractCreeperGirlRenderer(EntityRendererProvider.Context context, M main, M inner, M outter, M armor) {
 		super(context, main, 0.5F);
 		this.addLayer(new HumanoidArmorLayer<>(this, inner, outter, context.getModelManager()));
-		this.addLayer(new CreeperGirlPowerLayer<>(this, context.getModelSet(), main));
+		this.addLayer(new CreeperGirlPowerLayer<>(this, context.getModelSet(), armor));
 	}
 	
 	@Override

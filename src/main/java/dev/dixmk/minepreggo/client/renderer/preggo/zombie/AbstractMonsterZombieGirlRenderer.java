@@ -1,6 +1,7 @@
 package dev.dixmk.minepreggo.client.renderer.preggo.zombie;
 
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractMonsterZombieGirlModel;
+import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.zombie.MonsterZombieGirlExpressionLayer;
 import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractMonsterZombieGirl;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraftforge.api.distmarker.Dist;
@@ -13,6 +14,10 @@ public abstract class AbstractMonsterZombieGirlRenderer
 
 	protected AbstractMonsterZombieGirlRenderer(Context context, M main, M inner, M outter) {
 		super(context, main, inner, outter);
+		this.addFacialExpresions();
 	}
 
+	protected void addFacialExpresions() {
+		this.addLayer(new MonsterZombieGirlExpressionLayer<>(this));
+	}
 }

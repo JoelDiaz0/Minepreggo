@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.init;
 import dev.dixmk.minepreggo.MinepreggoMod;
 
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.registries.DeferredRegister;
@@ -16,6 +17,7 @@ public class MinepreggoModTabs {
 
     public static final RegistryObject<CreativeModeTab> MINEPREGGO_TAB = REGISTRY.register("minepreggo_tab", () -> CreativeModeTab.builder()
             .withTabsBefore(CreativeModeTabs.COMBAT)
+            .title(Component.literal("Minepreggo"))
             .icon(() -> MinepreggoModItems.LEMON.get().getDefaultInstance())
             .displayItems((parameters, output) -> {
                 output.accept(MinepreggoModItems.LEMON.get());

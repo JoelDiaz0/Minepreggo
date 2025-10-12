@@ -255,7 +255,16 @@ public class MinepreggoMod {
 		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_LOCATION_P7, AbstractCreeperGirlModel::createP7BodyLayer);
 		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractCreeperGirlModel::createInnerLayer);
 		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractCreeperGirlModel::createOuterLayer);
-				
+		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_ENERGY_ARMOR_P0_LOCATION, AbstractCreeperGirlModel::createP0BodyLayer);
+		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_ENERGY_ARMOR_P1_LOCATION, AbstractCreeperGirlModel::createP1BodyLayer);
+		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_ENERGY_ARMOR_P2_LOCATION, AbstractCreeperGirlModel::createP2BodyLayer);
+		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_ENERGY_ARMOR_P3_LOCATION, AbstractCreeperGirlModel::createP3BodyLayer);
+		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_ENERGY_ARMOR_P4_LOCATION, AbstractCreeperGirlModel::createP4BodyLayer);
+		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_ENERGY_ARMOR_P5_LOCATION, AbstractCreeperGirlModel::createP5BodyLayer);
+		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_ENERGY_ARMOR_P6_LOCATION, AbstractCreeperGirlModel::createP6BodyLayer);
+		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_ENERGY_ARMOR_P7_LOCATION, AbstractCreeperGirlModel::createP7BodyLayer);
+
+		
 		/*Maternal Armors*/
 		event.registerLayerDefinition(BellyShieldP4Model.LAYER_LOCATION, BellyShieldP4Model::createBodyLayer);
 		event.registerLayerDefinition(BellyShieldP5Model.LAYER_LOCATION, BellyShieldP5Model::createBodyLayer);

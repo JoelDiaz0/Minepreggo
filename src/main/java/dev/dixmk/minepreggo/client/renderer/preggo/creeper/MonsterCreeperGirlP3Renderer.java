@@ -13,15 +13,15 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class MonsterCreeperGirlP3Renderer extends AbstractMonsterPregnantCreeperGirlRenderer<MonsterCreeperGirlP3, AnimatedMonsterCreeperGirlP3Model> {
 	
 	public MonsterCreeperGirlP3Renderer(EntityRendererProvider.Context context) {
-		this(context, AbstractCreeperGirlModel.LAYER_LOCATION_P3, AbstractCreeperGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION);
+		this(context, AbstractCreeperGirlModel.LAYER_LOCATION_P3, AbstractCreeperGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractCreeperGirlModel.LAYER_ENERGY_ARMOR_P3_LOCATION);
 	}
 	
-	public MonsterCreeperGirlP3Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {
-		super(context, new AnimatedMonsterCreeperGirlP3Model(context.bakeLayer(main)), new AnimatedMonsterCreeperGirlP3Model(context.bakeLayer(inner)), new AnimatedMonsterCreeperGirlP3Model(context.bakeLayer(outter)));
+	public MonsterCreeperGirlP3Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter, ModelLayerLocation armor) {
+		super(context, new AnimatedMonsterCreeperGirlP3Model(context.bakeLayer(main)), new AnimatedMonsterCreeperGirlP3Model(context.bakeLayer(inner)), new AnimatedMonsterCreeperGirlP3Model(context.bakeLayer(outter)), new AnimatedMonsterCreeperGirlP3Model(context.bakeLayer(armor)));
 	}
 
 	@Override
 	public ResourceLocation getTextureLocation(MonsterCreeperGirlP3 p_115812_) {
-		return AbstractCreeperGirlRenderer.CREEPER_GIRL_P3_LOCATION;
+		return CREEPER_GIRL_P3_LOCATION;
 	}
 }

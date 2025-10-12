@@ -91,7 +91,7 @@ public abstract class AbstractTamableZombieGirl<S extends PreggoMobSystem<?>> ex
 		this.entityData.define(DATA_HUNGRY, 4);
 			
 		this.entityData.define(DATA_PREGNANT, false);
-		this.entityData.define(DATA_SAVAGE, true);
+		this.entityData.define(DATA_SAVAGE, false);
 		this.entityData.define(DATA_ANGRY, false);
 		this.entityData.define(DATA_WAITING, false);
 		this.entityData.define(DATA_PANIC, false);
@@ -235,24 +235,18 @@ public abstract class AbstractTamableZombieGirl<S extends PreggoMobSystem<?>> ex
 	@Override
    	public void aiStep() {
       super.aiStep();
-      
-      if (this.isAlive()
-    		  && this.isLeashed()) {
-    	  this.dropLeash(true, true);
+      this.updateSwingTime();      
+      if (this.isAlive()) {	  
+          this.preggoMobSystem.evaluateOnTick();       
+          if (this.isLeashed()) {
+        	  this.dropLeash(true, true);
+          }
       }
-      
-      this.updateSwingTime();
-      
-      this.preggoMobSystem.evaluateOnTick();
 	}
 	
 	@Override
 	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {	
-		InteractionResult retval = super.mobInteract(sourceentity, hand); 	
-		if (this.isTame()) {
-			this.setSavage(false);
-			return retval;
-		}	
+		super.mobInteract(sourceentity, hand); 		
 	
 		if (sourceentity instanceof ServerPlayer serverPlayer
 				&& preggoMobSystem.canOwnerAccessGUI(sourceentity)) {
@@ -272,14 +266,14 @@ public abstract class AbstractTamableZombieGirl<S extends PreggoMobSystem<?>> ex
 		return InteractionResult.CONSUME;
 	}
 	
+	
+	
+	
 	@Override
 	public boolean wantsToAttack(LivingEntity target, LivingEntity owner) {		
-		if ((target instanceof TamableAnimal tamableTarget && tamableTarget.isOwnedBy(owner))
-				|| (target instanceof AbstractHorse houseTarget && houseTarget.isTamed())
-				|| (target instanceof Player pTarget && owner instanceof Player pOwmer && !(pOwmer).canHarmPlayer(pTarget)))
-			return false;
-	
-		return true;
+		return !(target instanceof TamableAnimal tamableTarget && tamableTarget.isOwnedBy(owner))
+				|| !(target instanceof AbstractHorse houseTarget && houseTarget.isTamed())
+				|| !(target instanceof Player pTarget && owner instanceof Player pOwmer && !(pOwmer).canHarmPlayer(pTarget));
 	}
 		
 	protected static AttributeSupplier.Builder getBasicAttributes(double movementSpeed) {

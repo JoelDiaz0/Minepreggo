@@ -1,6 +1,7 @@
 package dev.dixmk.minepreggo.client.renderer.preggo.zombie;
 
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractTamablePregnantZombieGirlModel;
+import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.zombie.TamablePregnantZombieGirlExpressionLayer;
 import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraftforge.api.distmarker.Dist;
@@ -13,5 +14,9 @@ public abstract class AbstractTamablePregnantZombieGirlRenderer
 	protected AbstractTamablePregnantZombieGirlRenderer(Context context, M main, M inner, M outter) {
 		super(context, main, inner, outter);
 	}
-
+	
+	@Override
+	protected void addFacialExpresions() {
+		this.addLayer(new TamablePregnantZombieGirlExpressionLayer<>(this));
+	}
 }

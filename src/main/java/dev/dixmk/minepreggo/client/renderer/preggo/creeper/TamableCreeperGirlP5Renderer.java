@@ -13,11 +13,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class TamableCreeperGirlP5Renderer extends AbstractTamablePregnantCreeperGirlRenderer<TamableCreeperGirlP5, AnimatedTamableCreeperGirlP5Model> {
 	
 	public TamableCreeperGirlP5Renderer(EntityRendererProvider.Context context) {
-		this(context, AbstractCreeperGirlModel.LAYER_LOCATION_P5, AbstractCreeperGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION);
+		this(context, AbstractCreeperGirlModel.LAYER_LOCATION_P5, AbstractCreeperGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractCreeperGirlModel.LAYER_ENERGY_ARMOR_P5_LOCATION);
 	}
 	
-	public TamableCreeperGirlP5Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {
-		super(context, new AnimatedTamableCreeperGirlP5Model(context.bakeLayer(main)), new AnimatedTamableCreeperGirlP5Model(context.bakeLayer(inner)), new AnimatedTamableCreeperGirlP5Model(context.bakeLayer(outter)));
+	public TamableCreeperGirlP5Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter, ModelLayerLocation armor) {
+		super(context, new AnimatedTamableCreeperGirlP5Model(context.bakeLayer(main)), new AnimatedTamableCreeperGirlP5Model(context.bakeLayer(inner)), new AnimatedTamableCreeperGirlP5Model(context.bakeLayer(outter)), new AnimatedTamableCreeperGirlP5Model(context.bakeLayer(armor)));
 	}
 
 	@Override

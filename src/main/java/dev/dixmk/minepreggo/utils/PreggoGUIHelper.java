@@ -91,7 +91,7 @@ public class PreggoGUIHelper {
 	    }
 	}
 	
-	private static<E extends AbstractTamablePregnantZombieGirl & IPregnancyP1> void renderZombieGirlCravingMainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, E zombieGirl) {
+	private static<E extends AbstractTamablePregnantZombieGirl<?> & IPregnancyP1> void renderZombieGirlCravingMainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, E zombieGirl) {
 		switch (zombieGirl.getCravingChosen()) {
 		case SWEET: {
 			guiGraphics.blit(ZOMBIE_GIRL_SWEET_CRAVING, leftPos + 113, topPos + 43, 0, 0, 24, 24, 24, 24);
@@ -115,7 +115,7 @@ public class PreggoGUIHelper {
 	}
 	
 	
-	private static<E extends AbstractTamablePregnantCreeperGirl & IPregnancyP1> void renderCreeperGirlCravingMainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, E creeperGirl) {
+	private static<E extends AbstractTamablePregnantCreeperGirl<?> & IPregnancyP1> void renderCreeperGirlCravingMainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, E creeperGirl) {
 		switch (creeperGirl.getCravingChosen()) {
 		case SWEET: {
 			guiGraphics.blit(CREEPER_GIRL_SWEET_CRAVING, leftPos + 113, topPos + 43, 0, 0, 24, 24, 24, 24);
@@ -307,20 +307,20 @@ public class PreggoGUIHelper {
 	}
 	
 	/*Creeper Girl*/
-	public static<E extends AbstractTamablePregnantCreeperGirl & IPregnancyP1> void renderCreeperGirlP1MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, E creeperGirl) {
+	public static<E extends AbstractTamablePregnantCreeperGirl<?> & IPregnancyP1> void renderCreeperGirlP1MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, E creeperGirl) {
 		renderDefaultPreggoP0MainGUI(guiGraphics, leftPos, topPos + 10, health, creeperGirl);
 		renderCreeperGirlCravingMainGUI(guiGraphics, leftPos, topPos, creeperGirl);	
 		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, creeperGirl);				
 	}
 	
-	public static<E extends AbstractTamablePregnantCreeperGirl & IPregnancyP2> void renderCreeperGirlP2MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, E p2) {
+	public static<E extends AbstractTamablePregnantCreeperGirl<?> & IPregnancyP2> void renderCreeperGirlP2MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, E p2) {
 		renderDefaultPreggoP0MainGUI(guiGraphics, leftPos, topPos + 10, health, p2);
 		renderCreeperGirlCravingMainGUI(guiGraphics, leftPos, topPos, p2);	
 		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, p2);	
 		renderDefaultPreggoP2MainGUI(guiGraphics, leftPos, topPos + 5, p2);		
 	}
 	
-	public static<E extends AbstractTamablePregnantCreeperGirl & IPregnancyP3> void renderCreeperGirlP3MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, E p3) {
+	public static<E extends AbstractTamablePregnantCreeperGirl<?> & IPregnancyP3> void renderCreeperGirlP3MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, E p3) {
 		renderDefaultPreggoP0MainGUI(guiGraphics, leftPos, topPos + 10, health, p3);
 		renderCreeperGirlCravingMainGUI(guiGraphics, leftPos, topPos, p3);	
 		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, p3);		
@@ -328,7 +328,7 @@ public class PreggoGUIHelper {
 		renderDefaultPreggoP3MainGUI(guiGraphics, leftPos, topPos + 4, p3);		
 	}
 	
-	public static<E extends AbstractTamablePregnantCreeperGirl & IPregnancyP4> void renderCreeperGirlP4MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, E p4) {
+	public static<E extends AbstractTamablePregnantCreeperGirl<?> & IPregnancyP4> void renderCreeperGirlP4MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, E p4) {
 		renderDefaultPreggoP0MainGUI(guiGraphics, leftPos, topPos + 10, health, p4);
 		renderCreeperGirlCravingMainGUI(guiGraphics, leftPos, topPos, p4);	
 		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, p4);		
@@ -338,20 +338,20 @@ public class PreggoGUIHelper {
 	}
 	
 	/*Zombie Girl*/
-	public static<E extends AbstractTamablePregnantZombieGirl & IPregnancyP1> void renderZombieGirlP1MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, E zombieGirl) {
+	public static<E extends AbstractTamablePregnantZombieGirl<?> & IPregnancyP1> void renderZombieGirlP1MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, E zombieGirl) {
 		renderDefaultPreggoP0MainGUI(guiGraphics, leftPos, topPos + 10, health, zombieGirl);
 		renderZombieGirlCravingMainGUI(guiGraphics, leftPos, topPos, zombieGirl);	
 		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, zombieGirl);				
 	}
 	
-	public static<E extends AbstractTamablePregnantZombieGirl & IPregnancyP2> void renderZombieGirlP2MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, E p2) {
+	public static<E extends AbstractTamablePregnantZombieGirl<?> & IPregnancyP2> void renderZombieGirlP2MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, E p2) {
 		renderDefaultPreggoP0MainGUI(guiGraphics, leftPos, topPos + 10, health, p2);
 		renderZombieGirlCravingMainGUI(guiGraphics, leftPos, topPos, p2);	
 		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, p2);	
 		renderDefaultPreggoP2MainGUI(guiGraphics, leftPos, topPos + 5, p2);		
 	}
 	
-	public static<E extends AbstractTamablePregnantZombieGirl & IPregnancyP3> void renderZombieGirlP3MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, E p3) {
+	public static<E extends AbstractTamablePregnantZombieGirl<?> & IPregnancyP3> void renderZombieGirlP3MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, E p3) {
 		renderDefaultPreggoP0MainGUI(guiGraphics, leftPos, topPos + 10, health, p3);
 		renderZombieGirlCravingMainGUI(guiGraphics, leftPos, topPos, p3);	
 		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, p3);		
@@ -359,7 +359,7 @@ public class PreggoGUIHelper {
 		renderDefaultPreggoP3MainGUI(guiGraphics, leftPos, topPos + 4, p3);		
 	}
 	
-	public static<E extends AbstractTamablePregnantZombieGirl & IPregnancyP4> void renderZombieGirlP4MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, E p4) {
+	public static<E extends AbstractTamablePregnantZombieGirl<?> & IPregnancyP4> void renderZombieGirlP4MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, E p4) {
 		renderDefaultPreggoP0MainGUI(guiGraphics, leftPos, topPos + 10, health, p4);
 		renderZombieGirlCravingMainGUI(guiGraphics, leftPos, topPos, p4);	
 		renderDefaultPreggoP1MainGUI(guiGraphics, leftPos, topPos, p4);		

@@ -167,7 +167,7 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 			@Override
 			public boolean canUse() {												
 				return super.canUse() 
-					&& getCanExplote()
+					&& canExplode()
 					&& !hasPregnancyPain();
 			}
 		});

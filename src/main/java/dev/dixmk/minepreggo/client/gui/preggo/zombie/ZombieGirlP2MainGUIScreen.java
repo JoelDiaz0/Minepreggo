@@ -8,7 +8,6 @@ import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlP2MainGUIMen
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.GuiGraphics;
 
 public class ZombieGirlP2MainGUIScreen extends AbstractZombieGirlMainGUIScreen<TamableZombieGirlP2, ZombieGirlP2MainGUIMenu> {
@@ -17,16 +16,6 @@ public class ZombieGirlP2MainGUIScreen extends AbstractZombieGirlMainGUIScreen<T
 		super(container, inventory, text);
 		this.imageWidth = 185;
 		this.imageHeight = 120;
-	}
-
-	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		this.renderBackground(guiGraphics);
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
-		if (zombieGirl != null) {
-			InventoryScreen.renderEntityInInventoryFollowsAngle(guiGraphics, this.leftPos + -31, this.topPos + 110, 45, 0f + (float) Math.atan((this.leftPos + -31 - mouseX) / 40.0), (float) Math.atan((this.topPos + 42 - mouseY) / 40.0), zombieGirl);
-		}
-		this.renderTooltip(guiGraphics, mouseX, mouseY);
 	}
 
 	@Override
@@ -39,8 +28,6 @@ public class ZombieGirlP2MainGUIScreen extends AbstractZombieGirlMainGUIScreen<T
 		if (this.zombieGirl != null) {
 			PreggoGUIHelper.renderZombieGirlP2MainGUI(guiGraphics, this.leftPos, this.topPos, this.zombieGirl.getHealth(), this.zombieGirl);
 		}
-		
-
 
 		RenderSystem.disableBlend();
 	}

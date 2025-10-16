@@ -3,7 +3,6 @@ package dev.dixmk.minepreggo.entity.preggo.creeper;
 import net.minecraftforge.network.PlayMessages;
 
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
@@ -13,12 +12,10 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -29,9 +26,6 @@ import net.minecraft.nbt.CompoundTag;
 
 import java.util.UUID;
 
-import javax.annotation.Nullable;
-
-import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 
 public class MonsterCreeperGirlP0 extends AbstractMonsterCreeperGirl {
@@ -131,19 +125,6 @@ public class MonsterCreeperGirlP0 extends AbstractMonsterCreeperGirl {
 		retval.setBaby(true);
 		return retval;
 	}
-
-	/*
-	@Override
-	@Nullable	
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor p_34297_, DifficultyInstance p_34298_, MobSpawnType p_34299_, @Nullable SpawnGroupData p_34300_, @Nullable CompoundTag p_34301_) {
-		p_34300_ = super.finalizeSpawn(p_34297_, p_34298_, p_34299_, p_34300_, p_34301_);
-
-	    if (p_34297_.getRandom().nextFloat() < MinepreggoModConfig.getBabyCreeperGirlProbability()) 
-	        this.setBaby(true);
-	       
-		return p_34300_;
-	}
-	*/
 	
 	public static AttributeSupplier.Builder createAttributes() {
 		return getBasicAttributes(0.24);

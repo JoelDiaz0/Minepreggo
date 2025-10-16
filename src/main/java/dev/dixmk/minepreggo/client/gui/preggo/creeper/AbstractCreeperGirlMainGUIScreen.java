@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.client.gui.preggo.creeper;
 import java.util.ArrayList;
 import java.util.List;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.gui.components.ToggleableCheckbox;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractCreeperGirl.CombatMode;
@@ -15,14 +16,12 @@ import dev.dixmk.minepreggo.world.inventory.preggo.creeper.AbstractCreeperGirlMa
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class AbstractCreeperGirlMainGUIScreen<E extends AbstractTamableCreeperGirl<?> 
 	,T extends AbstractCreeperGirlMainGUIMenu<E>> extends AbstractContainerScreen<T> {
@@ -61,11 +60,9 @@ public abstract class AbstractCreeperGirlMainGUIScreen<E extends AbstractTamable
 	
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		this.renderBackground(guiGraphics);	
+		this.renderBackground(guiGraphics);
 		super.render(guiGraphics, mouseX, mouseY, partialTicks);
-		
-		if (mouseX > leftPos + -28 && mouseX < leftPos + -4 && mouseY > topPos + 2 && mouseY < topPos + 26)
-			guiGraphics.renderTooltip(font, Component.translatable("gui.minepreggo.main.tooltip_tooltip"), mouseX, mouseY);
+		this.renderTooltip(guiGraphics, mouseX, mouseY);	
 	}
 	
 	@Override
@@ -81,8 +78,10 @@ public abstract class AbstractCreeperGirlMainGUIScreen<E extends AbstractTamable
 	public void init() {
 		super.init();
 					
-		if (creeperGirl == null) return;
-		
+		if (creeperGirl == null) {
+			MinepreggoMod.LOGGER.error("Creeper Girl was null");
+			return;
+		}	
 			
 		final var combatMode = creeperGirl.getcombatMode();		
 		final var creeperGirlId = creeperGirl.getId();
@@ -152,11 +151,10 @@ public abstract class AbstractCreeperGirlMainGUIScreen<E extends AbstractTamable
 		});
 		this.addRenderableWidget(buttonDismount);
 	
-		inventoryButton = new ImageButton(this.leftPos + -24, this.topPos + 6, 1, 57, 16, 16, 16, PreggoGUIHelper.ICONS_TEXTURE, 256, 256, e -> {
-			entity.level().playLocalSound(x, y, z, ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("ui.button.click")), SoundSource.NEUTRAL, 1, 1, false);
-			this.minecraft.player.closeContainer();
-			MinepreggoModPacketHandler.INSTANCE.sendToServer(new CreeperGirlInventaryMenuPacket(x, y, z, creeperGirlId));		
-		});
+		inventoryButton = new ImageButton(this.leftPos - 24, this.topPos + 6, 16, 16, 1, 57, 16, PreggoGUIHelper.ICONS_TEXTURE, 256, 256, 
+				e -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new CreeperGirlInventaryMenuPacket(x, y, z, creeperGirlId)));	
+		inventoryButton.setTooltip(Tooltip.create(Component.translatable("gui.minepreggo.preggo.inventary")));
+		
 		
 		this.addRenderableWidget(inventoryButton);
 	}	

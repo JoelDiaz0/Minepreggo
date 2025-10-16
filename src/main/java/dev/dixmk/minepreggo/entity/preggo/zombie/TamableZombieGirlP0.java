@@ -109,21 +109,21 @@ public class TamableZombieGirlP0 extends AbstractTamableZombieGirl<PreggoMobSyst
 		return PregnancyStage.P0;
 	}
 	
-	public static TamableZombieGirlP0 spawnPostMiscarriage(ServerLevel serverLevel, double x, double y, double z) {
+	static TamableZombieGirlP0 spawnPostMiscarriage(ServerLevel serverLevel, double x, double y, double z) {
 		var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);	
 		zombieGirl.getEntityData().set(DATA_POST_PREGNANCY, PostPregnancy.MISCARRIAGE);
 		applyPostPregnancyAttibutes(zombieGirl);
 		return zombieGirl;
 	}
 	
-	public static TamableZombieGirlP0 spawnPostPartum(ServerLevel serverLevel, double x, double y, double z) {
+	static TamableZombieGirlP0 spawnPostPartum(ServerLevel serverLevel, double x, double y, double z) {
 		var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);	
 		zombieGirl.getEntityData().set(DATA_POST_PREGNANCY, PostPregnancy.PARTUM);
 		applyPostPregnancyAttibutes(zombieGirl);
 		return zombieGirl;
 	}
 	
-	public static<E extends AbstractTamablePregnantZombieGirl<?>> void applyDefaultPostMiscarriage(E source) {
+	static<E extends AbstractTamablePregnantZombieGirl<?>> void applyDefaultPostMiscarriage(E source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
 			var zombieGirl = TamableZombieGirlP0.spawnPostMiscarriage(serverLevel, source.getX(), source.getY(), source.getZ());
 			PreggoMobHelper.transferPreggoMobBasicData(source, zombieGirl);
@@ -133,7 +133,7 @@ public class TamableZombieGirlP0 extends AbstractTamableZombieGirl<PreggoMobSyst
 		}
 	}
 	
-	public static<E extends AbstractTamablePregnantZombieGirl<?>> void applyDefaultPostPartum(E source) {
+	static<E extends AbstractTamablePregnantZombieGirl<?>> void applyDefaultPostPartum(E source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
 			var zombieGirl = TamableZombieGirlP0.spawnPostPartum(serverLevel, source.getX(), source.getY(), source.getZ());
 			PreggoMobHelper.transferPreggoMobBasicData(source, zombieGirl);

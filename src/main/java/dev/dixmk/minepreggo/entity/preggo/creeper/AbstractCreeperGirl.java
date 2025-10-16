@@ -135,7 +135,7 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 
 	}
 	
-	public boolean getCanExplote() {
+	public boolean canExplode() {
 		return true;
 	}
 	
@@ -236,7 +236,11 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
     }
 	
 	@Override
-	public void tick() {
+	public void tick() {	
+		if (this.level().isClientSide() && !this.loopAnimationState.isStarted()) {
+			this.loopAnimationState.start(this.tickCount);
+		}
+		
 		if (this.isAlive()) {
 			this.oldSwell = this.swell;
 			if (this.isIgnited()) {
@@ -258,13 +262,9 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 				this.swell = this.maxSwell;
 				this.explodeCreeper();
 			}
-		}
-	
-		super.tick();
-		
-		if (this.level().isClientSide() && !this.loopAnimationState.isStarted()) {
-			this.loopAnimationState.start(this.tickCount);
 		}	
+		
+		super.tick();
 	}
 	
     @Override
@@ -297,7 +297,8 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {	
 				
 		ItemStack itemstack = sourceentity.getItemInHand(hand);
-		InteractionResult retval = InteractionResult.sidedSuccess(this.level().isClientSide());
+		InteractionResult retval = InteractionResult.PASS;
+		
 		
 		if (itemstack.is(ItemTags.CREEPER_IGNITERS)) {
 			SoundEvent soundevent = itemstack.is(Items.FIRE_CHARGE) ? SoundEvents.FIRECHARGE_USE : SoundEvents.FLINTANDSTEEL_USE;
@@ -312,22 +313,18 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 					});
 				}
 			}
-			return retval;
+			retval = InteractionResult.sidedSuccess(this.level().isClientSide());
 		}	
-		else if (this.level().isClientSide()) {
-			retval = (this.isTame() && this.isOwnedBy(sourceentity) || this.isFood(itemstack)) ? InteractionResult.sidedSuccess(this.level().isClientSide()) : InteractionResult.PASS;
-		} else {
-			if (!this.isBaby() && this.canBeTamedByPlayer() && !this.isTame() && this.isFoodToTame(itemstack)) {
-				this.usePlayerItem(sourceentity, hand, itemstack);
-				if (this.random.nextInt(3) == 0 && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(this, sourceentity)) {
-					this.tame(sourceentity);
-					this.level().broadcastEntityEvent(this, (byte) 7);						
-				} else {
-					this.level().broadcastEntityEvent(this, (byte) 6);
-				}
-				this.setPersistenceRequired();
-				retval = InteractionResult.sidedSuccess(this.level().isClientSide());
-			} 
+		else if (!this.isBaby() && this.canBeTamedByPlayer() && !this.isTame() && this.isFoodToTame(itemstack)) {
+			this.usePlayerItem(sourceentity, hand, itemstack);
+			if (this.random.nextInt(3) == 0 && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(this, sourceentity)) {
+				this.tame(sourceentity);
+				this.level().broadcastEntityEvent(this, (byte) 7);						
+			} else {
+				this.level().broadcastEntityEvent(this, (byte) 6);
+			}
+			this.setPersistenceRequired();
+			retval = InteractionResult.sidedSuccess(this.level().isClientSide());	
 		}
 		
 		
@@ -375,7 +372,7 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
            @Override
 		   public boolean canUse() {
 		      LivingEntity livingentity = this.creeperGirl.getTarget();
-		      return this.creeperGirl.getSwellDir() > 0 || livingentity != null && this.creeperGirl.distanceToSqr(livingentity) <= creeperGirl.maxDistance;
+		      return this.creeperGirl.getSwellDir() > 0 || livingentity != null && this.creeperGirl.distanceToSqr(livingentity) < creeperGirl.maxDistance;
 		   }
 
 		   @Override

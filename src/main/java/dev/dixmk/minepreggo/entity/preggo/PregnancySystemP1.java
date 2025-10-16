@@ -13,6 +13,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -47,12 +48,14 @@ public abstract class PregnancySystemP1<
         }
 	}
 	
-	protected Result evaluateMiscarriage(ServerLevel level, double x, double y, double z, final int totalTicksOfMiscarriage) {
+	protected Result evaluateMiscarriage(ServerLevel serverLevel, double x, double y, double z, final int totalTicksOfMiscarriage) {
    	    
 	    if (preggoMob.getPregnancyPain() == PregnancyPain.MISCARRIAGE) {
 	        if (preggoMob.getPregnancyPainTimer() < totalTicksOfMiscarriage) {
 	        	preggoMob.setPregnancyPainTimer(preggoMob.getPregnancyPainTimer() + 1);
-	        	level.addParticle(ParticleTypes.FALLING_DRIPSTONE_LAVA, x, (y + preggoMob.getBbHeight() * 0.35), z, 0, 1, 0);
+	        	
+	        	serverLevel.addParticle(ParticleTypes.FALLING_DRIPSTONE_LAVA, x, (y + preggoMob.getBbHeight() * 0.35), z, 0, 1, 0);	       
+	        
 	        } else {
 	        	return Result.SUCCESS;
 	        }
@@ -162,18 +165,21 @@ public abstract class PregnancySystemP1<
 	}
 
 	@Override
-	public void evaluateRightClick(Player source) {	
-		final var level = preggoMob.level();	
-		if (!preggoMob.isOwnedBy(source) || level.isClientSide()) {
-			return;
+	public InteractionResult evaluateRightClick(Player source) {	
+		final var level = preggoMob.level();
+		
+		if (!preggoMob.isOwnedBy(source) || level.isClientSide() || !(level instanceof ServerLevel serverLevel)) {
+			return InteractionResult.PASS;
 		}			
 		
 		Result result;
 		
-		if ((result = evaluateHungry(level, source)) != Result.NOTHING
-				|| (result = evaluateCraving(level, source)) != Result.NOTHING) {
-			spawnParticles(level, result);
+		if ((result = evaluateHungry(serverLevel, source)) != Result.NOTHING
+				|| (result = evaluateCraving(serverLevel, source)) != Result.NOTHING) {
+			spawnParticles(serverLevel, result);
 		}
+		
+		return onRightClickResult(result);	
 	}
 	
 	
@@ -197,7 +203,8 @@ public abstract class PregnancySystemP1<
 	    	}
 	    	    	
 	    	if (preggoMob.isValidCraving(preggoMob.getCravingChosen(), mainHandItem)) {
-	            source.getInventory().clearOrCountMatchingItems(p -> mainHandItem == p.getItem(), 1, source.inventoryMenu.getCraftSlots());
+	           
+	    		source.getInventory().clearOrCountMatchingItems(p -> mainHandItem == p.getItem(), 1, source.inventoryMenu.getCraftSlots());
 	            currentCraving = Math.max(0, currentCraving - craving.getGratification());
                 preggoMob.setCraving(currentCraving);
 	            preggoMob.setHungry(Math.min(preggoMob.getHungry() + 2, 20));
@@ -207,7 +214,7 @@ public abstract class PregnancySystemP1<
 	            if (currentCraving <= PregnancySystemConstants.DESACTIVATE_CRAVING_SYMPTOM) {
 	    	    	preggoMob.setPregnancySymptom(PregnancySymptom.NONE);
 	            }
-	            
+	    		     
 	            return Result.SUCCESS; 
 	    	} else {
 	    		return Result.FAIL;

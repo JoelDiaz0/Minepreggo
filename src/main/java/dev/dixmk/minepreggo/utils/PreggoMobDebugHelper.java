@@ -32,68 +32,78 @@ public class PreggoMobDebugHelper {
 	private PreggoMobDebugHelper() {}
 	
 	public static<E extends TamableAnimal & IPreggoMob> void showBasicInfo(E preggoMob) {
-		MinepreggoMod.LOGGER.debug("BASIC INFO: class={}, hungry={}, hungryTimer={}, isPregnant={}, isAngry={}",
-				preggoMob.getClass().getSimpleName(), preggoMob.getHungry(), preggoMob.getHungryTimer(), preggoMob.isPregnant(), 
+		MinepreggoMod.LOGGER.debug("BASIC INFO: id={} class={}, hungry={}, hungryTimer={}, isPregnant={}, isAngry={}",
+				preggoMob.getId(), preggoMob.getClass().getSimpleName(), preggoMob.getHungry(), preggoMob.getHungryTimer(), preggoMob.isPregnant(), 
 				preggoMob.isAngry());		
 	}
 	
 	public static<E extends TamableAnimal & IPreggoMob & IPregnancySystem> void showPregnancyInfo(E preggoMob) {
-		MinepreggoMod.LOGGER.debug("BASIC PREGNANCY INFO: class={}, pregnancyTimer={}, daysByStage={}, daysByStage={}, daysToGiveBirth={}, pregnancyPain={}, "
+		MinepreggoMod.LOGGER.debug("BASIC PREGNANCY INFO: pregnancyTimer={}, daysByStage={}, daysByStage={}, daysToGiveBirth={}, pregnancyPain={}, "
 				+ "pregnancyPainTimer={}, pregnanctSymptom={}",
-				preggoMob.getClass().getSimpleName(), preggoMob.getPregnancyTimer(), preggoMob.getDaysByStage(), preggoMob.getDaysByStage(),
+				preggoMob.getPregnancyTimer(), preggoMob.getDaysByStage(), preggoMob.getDaysByStage(),
 				preggoMob.getDaysToGiveBirth(), preggoMob.getPregnancyPain(), preggoMob.getPregnancyPainTimer(), preggoMob.getPregnancySymptom());
 	}
 	
 	public static<E extends TamableAnimal & IPreggoMob & IPregnancySystem & IPregnancyP1> void showPregnancyP1Info(E preggoMob) {
-		showPregnancyInfo(preggoMob);
-		MinepreggoMod.LOGGER.debug("PREGNANCY P1 INFO: class={}, craving={}, cravingTimer={}, cravingChosen={}",
-				preggoMob.getClass().getSimpleName(), preggoMob.getCraving(), preggoMob.getCravingTimer(), preggoMob.getCravingChosen());
+		MinepreggoMod.LOGGER.debug("PREGNANCY P1 INFO: craving={}, cravingTimer={}, cravingChosen={}",
+				preggoMob.getCraving(), preggoMob.getCravingTimer(), preggoMob.getCravingChosen());
 	}
 	
 	public static<E extends TamableAnimal & IPreggoMob & IPregnancySystem & IPregnancyP2> void showPregnancyP2Info(E preggoMob) {
-		showPregnancyInfo(preggoMob);
-		showPregnancyP1Info(preggoMob);
-		MinepreggoMod.LOGGER.debug("PREGNANCY P2 INFO: class={}, milking={}, milkingTimer={}",
-				preggoMob.getClass().getSimpleName(), preggoMob.getMilking(), preggoMob.getMilkingTimer());
+		MinepreggoMod.LOGGER.debug("PREGNANCY P2 INFO: milking={}, milkingTimer={}",
+				preggoMob.getMilking(), preggoMob.getMilkingTimer());
 	}
 	
 	public static<E extends TamableAnimal & IPreggoMob & IPregnancySystem & IPregnancyP3> void showPregnancyP3Info(E preggoMob) {
-		showPregnancyInfo(preggoMob);
-		showPregnancyP1Info(preggoMob);
-		showPregnancyP2Info(preggoMob);
-		MinepreggoMod.LOGGER.debug("PREGNANCY P3 INFO: class={}, bellyRubs={}, bellyRubsTimer={}",
-				preggoMob.getClass().getSimpleName(), preggoMob.getBellyRubs(), preggoMob.getBellyRubsTimer());
+		MinepreggoMod.LOGGER.debug("PREGNANCY P3 INFO: bellyRubs={}, bellyRubsTimer={}",
+				preggoMob.getBellyRubs(), preggoMob.getBellyRubsTimer());
 	}
 	
 	public static<E extends TamableAnimal & IPreggoMob & IPregnancySystem & IPregnancyP4> void showPregnancyP4Info(E preggoMob) {
-		showPregnancyInfo(preggoMob);
-		showPregnancyP1Info(preggoMob);
-		showPregnancyP2Info(preggoMob);
-		showPregnancyP3Info(preggoMob);
-		MinepreggoMod.LOGGER.debug("PREGNANCY P4 INFO: class={}, horny={}, hornyTimer={}",
-				preggoMob.getClass().getSimpleName(), preggoMob.getHorny(), preggoMob.getHornyTimer());
+		MinepreggoMod.LOGGER.debug("PREGNANCY P4 INFO: horny={}, hornyTimer={}",
+				preggoMob.getHorny(), preggoMob.getHornyTimer());
 	}
 	
 	public static<E extends TamableAnimal> void check(E entity) {
+		
+		if (entity.level().isClientSide()) {
+			return;
+		}
+		
 		if (entity instanceof AbstractTamablePregnantCreeperGirl<?> c) {
 			PreggoMobDebugHelper.showBasicInfo(c);	
 			PreggoMobDebugHelper.showPregnancyInfo(c);			
 			if (c instanceof TamableCreeperGirlP7 c7) {
+				PreggoMobDebugHelper.showPregnancyP1Info(c7);
+				PreggoMobDebugHelper.showPregnancyP3Info(c7);
+				PreggoMobDebugHelper.showPregnancyP2Info(c7);
 				PreggoMobDebugHelper.showPregnancyP4Info(c7);	
 			}
 			else if (c instanceof TamableCreeperGirlP6 c6) {
+				PreggoMobDebugHelper.showPregnancyP1Info(c6);
+				PreggoMobDebugHelper.showPregnancyP3Info(c6);
+				PreggoMobDebugHelper.showPregnancyP2Info(c6);
 				PreggoMobDebugHelper.showPregnancyP4Info(c6);	
 			}
 			else if (c instanceof TamableCreeperGirlP5 c5) {
+				PreggoMobDebugHelper.showPregnancyP1Info(c5);
+				PreggoMobDebugHelper.showPregnancyP2Info(c5);
+				PreggoMobDebugHelper.showPregnancyP3Info(c5);
 				PreggoMobDebugHelper.showPregnancyP4Info(c5);	
 			}
 			else if (c instanceof TamableCreeperGirlP4 c4) {
+				PreggoMobDebugHelper.showPregnancyP1Info(c4);
+				PreggoMobDebugHelper.showPregnancyP2Info(c4);
+				PreggoMobDebugHelper.showPregnancyP3Info(c4);
 				PreggoMobDebugHelper.showPregnancyP4Info(c4);	
 			}
 			else if (c instanceof TamableCreeperGirlP3 c3) {
+				PreggoMobDebugHelper.showPregnancyP1Info(c3);
+				PreggoMobDebugHelper.showPregnancyP2Info(c3);
 				PreggoMobDebugHelper.showPregnancyP3Info(c3);	
 			}
 			else if (c instanceof TamableCreeperGirlP2 c2) {
+				PreggoMobDebugHelper.showPregnancyP1Info(c2);
 				PreggoMobDebugHelper.showPregnancyP2Info(c2);	
 			}
 			else if (c instanceof TamableCreeperGirlP1 c1) {
@@ -105,21 +115,36 @@ public class PreggoMobDebugHelper {
 			PreggoMobDebugHelper.showPregnancyInfo(z);	
 			
 			if (z instanceof TamableZombieGirlP7 c7) {
+				PreggoMobDebugHelper.showPregnancyP1Info(c7);
+				PreggoMobDebugHelper.showPregnancyP2Info(c7);
+				PreggoMobDebugHelper.showPregnancyP3Info(c7);
 				PreggoMobDebugHelper.showPregnancyP4Info(c7);	
 			}
 			else if (z instanceof TamableZombieGirlP6 c6) {
+				PreggoMobDebugHelper.showPregnancyP1Info(c6);
+				PreggoMobDebugHelper.showPregnancyP2Info(c6);
+				PreggoMobDebugHelper.showPregnancyP3Info(c6);
 				PreggoMobDebugHelper.showPregnancyP4Info(c6);	
 			}
 			else if (z instanceof TamableZombieGirlP5 c5) {
+				PreggoMobDebugHelper.showPregnancyP1Info(c5);
+				PreggoMobDebugHelper.showPregnancyP2Info(c5);
+				PreggoMobDebugHelper.showPregnancyP3Info(c5);
 				PreggoMobDebugHelper.showPregnancyP4Info(c5);	
 			}
 			else if (z instanceof TamableZombieGirlP4 c4) {
+				PreggoMobDebugHelper.showPregnancyP1Info(c4);
+				PreggoMobDebugHelper.showPregnancyP2Info(c4);
+				PreggoMobDebugHelper.showPregnancyP3Info(c4);
 				PreggoMobDebugHelper.showPregnancyP4Info(c4);	
 			}
 			else if (z instanceof TamableZombieGirlP3 c3) {
+				PreggoMobDebugHelper.showPregnancyP1Info(c3);
+				PreggoMobDebugHelper.showPregnancyP2Info(c3);
 				PreggoMobDebugHelper.showPregnancyP3Info(c3);	
 			}
 			else if (z instanceof TamableZombieGirlP2 c2) {
+				PreggoMobDebugHelper.showPregnancyP1Info(c2);
 				PreggoMobDebugHelper.showPregnancyP2Info(c2);	
 			}
 			else if (z instanceof TamableZombieGirlP1 c1) {

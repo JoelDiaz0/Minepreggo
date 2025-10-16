@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
@@ -107,19 +108,22 @@ public abstract class PregnancySystemP2<E extends TamableAnimal
 	}
 
 	@Override
-	public void evaluateRightClick(Player source) {	
-		final var level = preggoMob.level();	
-		if (!preggoMob.isOwnedBy(source) || level.isClientSide()) {
-			return;
+	public InteractionResult evaluateRightClick(Player source) {		
+		final var level = preggoMob.level();
+		
+		if (!preggoMob.isOwnedBy(source) || level.isClientSide() || !(level instanceof ServerLevel serverLevel)) {
+			return InteractionResult.PASS;
 		}			
 		
 		Result result;
-		
-		if ((result = evaluateHungry(level, source)) != Result.NOTHING
-				|| (result = evaluateCraving(level, source)) != Result.NOTHING
-				|| (result = evaluateMilking(level, source)) != Result.NOTHING) {
-			spawnParticles(level, result);
+			
+		if ((result = evaluateHungry(serverLevel, source)) != Result.NOTHING
+				|| (result = evaluateCraving(serverLevel, source)) != Result.NOTHING
+				|| (result = evaluateMilking(serverLevel, source)) != Result.NOTHING) {
+			spawnParticles(serverLevel, result);
 		}	
+		
+		return onRightClickResult(result);	
 	}
 	
 	public Result evaluateMilking(Level level, Player source) {
@@ -129,7 +133,7 @@ public abstract class PregnancySystemP2<E extends TamableAnimal
 		
 	    if (currentMilking >= PregnancySystemConstants.MILKING_VALUE
 	    		&& mainHandItem == Items.GLASS_BOTTLE) {    	
-        		
+
             source.getInventory().clearOrCountMatchingItems(p -> mainHandItem == p.getItem(), 1, source.inventoryMenu.getCraftSlots());
             currentMilking = Math.max(0, currentMilking - PregnancySystemConstants.MILKING_VALUE);
             preggoMob.setMilking(currentMilking);
@@ -139,8 +143,8 @@ public abstract class PregnancySystemP2<E extends TamableAnimal
             if (preggoMob.getPregnancySymptom() == PregnancySymptom.MILKING
             		&& currentMilking <= PregnancySystemConstants.DESACTIVATE_MILKING_SYMPTOM) {
     	    	preggoMob.setPregnancySymptom(PregnancySymptom.NONE);
-            }    
-
+            }  
+	    	
             return Result.SUCCESS;   
 	    }
 		

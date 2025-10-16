@@ -44,7 +44,7 @@ public abstract class AbstractCreeperGirlModel<E extends AbstractCreeperGirl> ex
 		super(root);
 	}
 
-	protected static void createBasicBodyLayer(PartDefinition partdefinition, float extraLeftArmRotationY, float extraRightArmRotationY) {
+	protected static void createBasicBodyLayer(PartDefinition partdefinition, float extraLeftArmRotationZ, float extraRightArmRotationZ) {
 		
 		partdefinition.addOrReplaceChild("head", CubeListBuilder.create()
 		.texOffs(0, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
@@ -56,10 +56,10 @@ public abstract class AbstractCreeperGirlModel<E extends AbstractCreeperGirl> ex
 		.texOffs(16, 32).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, new CubeDeformation(0.25F)), PartPose.offset(0.0F, 0.0F, 0.0F));
 	
 		partdefinition.addOrReplaceChild("right_arm", CubeListBuilder.create().texOffs(40, 16).addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F))
-		.texOffs(40, 32).addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.25F)), PartPose.offsetAndRotation(-5.0F, 2.0F, 0.0F, 0F, extraRightArmRotationY, 0.0F));
+		.texOffs(40, 32).addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.25F)), PartPose.offsetAndRotation(-5.0F, 2.0F, 0.0F, 0F, 0F, extraRightArmRotationZ));
 
 		partdefinition.addOrReplaceChild("left_arm", CubeListBuilder.create().texOffs(32, 48).addBox(-1.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F))
-		.texOffs(48, 48).addBox(-1.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.25F)), PartPose.offsetAndRotation(5.0F, 2.0F, 0.0F, 0F, extraRightArmRotationY, 0.0F));
+		.texOffs(48, 48).addBox(-1.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.25F)), PartPose.offsetAndRotation(5.0F, 2.0F, 0.0F, 0F, 0F, extraLeftArmRotationZ));
 			
 		partdefinition.addOrReplaceChild("right_leg", CubeListBuilder.create().texOffs(0, 16).addBox(-2.1F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F))
 		.texOffs(0, 32).addBox(-2.1F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.25F)), PartPose.offset(-1.9F, 12.0F, 0.0F));
@@ -139,7 +139,7 @@ public abstract class AbstractCreeperGirlModel<E extends AbstractCreeperGirl> ex
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
-		createBasicBodyLayer(partdefinition, 0, 0);	
+		createBasicBodyLayer(partdefinition, -0.0872665F, 0.0872665F);	
         
 		PartDefinition body = partdefinition.getChild("body");
 		
@@ -171,7 +171,7 @@ public abstract class AbstractCreeperGirlModel<E extends AbstractCreeperGirl> ex
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
-		createBasicBodyLayer(partdefinition, 0, 0);	
+		createBasicBodyLayer(partdefinition, -0.1309F, 0.1309F);	
         
 		PartDefinition body = partdefinition.getChild("body");
 		
@@ -204,7 +204,7 @@ public abstract class AbstractCreeperGirlModel<E extends AbstractCreeperGirl> ex
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
-		createBasicBodyLayer(partdefinition, 0, 0);	
+		createBasicBodyLayer(partdefinition, -0.174533F, 0.174533F);	
         
 		PartDefinition body = partdefinition.getChild("body");
 		
@@ -226,10 +226,6 @@ public abstract class AbstractCreeperGirlModel<E extends AbstractCreeperGirl> ex
 		belly.addOrReplaceChild("bellyCube5_r1", CubeListBuilder.create().texOffs(26, 80).addBox(-4.0F, -3.5F, -0.5F, 8.0F, 7.0F, 1.0F, new CubeDeformation(0.6F)), PartPose.offsetAndRotation(0.0F, 0.5F, -4.5F, 0.0F, -1.5708F, -1.5708F));
 		belly.addOrReplaceChild("bellyCube4_r1", CubeListBuilder.create().texOffs(35, 89).mirror().addBox(-4.0F, -3.0F, -0.5F, 8.0F, 6.0F, 1.0F, new CubeDeformation(0.6F)).mirror(false), PartPose.offsetAndRotation(-4.0F, -3.0F, -4.5F, 0.0F, -1.5708F, 0.0F));
 		belly.addOrReplaceChild("bellyCube3_r1", CubeListBuilder.create().texOffs(35, 89).addBox(-4.0F, -3.0F, -0.5F, 8.0F, 6.0F, 1.0F, new CubeDeformation(0.6F)), PartPose.offsetAndRotation(4.0F, -3.0F, -4.5F, 0.0F, 1.5708F, 0.0F));
-
-		body.addOrReplaceChild("belly", CubeListBuilder.create().texOffs(16, 80).addBox(-4.0F, -3.5F, -10.0F, 8.0F, 7.0F, 8.0F, new CubeDeformation(0.6F))
-		.texOffs(48, 80).addBox(-3.5F, -3.0F, -10.8F, 7.0F, 6.0F, 1.0F, new CubeDeformation(0.6F))
-		.texOffs(25, 91).addBox(-0.5F, 0.5F, -11.9F, 1.0F, 1.0F, 2.0F, new CubeDeformation(0.2F)), PartPose.offsetAndRotation(0.0F, 8.5F, 1.0F, 0.0436F, 0.0F, 0.0F));
         
 		partdefinition.addOrReplaceChild("right_leg", CubeListBuilder.create().texOffs(44, 73).addBox(-1.2F, 0.25F, 2.45F, 3.0F, 3.0F, 1.0F, new CubeDeformation(-0.1F))
 		.texOffs(0, 16).addBox(-2.1F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F))
@@ -248,7 +244,7 @@ public abstract class AbstractCreeperGirlModel<E extends AbstractCreeperGirl> ex
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
-		createBasicBodyLayer(partdefinition, 0, 0);	
+		createBasicBodyLayer(partdefinition, -0.2181662F, 0.2181662F);	
         
 		PartDefinition body = partdefinition.getChild("body");
 		
@@ -295,7 +291,7 @@ public abstract class AbstractCreeperGirlModel<E extends AbstractCreeperGirl> ex
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
-		createBasicBodyLayer(partdefinition, 0, 0);	
+		createBasicBodyLayer(partdefinition, -0.261799F, 0.261799F);	
         
 		PartDefinition body = partdefinition.getChild("body");
 		
@@ -360,10 +356,4 @@ public abstract class AbstractCreeperGirlModel<E extends AbstractCreeperGirl> ex
 
         return LayerDefinition.create(mesh, 64, 32);
     }
-    
-    
-	@Override
-	public void setupAnim(E entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		this.moveHead(entity, netHeadYaw, headPitch);
-	}
 }

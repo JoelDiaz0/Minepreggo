@@ -188,30 +188,20 @@ public abstract class AbstractZombieGirl extends TamableAnimal {
 	@Override
 	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {	
 		ItemStack itemstack = sourceentity.getItemInHand(hand);
-		InteractionResult retval;
-	
 		
-		if (this.level().isClientSide()) {
-			retval = (this.isTame() && this.isOwnedBy(sourceentity) || this.isFood(itemstack)) ? InteractionResult.sidedSuccess(this.level().isClientSide()) : InteractionResult.PASS;
-		} else {
-			if (!this.isBaby() && this.canBeTamedByPlayer() && !this.isTame() && this.isFoodToTame(itemstack)) {
-				this.usePlayerItem(sourceentity, hand, itemstack);
-				if (this.random.nextInt(3) == 0 && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(this, sourceentity)) {
-					this.tame(sourceentity);
-					this.level().broadcastEntityEvent(this, (byte) 7);						
-				} else {
-					this.level().broadcastEntityEvent(this, (byte) 6);
-				}
-				this.setPersistenceRequired();
-				retval = InteractionResult.sidedSuccess(this.level().isClientSide());
+		if (!this.isBaby() && this.canBeTamedByPlayer() && !this.isTame() && this.isFoodToTame(itemstack)) {
+			this.usePlayerItem(sourceentity, hand, itemstack);
+			if (this.random.nextInt(3) == 0 && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(this, sourceentity)) {
+				this.tame(sourceentity);
+				this.level().broadcastEntityEvent(this, (byte) 7);						
 			} else {
-				retval = super.mobInteract(sourceentity, hand);
-				if (retval == InteractionResult.SUCCESS || retval == InteractionResult.CONSUME)
-					this.setPersistenceRequired();
+				this.level().broadcastEntityEvent(this, (byte) 6);
 			}
-		}
+			this.setPersistenceRequired();
+			return InteractionResult.sidedSuccess(this.level().isClientSide());
+		} 
 		
-		return retval;
+		return InteractionResult.PASS;
 	}
 	
 	@Override

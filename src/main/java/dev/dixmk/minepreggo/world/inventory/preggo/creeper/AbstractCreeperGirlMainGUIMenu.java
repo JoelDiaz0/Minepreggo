@@ -50,7 +50,7 @@ public abstract class AbstractCreeperGirlMainGUIMenu<T extends AbstractTamableCr
 			
 			access = ContainerLevelAccess.create(world, pos); 		
 			
-			if (world.getEntity(extraData.readVarInt()) instanceof AbstractTamableCreeperGirl e)		
+			if (world.getEntity(extraData.readVarInt()) instanceof AbstractTamableCreeperGirl<?> e)		
 				creeperGirl = create(e);
 		}
 

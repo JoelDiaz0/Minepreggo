@@ -2,6 +2,7 @@ package dev.dixmk.minepreggo.entity.preggo;
 
 import javax.annotation.Nonnull;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -71,9 +72,13 @@ public abstract class PregnancySystemP4<E extends TamableAnimal
 	
 	
 	protected final void evaluatePregnancyPains(final float morningSicknessProbability, final float pregnancyPainProbability, final int totalTicksOfKicking, final int totalTicksOfContraction) {
-		if (preggoMob.getPregnancyPain() == PregnancyPain.NONE) {		
+		final var pregnancyPain = preggoMob.getPregnancyPain();
+
+		if (pregnancyPain == PregnancyPain.NONE) {		
+			boolean flag = false;
 			if (randomSource.nextFloat() < morningSicknessProbability) {
-				preggoMob.setPregnancyPain(PregnancyPain.MORNING_SICKNESS);		
+				preggoMob.setPregnancyPain(PregnancyPain.MORNING_SICKNESS);	
+				flag = true;
 			}
 			else if (randomSource.nextFloat() < pregnancyPainProbability) {			
 				if (preggoMob.getMaxPregnancyStage() == currentPregnancyStage) {
@@ -82,17 +87,25 @@ public abstract class PregnancySystemP4<E extends TamableAnimal
 				else {
 					preggoMob.setPregnancyPain(PregnancyPain.KICKING);		
 				}
+				flag = true;
 			}	
+			
+			if (flag) {
+				MinepreggoMod.LOGGER.debug("PREGNANCY PAIN ACTIVE: id={}, class={}, pregnancyPain={}, maxPregnancyStage={}",
+						preggoMob.getId(), preggoMob.getClass().getSimpleName(), pregnancyPain, preggoMob.getMaxPregnancyStage());
+			}
 		} 
-		else {					
-			if ((preggoMob.getPregnancyPain() == PregnancyPain.MORNING_SICKNESS && preggoMob.getPregnancyPainTimer() >= PregnancySystemConstants.TOTAL_TICKS_MORNING_SICKNESS)
-					|| (preggoMob.getPregnancyPain() == PregnancyPain.KICKING && preggoMob.getPregnancyPainTimer() >= totalTicksOfKicking)
-					|| (preggoMob.getPregnancyPain() == PregnancyPain.CONTRACTION && preggoMob.getPregnancyPainTimer() >= totalTicksOfContraction)) {
+		else {	
+			final var pregnancyPainTimer = preggoMob.getPregnancyPainTimer();
+
+			if ((pregnancyPain == PregnancyPain.MORNING_SICKNESS && pregnancyPainTimer >= PregnancySystemConstants.TOTAL_TICKS_MORNING_SICKNESS)
+					|| (pregnancyPain == PregnancyPain.KICKING && pregnancyPainTimer >= totalTicksOfKicking)
+					|| (pregnancyPain == PregnancyPain.CONTRACTION && pregnancyPainTimer >= totalTicksOfContraction)) {
 				preggoMob.setPregnancyPainTimer(0);
 				preggoMob.setPregnancyPain(PregnancyPain.NONE);
 			}
 			else {
-				preggoMob.setPregnancyPainTimer(preggoMob.getPregnancyPainTimer() + 1);
+				preggoMob.setPregnancyPainTimer(pregnancyPainTimer + 1);
 			}
 		}
 	}

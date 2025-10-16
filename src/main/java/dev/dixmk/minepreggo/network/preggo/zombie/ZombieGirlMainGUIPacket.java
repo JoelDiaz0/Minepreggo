@@ -69,7 +69,7 @@ public class ZombieGirlMainGUIPacket {
 			// security measure to prevent arbitrary chunk generation
 			if (!world.hasChunkAt(new BlockPos(x, y, z))) return;
 
-			if (world.getEntity(message.zombieGirlId) instanceof AbstractTamableZombieGirl zombieGirl) {
+			if (!world.isClientSide() && world.getEntity(message.zombieGirlId) instanceof AbstractTamableZombieGirl<?> zombieGirl) {
 				int buttonId = message.buttonId;
 				
 				if ((buttonId == 0 || buttonId == 1)) {			

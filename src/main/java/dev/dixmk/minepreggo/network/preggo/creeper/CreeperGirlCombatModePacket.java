@@ -2,6 +2,7 @@ package dev.dixmk.minepreggo.network.preggo.creeper;
 
 import java.util.function.Supplier;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractCreeperGirl.CombatMode;
@@ -60,8 +61,11 @@ public class CreeperGirlCombatModePacket {
 			// security measure to prevent arbitrary chunk generation
 			if (!world.hasChunkAt(new BlockPos(message.x, message.y, message.z))) return;
 				
-			if (world.getEntity(message.creeperGirlId) instanceof AbstractTamableCreeperGirl creeperGirl) {
+			if (!world.isClientSide() && world.getEntity(message.creeperGirlId) instanceof AbstractTamableCreeperGirl<?> creeperGirl) {
+				final var oldCombatMode = creeperGirl.getcombatMode();		
 				creeperGirl.setcombatMode(message.combatMode);
+				MinepreggoMod.LOGGER.debug("CHANGING CREEPER GIRL COMBAT MODE: id={}, class={}, oldCombatMode={}, newCombatMode={}",
+						creeperGirl.getId(), creeperGirl.getClass().getSimpleName(), oldCombatMode, creeperGirl.getcombatMode());
 			}
 		});
 		context.setPacketHandled(true);

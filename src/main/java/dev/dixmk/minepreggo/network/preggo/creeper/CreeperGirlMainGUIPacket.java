@@ -68,7 +68,7 @@ public class CreeperGirlMainGUIPacket {
 			// security measure to prevent arbitrary chunk generation
 			if (!world.hasChunkAt(new BlockPos(x, y, z))) return;
 				
-			if (world.getEntity(message.creeperGirlId) instanceof AbstractTamableCreeperGirl creeperGirl) {
+			if (!world.isClientSide() && world.getEntity(message.creeperGirlId) instanceof AbstractTamableCreeperGirl<?> creeperGirl) {
 				
 				int buttonId = message.buttonId;
 				

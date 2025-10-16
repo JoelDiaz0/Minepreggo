@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
@@ -58,22 +59,33 @@ public abstract class PregnancySystemP3 <E extends TamableAnimal
 	@Override
 	protected final void evaluatePregnancyPains() {
 		
-		if (preggoMob.getPregnancyPain() == PregnancyPain.NONE) {		
-			if (randomSource.nextFloat() < PregnancySystemConstants.HIGH_MORNING_SICKNESS_PROBABILITY) {
-				preggoMob.setPregnancyPain(PregnancyPain.MORNING_SICKNESS);		
+		final var pregnancyPain = preggoMob.getPregnancyPain();
+		
+		if (pregnancyPain == PregnancyPain.NONE) {				
+			boolean flag = false;		
+			if (randomSource.nextFloat() < PregnancySystemConstants.HIGH_MORNING_SICKNESS_PROBABILITY) {		
+				preggoMob.setPregnancyPain(PregnancyPain.MORNING_SICKNESS);	
+				flag = true;
 			}
 			else if (randomSource.nextFloat() < PregnancySystemConstants.LOW_PREGNANCY_PAIN_PROBABILITY) {
-				preggoMob.setPregnancyPain(PregnancyPain.KICKING);		
-			}		
+				preggoMob.setPregnancyPain(PregnancyPain.KICKING);
+				flag = true;
+			}	
+			
+			if (flag) {
+				MinepreggoMod.LOGGER.debug("PREGNANCY PAIN ACTIVE: id={}, class={}, pregnancyPain={}",
+						preggoMob.getId(), preggoMob.getClass().getSimpleName(), pregnancyPain);
+			}	
 		} 
-		else {					
-			if ((preggoMob.getPregnancyPain() == PregnancyPain.MORNING_SICKNESS && preggoMob.getPregnancyPainTimer() >= PregnancySystemConstants.TOTAL_TICKS_MORNING_SICKNESS)
-					|| (preggoMob.getPregnancyPain() == PregnancyPain.KICKING && preggoMob.getPregnancyPainTimer() >= PregnancySystemConstants.TOTAL_TICKS_KICKING_P3)) {
+		else {		
+			final var pregnancyPainTimer = preggoMob.getPregnancyPainTimer();
+			if ((pregnancyPain == PregnancyPain.MORNING_SICKNESS && pregnancyPainTimer >= PregnancySystemConstants.TOTAL_TICKS_MORNING_SICKNESS)
+					|| (pregnancyPain == PregnancyPain.KICKING && pregnancyPainTimer >= PregnancySystemConstants.TOTAL_TICKS_KICKING_P3)) {
 				preggoMob.setPregnancyPainTimer(0);
 				preggoMob.setPregnancyPain(PregnancyPain.NONE);
-			}
+			}			
 			else {
-				preggoMob.setPregnancyPainTimer(preggoMob.getPregnancyPainTimer() + 1);
+				preggoMob.setPregnancyPainTimer(pregnancyPainTimer + 1);
 			}
 		}
 	}
@@ -118,52 +130,55 @@ public abstract class PregnancySystemP3 <E extends TamableAnimal
 	
 	
 	@Override
-	public void evaluateRightClick(Player source) {	
-		final var level = preggoMob.level();	
-		if (!preggoMob.isOwnedBy(source) || level.isClientSide()) {
-			return;
-		}			
+	public InteractionResult evaluateRightClick(Player source) {		
+		final var level = preggoMob.level();
+		
+		if (!preggoMob.isOwnedBy(source) || level.isClientSide() || !(level instanceof ServerLevel serverLevel)) {
+			return InteractionResult.PASS;
+		}				
 		
 		Result result;
 		
-		if ((result = evaluateHungry(level, source)) != Result.NOTHING
-				|| (result = evaluateCraving(level, source)) != Result.NOTHING
-				|| (result = evaluateMilking(level, source)) != Result.NOTHING
-				|| (result = evaluateBellyRubs(level, source)) != Result.NOTHING) {
-			spawnParticles(level, result);
+		if ((result = evaluateHungry(serverLevel, source)) != Result.NOTHING
+				|| (result = evaluateCraving(serverLevel, source)) != Result.NOTHING
+				|| (result = evaluateMilking(serverLevel, source)) != Result.NOTHING
+				|| (result = evaluateBellyRubs(serverLevel, source)) != Result.NOTHING) {
+			spawnParticles(serverLevel, result);
 		}
+		
+		return onRightClickResult(result);
 	}
 	
 	
 	protected Result evaluateBellyRubs(Level level, Player source) {	
 	
-		if (canOwnerRubBelly(source)) {		
-			level.playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "belly_touch")), SoundSource.NEUTRAL, 0.75F, 1);
-		
-			var currentBellyRubs = preggoMob.getBellyRubs();
-			
-			if (preggoMob.getPregnancySymptom() == PregnancySymptom.BELLY_RUBS
-					&& currentBellyRubs > PregnancySystemConstants.DESACTIVATE_FULL_BELLY_RUBS_STAGE) {		
-				currentBellyRubs = Math.max(0, currentBellyRubs - PregnancySystemConstants.BELLY_RUBBING_VALUE);
-				preggoMob.setBellyRubs(currentBellyRubs);
-				
-				if (currentBellyRubs <= PregnancySystemConstants.DESACTIVATE_FULL_BELLY_RUBS_STAGE) {
-					preggoMob.setPregnancySymptom(PregnancySymptom.NONE);
-				}		
-				return Result.SUCCESS;
-			}
-			else if (currentBellyRubs > 0) {
-				currentBellyRubs = Math.max(0, currentBellyRubs - PregnancySystemConstants.BELLY_RUBBING_VALUE);
-				preggoMob.setBellyRubs(currentBellyRubs);				
-				return Result.NOTHING;
-			}
-			else {
-				return Result.FAIL;
-			}
-			
+		if (!canOwnerRubBelly(source)) {	
+			return Result.NOTHING;
 		}		
 		
-		return Result.NOTHING;
+		level.playSound(source, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "belly_touch")), SoundSource.NEUTRAL, 0.75F, 1);
+		var currentBellyRubs = preggoMob.getBellyRubs();
+	
+		
+		if (preggoMob.getPregnancySymptom() == PregnancySymptom.BELLY_RUBS
+				&& currentBellyRubs > PregnancySystemConstants.DESACTIVATE_FULL_BELLY_RUBS_STAGE) {		
+			
+			currentBellyRubs = Math.max(0, currentBellyRubs - PregnancySystemConstants.BELLY_RUBBING_VALUE);
+			preggoMob.setBellyRubs(currentBellyRubs);
+			
+			if (currentBellyRubs <= PregnancySystemConstants.DESACTIVATE_FULL_BELLY_RUBS_STAGE) {
+				preggoMob.setPregnancySymptom(PregnancySymptom.NONE);
+			}
+			
+			return Result.SUCCESS;
+		}
+		else if (currentBellyRubs > 0) {		
+			currentBellyRubs = Math.max(0, currentBellyRubs - PregnancySystemConstants.BELLY_RUBBING_VALUE);
+			preggoMob.setBellyRubs(currentBellyRubs);
+			return Result.NOTHING;
+		}		
+		
+		return Result.ANGRY;
 	}
 	
 	protected boolean canOwnerRubBelly(Player source) {

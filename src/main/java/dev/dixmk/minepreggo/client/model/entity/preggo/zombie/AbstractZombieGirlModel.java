@@ -108,7 +108,7 @@ public abstract class AbstractZombieGirlModel<E extends AbstractZombieGirl> exte
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
-		createBasicBodyLayer(partdefinition, 0, 0);
+		createBasicBodyLayer(partdefinition, -0.0523599F, 0.0523599F);
 	
 		PartDefinition body = partdefinition.getChild("body");
 		
@@ -131,7 +131,7 @@ public abstract class AbstractZombieGirlModel<E extends AbstractZombieGirl> exte
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
-		createBasicBodyLayer(partdefinition, 0, 0);
+		createBasicBodyLayer(partdefinition, -0.0872665F, 0.0872665F);
 	
 		PartDefinition body = partdefinition.getChild("body");
 		
@@ -163,7 +163,7 @@ public abstract class AbstractZombieGirlModel<E extends AbstractZombieGirl> exte
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
-		createBasicBodyLayer(partdefinition, 0, 0);
+		createBasicBodyLayer(partdefinition, -0.2181662F, 0.2181662F);
 	
 		PartDefinition body = partdefinition.getChild("body");
 		
@@ -196,7 +196,7 @@ public abstract class AbstractZombieGirlModel<E extends AbstractZombieGirl> exte
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
-		createBasicBodyLayer(partdefinition, 0, 0);
+		createBasicBodyLayer(partdefinition, -0.261799F, 0.261799F);
 	
 		PartDefinition body = partdefinition.getChild("body");
 		
@@ -236,7 +236,7 @@ public abstract class AbstractZombieGirlModel<E extends AbstractZombieGirl> exte
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
-		createBasicBodyLayer(partdefinition, 0, 0);
+		createBasicBodyLayer(partdefinition, -0.3054326F, 0.3054326F);
 	
 		PartDefinition body = partdefinition.getChild("body");
 		
@@ -283,7 +283,7 @@ public abstract class AbstractZombieGirlModel<E extends AbstractZombieGirl> exte
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
-		createBasicBodyLayer(partdefinition, 0, 0);
+		createBasicBodyLayer(partdefinition, -0.349066F, 0.349066F);
 	
 		PartDefinition body = partdefinition.getChild("body");
 		

@@ -54,7 +54,7 @@ public class TamableZombieGirlP5 extends AbstractTamablePregnantZombieGirl<Pregn
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return getBasicAttributes(0.235);
+		return getBasicAttributes(0.215);
 	}
 	
 	@Override

@@ -39,6 +39,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -238,42 +239,41 @@ public abstract class AbstractTamableZombieGirl<S extends PreggoMobSystem<?>> ex
       this.updateSwingTime();      
       if (this.isAlive()) {	  
           this.preggoMobSystem.evaluateOnTick();       
-          if (this.isLeashed()) {
-        	  this.dropLeash(true, true);
-          }
       }
 	}
 	
 	@Override
 	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {	
-		super.mobInteract(sourceentity, hand); 		
+		var retval = super.mobInteract(sourceentity, hand); 		
 	
-		if (sourceentity instanceof ServerPlayer serverPlayer
-				&& preggoMobSystem.canOwnerAccessGUI(sourceentity)) {
-
-			final var entityId = this.getId();
-			final var blockPos = serverPlayer.blockPosition();
-			
-			NetworkHooks.openScreen(serverPlayer, ZombieGirlGUIMenuFactory.createMainGUIMenuProvider(this.getClass(), blockPos, entityId), buf -> {
-			    buf.writeBlockPos(blockPos);
-			    buf.writeVarInt(entityId);
-			});
+		if (retval == InteractionResult.SUCCESS) {
+			return retval;
+		}
+		
+		if (preggoMobSystem.canOwnerAccessGUI(sourceentity)) {			
+			if (!this.level().isClientSide() && sourceentity instanceof ServerPlayer serverPlayer) {
+				final var entityId = this.getId();
+				final var blockPos = serverPlayer.blockPosition();
+				
+				NetworkHooks.openScreen(serverPlayer, ZombieGirlGUIMenuFactory.createMainGUIMenuProvider(this.getClass(), blockPos, entityId), buf -> {
+				    buf.writeBlockPos(blockPos);
+				    buf.writeVarInt(entityId);
+				});
+			}			
+			return InteractionResult.SUCCESS;
 		}
 		else {		
-			preggoMobSystem.evaluateRightClick(sourceentity);
-		}
-				
-		return InteractionResult.CONSUME;
+			return preggoMobSystem.evaluateRightClick(sourceentity);
+		}	
 	}
 	
-	
-	
-	
+
 	@Override
 	public boolean wantsToAttack(LivingEntity target, LivingEntity owner) {		
-		return !(target instanceof TamableAnimal tamableTarget && tamableTarget.isOwnedBy(owner))
-				|| !(target instanceof AbstractHorse houseTarget && houseTarget.isTamed())
-				|| !(target instanceof Player pTarget && owner instanceof Player pOwmer && !(pOwmer).canHarmPlayer(pTarget));
+		return !(target instanceof Ghast 
+				|| target instanceof TamableAnimal tamableTarget && tamableTarget.isOwnedBy(owner)
+				|| target instanceof AbstractHorse houseTarget && houseTarget.isTamed()
+				|| target instanceof Player pTarget && owner instanceof Player pOwmer && !(pOwmer).canHarmPlayer(pTarget)) ;
 	}
 		
 	protected static AttributeSupplier.Builder getBasicAttributes(double movementSpeed) {

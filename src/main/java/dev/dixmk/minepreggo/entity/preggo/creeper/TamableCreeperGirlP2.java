@@ -47,7 +47,7 @@ public class TamableCreeperGirlP2 extends AbstractTamablePregnantCreeperGirl<Pre
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return getBasicAttributes(0.24);
+		return getBasicAttributes(0.235);
 	}
 	
 	@Override

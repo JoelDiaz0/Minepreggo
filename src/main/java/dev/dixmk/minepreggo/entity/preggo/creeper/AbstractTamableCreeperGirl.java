@@ -34,6 +34,7 @@ import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -145,8 +146,7 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 		this.goalSelector.addGoal(1, new AbstractCreeperGirl.SwellGoal<>(this) {
 			@Override
 			public boolean canUse() {				
-				return super.canUse() 
-				&& getCanExplote();								
+				return super.canUse() && canExplode();								
 			}
 		});
 		PreggoAIHelper.setTamableCreeperGirlGoals(this);
@@ -155,7 +155,7 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	public void setcombatMode(CombatMode value) {
 		this.entityData.set(DATA_COMBAT_MODE, value);
 		if (value == CombatMode.EXPLODE)
-			this.maxDistance = 1D;
+			this.maxDistance = 4D;
 	}
 	
 	public CombatMode getcombatMode() {
@@ -163,7 +163,7 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	}
 	
 	@Override
-	public boolean getCanExplote() {
+	public boolean canExplode() {
 		switch (this.getcombatMode()) {
 		case FIGHT_AND_EXPLODE: {
 			return this.getHealth() <= this.getMaxHealth() / 2F;
@@ -183,9 +183,6 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
       
       if (this.isAlive()) {
           this.preggoMobSystem.evaluateOnTick();
-    	  if (this.isLeashed()) {
-    		  this.dropLeash(true, true);
-    	  }	  
       }
 	}
 	
@@ -214,10 +211,11 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	}
 	
 	@Override
-	public boolean wantsToAttack(LivingEntity target, LivingEntity owner) {	
-		return !(target instanceof TamableAnimal tamableTarget && tamableTarget.isOwnedBy(owner))
-				|| !(target instanceof AbstractHorse houseTarget && houseTarget.isTamed())
-				|| !(target instanceof Player pTarget && owner instanceof Player pOwmer && !(pOwmer).canHarmPlayer(pTarget));
+	public boolean wantsToAttack(LivingEntity target, LivingEntity owner) {			
+		return !(target instanceof Ghast 
+				|| target instanceof TamableAnimal tamableTarget && tamableTarget.isOwnedBy(owner)
+				|| target instanceof AbstractHorse houseTarget && houseTarget.isTamed()
+				|| target instanceof Player pTarget && owner instanceof Player pOwmer && !(pOwmer).canHarmPlayer(pTarget)) ;
 	}
 	
 	@Override
@@ -262,28 +260,27 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	
 	@Override
 	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {				
-		super.mobInteract(sourceentity, hand);	
+		var retval = super.mobInteract(sourceentity, hand);	
 		
-		if (this.isIgnited()) {
+		if (retval == InteractionResult.SUCCESS) {
+			return retval;
+		}
+		
+		if (preggoMobSystem.canOwnerAccessGUI(sourceentity)) {		
+			if (!this.level().isClientSide() && sourceentity instanceof ServerPlayer serverPlayer) {
+				final var entityId = this.getId();
+				final var blockPos = serverPlayer.blockPosition();		
+				NetworkHooks.openScreen(serverPlayer, CreeperGirlGUIMenuFactory.createMainGUIMenuProvider(this.getClass(), blockPos, entityId), buf -> {
+				    buf.writeBlockPos(blockPos);
+				    buf.writeVarInt(entityId);
+				});	
+			}
+		
 			return InteractionResult.SUCCESS;
 		}
-		
-		if (sourceentity instanceof ServerPlayer serverPlayer
-				&& preggoMobSystem.canOwnerAccessGUI(sourceentity)) {
-
-			final var entityId = this.getId();
-			final var blockPos = serverPlayer.blockPosition();
-			
-			NetworkHooks.openScreen(serverPlayer, CreeperGirlGUIMenuFactory.createMainGUIMenuProvider(this.getClass(), blockPos, entityId), buf -> {
-			    buf.writeBlockPos(blockPos);
-			    buf.writeVarInt(entityId);
-			});
-		}
-		else {		
-			preggoMobSystem.evaluateRightClick(sourceentity);
+		else {			
+			return preggoMobSystem.evaluateRightClick(sourceentity);
 		}	
-			
-		return InteractionResult.CONSUME;
 	}
 
 	protected static AttributeSupplier.Builder getBasicAttributes(double movementSpeed) {

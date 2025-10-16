@@ -7,9 +7,6 @@ import net.minecraftforge.fml.event.config.ModConfigEvent;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-
-// An example config class. This is not required, but it's a good idea to have one to keep your config organized.
-// Demonstrates how to use Forge's config APIs
 @Mod.EventBusSubscriber(modid = MinepreggoMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MinepreggoModConfig {
 	
@@ -364,35 +361,33 @@ public class MinepreggoModConfig {
     }
     
     private static void calculateCravingValues() { 	
-    	totalTicksOfCravingP2 = (int) Math.ceil(totalTicksOfCravingP1 * 0.06F - totalTicksOfCravingP1);
-    	totalTicksOfCravingP3 = (int) Math.ceil(totalTicksOfCravingP1 * 0.12F - totalTicksOfCravingP1);
-    	totalTicksOfCravingP4 = (int) Math.ceil(totalTicksOfCravingP1 * 0.18F - totalTicksOfCravingP1);
-    	totalTicksOfCravingP5 = (int) Math.ceil(totalTicksOfCravingP1 * 0.24F - totalTicksOfCravingP1);
-    	totalTicksOfCravingP6 = (int) Math.ceil(totalTicksOfCravingP1 * 0.30F - totalTicksOfCravingP1);
-    	totalTicksOfCravingP7 = (int) Math.ceil(totalTicksOfCravingP1 * 0.36F - totalTicksOfCravingP1);
+    	totalTicksOfCravingP2 = (int) Math.ceil(totalTicksOfCravingP1 - totalTicksOfCravingP1 * 0.06F);
+    	totalTicksOfCravingP3 = (int) Math.ceil(totalTicksOfCravingP1 - totalTicksOfCravingP1 * 0.12F);
+    	totalTicksOfCravingP4 = (int) Math.ceil(totalTicksOfCravingP1 - totalTicksOfCravingP1 * 0.18F);
+    	totalTicksOfCravingP5 = (int) Math.ceil(totalTicksOfCravingP1 - totalTicksOfCravingP1 * 0.24F);
+    	totalTicksOfCravingP6 = (int) Math.ceil(totalTicksOfCravingP1 - totalTicksOfCravingP1 * 0.30F);
+    	totalTicksOfCravingP7 = (int) Math.ceil(totalTicksOfCravingP1 - totalTicksOfCravingP1 * 0.36F);
     }
     
     private static void calculateMilkingValues() { 	
-    	totalTicksOfMilkingP3 = (int) Math.ceil(totalTicksOfMilkingP2 * 0.07F - totalTicksOfMilkingP2);
-    	totalTicksOfMilkingP4 = (int) Math.ceil(totalTicksOfMilkingP2 * 0.14F - totalTicksOfMilkingP2);
-    	totalTicksOfMilkingP5 = (int) Math.ceil(totalTicksOfMilkingP2 * 0.21F - totalTicksOfMilkingP2);
-    	totalTicksOfMilkingP6 = (int) Math.ceil(totalTicksOfMilkingP2 * 0.28F - totalTicksOfMilkingP2);
-    	totalTicksOfMilkingP7 = (int) Math.ceil(totalTicksOfMilkingP2 * 0.35F - totalTicksOfMilkingP2);
+    	totalTicksOfMilkingP3 = (int) Math.ceil(totalTicksOfMilkingP2 - totalTicksOfMilkingP2 * 0.07F);
+    	totalTicksOfMilkingP4 = (int) Math.ceil(totalTicksOfMilkingP2 - totalTicksOfMilkingP2 * 0.14F);
+    	totalTicksOfMilkingP5 = (int) Math.ceil(totalTicksOfMilkingP2 - totalTicksOfMilkingP2 * 0.21F);
+    	totalTicksOfMilkingP6 = (int) Math.ceil(totalTicksOfMilkingP2 - totalTicksOfMilkingP2 * 0.28F);
+    	totalTicksOfMilkingP7 = (int) Math.ceil(totalTicksOfMilkingP2 - totalTicksOfMilkingP2 * 0.35F);
     }
     
     private static void calculateBellyRubsValues() { 	
-    	totalTicksOfBellyRubsP4 = (int) Math.ceil(totalTicksOfBellyRubsP3 * 0.09F - totalTicksOfBellyRubsP3);
-    	totalTicksOfBellyRubsP5 = (int) Math.ceil(totalTicksOfBellyRubsP3 * 0.18F - totalTicksOfBellyRubsP3);
-    	totalTicksOfBellyRubsP6 = (int) Math.ceil(totalTicksOfBellyRubsP3 * 0.27F - totalTicksOfBellyRubsP3);
-    	totalTicksOfBellyRubsP7 = (int) Math.ceil(totalTicksOfBellyRubsP3 * 0.35F - totalTicksOfBellyRubsP3);
+    	totalTicksOfBellyRubsP4 = (int) Math.ceil(totalTicksOfBellyRubsP3 - totalTicksOfBellyRubsP3 * 0.09F);
+    	totalTicksOfBellyRubsP5 = (int) Math.ceil(totalTicksOfBellyRubsP3 - totalTicksOfBellyRubsP3 * 0.18F);
+    	totalTicksOfBellyRubsP6 = (int) Math.ceil(totalTicksOfBellyRubsP3 - totalTicksOfBellyRubsP3 * 0.27F);
+    	totalTicksOfBellyRubsP7 = (int) Math.ceil(totalTicksOfBellyRubsP3 - totalTicksOfBellyRubsP3 * 0.35F);
 
     }
    
     private static void calculateHornyValues() { 	
-    	totalTicksOfHornyP5 = (int) Math.ceil(totalTicksOfHornyP4 * 0.12F - totalTicksOfHornyP4);
-    	totalTicksOfHornyP6 = (int) Math.ceil(totalTicksOfHornyP4 * 0.24F - totalTicksOfHornyP4);
-    	totalTicksOfHornyP7 = (int) Math.ceil(totalTicksOfHornyP4 * 0.36F - totalTicksOfHornyP4);
-    }
-    
-    
+    	totalTicksOfHornyP5 = (int) Math.ceil(totalTicksOfHornyP4 - totalTicksOfHornyP4 * 0.12F);
+    	totalTicksOfHornyP6 = (int) Math.ceil(totalTicksOfHornyP4 - totalTicksOfHornyP4 * 0.24F);
+    	totalTicksOfHornyP7 = (int) Math.ceil(totalTicksOfHornyP4 - totalTicksOfHornyP4 * 0.36F);
+    }    
 }

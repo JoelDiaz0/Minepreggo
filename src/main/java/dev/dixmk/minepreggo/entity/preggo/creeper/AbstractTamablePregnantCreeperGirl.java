@@ -113,7 +113,7 @@ public abstract class AbstractTamablePregnantCreeperGirl<S extends PregnancySyst
 			@Override
 			public boolean canUse() {				
 				return super.canUse() 
-				&& getCanExplote()
+				&& canExplode()
 				&& !isIncapacitated();								
 			}
 		});
@@ -207,7 +207,7 @@ public abstract class AbstractTamablePregnantCreeperGirl<S extends PregnancySyst
 	
 	@Override
 	public boolean isIncapacitated() {
-		return getPregnancySymptom() != PregnancySymptom.NONE;
+		return this.getPregnancyPain() != PregnancyPain.NONE;
 	}
 	
 	

@@ -206,6 +206,6 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PregnancySyste
 	
 	@Override
 	public boolean isIncapacitated() {
-		return getPregnancySymptom() != PregnancySymptom.NONE;
+		return this.getPregnancyPain() != PregnancyPain.NONE;
 	}
 }

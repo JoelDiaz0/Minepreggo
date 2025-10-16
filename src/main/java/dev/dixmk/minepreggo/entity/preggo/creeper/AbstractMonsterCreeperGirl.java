@@ -44,7 +44,7 @@ public abstract class AbstractMonsterCreeperGirl extends AbstractCreeperGirl {
 	}
 	
 	@Override
-	public boolean getCanExplote() {
+	public boolean canExplode() {
 		switch (this.basicCombatMode) {
 		case FIGHT_AND_EXPLODE: {
 			return this.getHealth() <= this.getMaxHealth() * 0.6F;
@@ -94,7 +94,7 @@ public abstract class AbstractMonsterCreeperGirl extends AbstractCreeperGirl {
 		this.goalSelector.addGoal(2, new AbstractCreeperGirl.SwellGoal<>(this) {		
 			@Override
 			public boolean canUse() {												
-				return super.canUse() && getCanExplote();
+				return super.canUse() && canExplode();
 			}
 		});
 		this.goalSelector.addGoal(3, new FloatGoal(this));

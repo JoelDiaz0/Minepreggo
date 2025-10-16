@@ -56,9 +56,8 @@ public class PreggoArmorHelper {
 		}	
 	}
 	
-	public static boolean canPreggoMobUseLegging(ItemStack armor, PregnancyStage stage) {
-		
-		if (stage == PregnancyStage.P0) {
+	public static boolean canPreggoMobUseLegging(ItemStack armor, PregnancyStage stage) {	
+		if (stage == PregnancyStage.P0 && armor.getItem() instanceof ArmorItem armorItem && armorItem.getEquipmentSlot() == EquipmentSlot.LEGS) {
 			return true;
 		}
 		else {

@@ -1,5 +1,6 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.creeper;
 
+import dev.dixmk.minepreggo.client.entity.animation.preggo.HumanoidGirlAnimation;
 import dev.dixmk.minepreggo.client.entity.animation.preggo.creeper.CreeperGirlAnimation;
 import dev.dixmk.minepreggo.entity.preggo.creeper.TamableCreeperGirlP3;
 import net.minecraft.client.model.HierarchicalModel;
@@ -21,7 +22,7 @@ public class AnimatedTamableCreeperGirlP3Model extends AbstractTamablePregnantCr
 			@Override
 			public void setupAnim(TamableCreeperGirlP3 creeperGirl, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 				this.root().getAllParts().forEach(ModelPart::resetPose);
-					
+									
 			    if (creeperGirl.isAttacking()) {
 				    this.animate(creeperGirl.attackAnimationState, CreeperGirlAnimation.ATTACK, ageInTicks, 1f);	
 			    }
@@ -52,25 +53,24 @@ public class AnimatedTamableCreeperGirlP3Model extends AbstractTamablePregnantCr
 					default:
 						break;						
 					}	
-				} else {								
-					if (creeperGirl.isPanic()) {
-						this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.IDLE, ageInTicks, 1f);						
-						return;
-					} 
-									
-					switch (creeperGirl.getState()) {
-					case WAIT: {
-						this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.WAIT, ageInTicks, 1f);										
-						break;
-					}
-					case SIT: {
-						this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.RIDING, ageInTicks, 1f);						
-						break;
-					}		
-					default:
-						this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.IDLE, ageInTicks, 1f);						
-					}			
+				} 
+				
+				if (creeperGirl.isPanic()) {
+					this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.IDLE, ageInTicks, 1f);						
+					return;
+				} 
+												
+				if (creeperGirl.isWaiting()) {
+					this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.WAIT2, ageInTicks, 1f);										
 				}
+				else if (creeperGirl.isPassenger()) {
+					this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.RIDING, ageInTicks, 1f);						
+				}
+				else {
+					this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.IDLE, ageInTicks, 1f);						
+				}
+
+			    this.animate(creeperGirl.loopAnimationState, HumanoidGirlAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);	
 			}	
 		});
 	}

@@ -239,70 +239,68 @@ public class PreggoGUIHelper {
 	}
 	
 	public static void renderDefaultPreggoP0LabelMainGUI(GuiGraphics guiGraphics, Font font, IPreggoMob p0) {	
-		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_0_main_gui.label_state"), 78, 21, -12829636, false);
 		guiGraphics.drawString(font, p0.getPreggoName(), 90, 4, -12829636, false);
-	
+		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_state"), 78, 21, -12829636, false);
+		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_phase"), 75, 34, -12829636, false);
+		guiGraphics.drawString(font, p0.getCurrentPregnancyStage().toString(), 107, 34, -12829636, false);
 		if (p0.isPregnant()) {
-			guiGraphics.drawString(font, "Maybe Pregnant?", 109, 21, -12829636, false);
+			guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_maybe_pregnant"), 109, 21, -12829636, false);
 		} else {
-			guiGraphics.drawString(font, "Not Pregnant", 109, 21, -12829636, false);
+			guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_not_pregnant"), 109, 21, -12829636, false);
 		}
-
 	}
 	
 	public static<E extends IPreggoMob & IPregnancyP1> void renderP1LabelMainGUI(GuiGraphics guiGraphics, Font font, E p1) {	
-		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_1_main_gui.label_state"), 75, 22, -12829636, false);
-		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_1_main_gui.label_not_pregnant"), 107, 22, -12829636, false);
-		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_1_main_gui.label_stage"), 75, 37, -12829636, false);
-		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_1_main_gui.label_p1"), 107, 37, -12829636, false);
-		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_1_main_gui.label_craving"), 75, 51, -12829636, false);
-
 		guiGraphics.drawString(font, p1.getPreggoName(), 90, 4, -12829636, false);
-
+		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_state"), 75, 22, -12829636, false);
+		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_pregnant"), 107, 22, -12829636, false);
+		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_phase"), 75, 37, -12829636, false);
+		guiGraphics.drawString(font, p1.getCurrentPregnancyStage().toString(), 107, 37, -12829636, false);
+		
+		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_craving"), 75, 51, -12829636, false);
 		if (p1.getCravingChosen() == Craving.NONE) {
-			guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_1_main_gui.label_no"), 118, 51, -12829636, false);
-		}  	
+			guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_none"), 118, 51, -12829636, false);
+		}   	
 	}
 	
 	public static<E extends IPreggoMob & IPregnancyP2> void renderP2LabelMainGUI(GuiGraphics guiGraphics, Font font, E p2) {
-		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_2_main_gui.label_stage"), 77, 31, -12829636, false);
-		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_2_main_gui.label_statepregnant"), 77, 17, -12829636, false);
-		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_2_main_gui.label_p2"), 109, 31, -12829636, false);
-		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_2_main_gui.label_pregnant"), 109, 17, -12829636, false);
-		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_2_main_gui.label_craving"), 77, 45, -12829636, false);
+		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_phase"), 77, 31, -12829636, false);
+		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_state"), 77, 17, -12829636, false);
+		guiGraphics.drawString(font, p2.getCurrentPregnancyStage().toString(), 109, 31, -12829636, false);
+		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_pregnant"), 109, 17, -12829636, false);
+		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_craving"), 77, 45, -12829636, false);
 		
 		guiGraphics.drawString(font, p2.getPreggoName(), 90, 4, -12829636, false);
 
 		if (p2.getCravingChosen() == Craving.NONE) {
-			guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_2_main_gui.label_no"), 118, 45, -12829636, false);
+			guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_none"), 118, 45, -12829636, false);
 		} 
 	}
 	
-	public static<E extends IPreggoMob & IPregnancyP2> void renderP3LabelMainGUI(GuiGraphics guiGraphics, Font font, E p3) {
-		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_3_main_gui.label_stage"), 75, 31, -12829636, false);
-		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_3_main_gui.label_p1"), 107, 31, -12829636, false);
-		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_3_main_gui.label_statepregnant"), 75, 17, -12829636, false);
-		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_3_main_gui.label_pregnant"), 107, 17, -12829636, false);
-		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_3_main_gui.label_craving"), 75, 45, -12829636, false);
+	public static<E extends IPreggoMob & IPregnancyP3> void renderP3LabelMainGUI(GuiGraphics guiGraphics, Font font, E p3) {
+		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_phase"), 75, 31, -12829636, false);
+		guiGraphics.drawString(font, p3.getCurrentPregnancyStage().toString(), 107, 31, -12829636, false);
+		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_state"), 75, 17, -12829636, false);
+		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_pregnant"), 107, 17, -12829636, false);
+		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_craving"), 75, 45, -12829636, false);
 
 		guiGraphics.drawString(font, p3.getPreggoName(), 90, 4, -12829636, false);
 
 		if (p3.getCravingChosen() == Craving.NONE) {
-			guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_3_main_gui.label_no"), 118, 45, -12829636, false);
+			guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_none"), 118, 45, -12829636, false);
 		} 
 	}
 	
-	public static<E extends IPreggoMob & IPregnancyP2> void renderP4LabelMainGUI(GuiGraphics guiGraphics, Font font, E p4) {
-		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_4_main_gui.label_stage"), 74, 35, -12829636, false);
-		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_4_main_gui.label_birth_in"), 74, 51, -12829636, false);
-		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_4_main_gui.label_statepregnant"), 74, 19, -12829636, false);
-		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_3_main_gui.label_pregnant"), 107, 17, -12829636, false);
-		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_4_main_gui.label_pregnant"), 106, 19, -12829636, false);
-
+	public static<E extends IPreggoMob & IPregnancyP4> void renderP4LabelMainGUI(GuiGraphics guiGraphics, Font font, E p4) {
+		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_phase"), 74, 35, -12829636, false);
+		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_craving"), 74, 51, -12829636, false);
+		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_state"), 74, 19, -12829636, false);
+		guiGraphics.drawString(font, p4.getCurrentPregnancyStage().toString(), 107, 35, -12829636, false);	
+		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_pregnant"), 106, 19, -12829636, false);
 		guiGraphics.drawString(font, p4.getPreggoName(), 90, 4, -12829636, false);
 
 		if (p4.getCravingChosen() == Craving.NONE) {
-			guiGraphics.drawString(font, Component.translatable("gui.minepreggo.zombie_girl_p_4_main_gui.label_no"), 118, 51, -12829636, false);
+			guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_none"), 118, 51, -12829636, false);
 		} 
 	}
 	

@@ -34,17 +34,19 @@ public class AnimatedTamableCreeperGirlP0Model extends AbstractTamableCreeperGir
 						this.animateWalk(CreeperGirlAnimation.WALK, limbSwing, limbSwingAmount * 4F, 1f, 1f);
 					}
 				}
+
+				if (creeperGirl.isPanic()) {
+					this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.IDLE, ageInTicks, 1f);						
+					return;
+				} 
 				
-				switch (creeperGirl.getState()) {
-				case WAIT: {
-					this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.WAIT, ageInTicks, 1f);						
-					break;
+				if (creeperGirl.isWaiting()) {
+					this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.WAIT1, ageInTicks, 1f);										
 				}
-				case SIT: {
+				else if (creeperGirl.isPassenger()) {
 					this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.RIDING, ageInTicks, 1f);						
-					break;
-				}		
-				default:
+				}
+				else {
 					this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.IDLE, ageInTicks, 1f);						
 				}
 			}	

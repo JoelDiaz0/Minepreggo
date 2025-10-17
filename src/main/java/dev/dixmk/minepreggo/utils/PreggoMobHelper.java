@@ -1,5 +1,6 @@
 package dev.dixmk.minepreggo.utils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -32,13 +33,13 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -47,16 +48,11 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.AxeItem;
-import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PickaxeItem;
-import net.minecraft.world.item.ShovelItem;
-import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -200,7 +196,7 @@ public class PreggoMobHelper {
 		
 	@Nonnegative
 	public static int getNumberOfDaysByMaxPregnancyStage(PregnancyStage maxPregnancyStage, RandomSource randomSource) {
-		return (60 + randomSource.nextInt(10)) / maxPregnancyStage.ordinal();
+		return PregnancySystemConstants.TOTAL_PREGNANCY_DAYS / maxPregnancyStage.ordinal();
 	}
 	
 	public static<E extends TamableAnimal & IPreggoMob & IPregnancySystem> void startPregnancy(E preggoMob, PregnancyStage maxPregnancyStage) {	
@@ -213,27 +209,12 @@ public class PreggoMobHelper {
 		preggoMob.setDaysToGiveBirth(daysToBirth);
 		preggoMob.setPregnancyHealth(100);
 		
-		MinepreggoMod.LOGGER.debug("START PREGNANCY: class={}, daysByStage={}, daysToBirth={}",
-				preggoMob.getClass().getSimpleName(), daysByStage, daysToBirth);
+		MinepreggoMod.LOGGER.debug("START PREGNANCY: id={}, class={}, currentPregnancyStage={}, maxPregnancyStage={}, daysByStage={}, daysToBirth={}",
+				preggoMob.getId(), preggoMob.getClass().getSimpleName(),preggoMob.getCurrentPregnancyStage(), maxPregnancyStage, daysByStage, daysToBirth);
 	}
 		
 	public static<E extends TamableAnimal & IPreggoMob & IPregnancySystem> void startPregnancy(E preggoMob) {		
-		final var currentPregnancyStage = preggoMob.getCurrentPregnancyStage();
-		PregnancyStage maxPregnancyStage;
-
-		if ((currentPregnancyStage == PregnancyStage.P5) || 
-			(currentPregnancyStage == PregnancyStage.P6) ||
-			(currentPregnancyStage == PregnancyStage.P7)) {
-			maxPregnancyStage = currentPregnancyStage;
-		}
-		else {
-			maxPregnancyStage = PregnancyStage.P4;
-		}
-			
-		MinepreggoMod.LOGGER.debug("START PREGNANCY: class={}, currentPregnancyStage={}, maxPregnancyStage={}",
-				preggoMob.getClass().getSimpleName(), currentPregnancyStage, maxPregnancyStage);
-		
-		startPregnancy(preggoMob, maxPregnancyStage);
+		startPregnancy(preggoMob, PregnancyStage.getRandomFinalCurrentStage(preggoMob.getCurrentPregnancyStage()));
 	}
 	
 	public static <E extends TamableAnimal & IPreggoMob & IPregnancySystem> void defaultDamagePregnancyHealth(E preggoMob, DamageSource damagesource) {
@@ -241,7 +222,7 @@ public class PreggoMobHelper {
 		var randomSource = preggoMob.getRandom();
 		
 		if ((preggoMob.hasEffect(MinepreggoModMobEffects.PREGNANCY_RESISTANCE_EFFECT.get()) && randomSource.nextFloat() < 0.9F)
-				|| (!damagesource.is(DamageTypes.FALL) && preggoMob.getItemBySlot(EquipmentSlot.CHEST).getItem() != ItemStack.EMPTY.getItem() && randomSource.nextFloat() < 0.5)) {
+				|| (!damagesource.is(DamageTypes.FALL) && !preggoMob.getItemBySlot(EquipmentSlot.CHEST).isEmpty() && randomSource.nextFloat() < 0.5)) {
 			return;
 		}
 		
@@ -273,24 +254,24 @@ public class PreggoMobHelper {
 		final float t = Mth.clamp(totalDaysPassed / (float) totalDays, 0, 1);	
 		final float p = PreggoMathHelper.sigmoid(pMin, pMax, k, t, t0);
 		
-		MinepreggoMod.LOGGER.debug("getSpawnProbabilityBasedPregnancy: class={}, totalDays={}, totalDaysPassed={}, t={}, p={}",
+		MinepreggoMod.LOGGER.debug("SPAWN PROBABILITY BASED IN PREGNANCY: class={}, totalDays={}, totalDaysPassed={}, t={}, p={}",
 				preggoMob.getClass().getSimpleName(), totalDays, totalDaysPassed, t, p);
 
 		return p;
 	}
 	
-	private static void spawnBabiesOrFetusesZombie(float p, int numOfBabies, AbstractZombieGirl zombieGirl) {
+	private static void spawnBabyOrFetusZombies(float p, int numOfBabies, AbstractZombieGirl zombieGirl) {
 		
 		if (!(zombieGirl.level() instanceof ServerLevel serverLevel)) {
 			return;
 		}
 		
-		final var MIN_HEALTH = (int) Math.floor(zombieGirl.getMaxHealth() * 0.2);
-		final var MAX_HEALTH = (int) Math.floor(zombieGirl.getMaxHealth() * 0.6);
+		final var MIN_HEALTH = (int) Math.floor(zombieGirl.getMaxHealth() * 0.2F);
+		final var MAX_HEALTH = (int) Math.floor(zombieGirl.getMaxHealth() * 0.5F);
 		var randomSource = zombieGirl.getRandom();
 			
-		MinepreggoMod.LOGGER.debug("spawnBabiesOrFetusesZombie: class={}, p={}",
-				zombieGirl.getClass().getSimpleName(), p);
+		MinepreggoMod.LOGGER.debug("SPAWN ZOMBIE BABIES AND FETUSES: class={}, p={}, numOfBabies={}",
+				zombieGirl.getClass().getSimpleName(), p, numOfBabies);
 		
 		for (int i = 0; i < numOfBabies; ++i) {	
 			if (randomSource.nextFloat() < p) {	
@@ -303,8 +284,13 @@ public class PreggoMobHelper {
 				}				
 				entityToSpawn.setBaby(true);
 				entityToSpawn.setYRot(randomSource.nextFloat() * 360F);
-				entityToSpawn.setTarget(zombieGirl.getLastHurtByMob());
 				entityToSpawn.setHealth(randomSource.nextInt(MIN_HEALTH, MAX_HEALTH));				
+			
+				var target = zombieGirl.getLastHurtByMob();
+				
+				if (!isPlayerInCreativeOrSpectator(target)) {
+					entityToSpawn.setTarget(target);
+				}				
 			}	
 			else {
 				ItemEntity entityToSpawn = new ItemEntity(serverLevel, zombieGirl.getX(), zombieGirl.getY(), zombieGirl.getZ(), new ItemStack(MinepreggoModItems.DEAD_ZOMBIE_FETUS.get()));
@@ -314,26 +300,31 @@ public class PreggoMobHelper {
 		}	
 	}
 	
-	private static void spawnBabiesOrFetusesCreeper(float p, int numOfBabies, AbstractCreeperGirl creeperGirl) {
+	private static void spawnBabyOrFetusCreepers(float p, int numOfBabies, AbstractCreeperGirl creeperGirl) {
 		
 		if (!(creeperGirl.level() instanceof ServerLevel serverLevel)) {
 			return;
 		}
 		
-		final var MIN_HEALTH = (int) Math.floor(creeperGirl.getMaxHealth() * 0.2);
-		final var MAX_HEALTH = (int) Math.floor(creeperGirl.getMaxHealth() * 0.6);
+		final var MIN_HEALTH = (int) Math.floor(creeperGirl.getMaxHealth() * 0.2F);
+		final var MAX_HEALTH = (int) Math.floor(creeperGirl.getMaxHealth() * 0.5F);
 		var randomSource = creeperGirl.getRandom();
 		
-		MinepreggoMod.LOGGER.debug("spawnBabiesOrFetusesCreeper: class={}, p={}",
-				creeperGirl.getClass().getSimpleName(), p);
+		MinepreggoMod.LOGGER.debug("SPAWN CREEPER BABIES OR FETUSES: class={}, p={}, numOfbabies={}",
+				creeperGirl.getClass().getSimpleName(), p, numOfBabies);
 		
 		for (int i = 0; i < numOfBabies; ++i) {				
 			if (randomSource.nextFloat() < p) {								
 				var entityToSpawn = MinepreggoModEntities.MONSTER_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(creeperGirl.getX(), creeperGirl.getY() + creeperGirl.getBbHeight() / 2F, creeperGirl.getZ()), MobSpawnType.MOB_SUMMONED);
 				entityToSpawn.setBaby(true);
-				entityToSpawn.setYRot(randomSource.nextFloat() * 360F);
-				entityToSpawn.setTarget(creeperGirl.getLastHurtByMob());
+				entityToSpawn.setYRot(randomSource.nextFloat() * 360F);	
 				entityToSpawn.setHealth(randomSource.nextInt(MIN_HEALTH, MAX_HEALTH));			
+				
+				var target = creeperGirl.getLastHurtByMob();
+				
+				if (!isPlayerInCreativeOrSpectator(target)) {
+					entityToSpawn.setTarget(target);
+				}
 			}	
 			else {
 				ItemEntity entityToSpawn = new ItemEntity(serverLevel, creeperGirl.getX(), creeperGirl.getY(), creeperGirl.getZ(), new ItemStack(MinepreggoModItems.DEAD_HUMANOID_CREEPER_FETUS.get()));
@@ -343,13 +334,13 @@ public class PreggoMobHelper {
 		}	
 	}
 
-	private static void spawnZombieFetuses(float p, int numOfBabies, AbstractZombieGirl zombieGirl) {
+	private static void spawnFetusZombies(float p, int numOfBabies, AbstractZombieGirl zombieGirl) {
 		if (!(zombieGirl.level() instanceof ServerLevel serverLevel)) {
 			return;
 		}	
 		var randomSource = zombieGirl.getRandom();
 		for (int i = 0; i < numOfBabies; ++i) {	
-			if (p < randomSource.nextFloat()) {
+			if (randomSource.nextFloat() < p) {
 				ItemEntity entityToSpawn = new ItemEntity(serverLevel, zombieGirl.getX(), zombieGirl.getY(), zombieGirl.getZ(), new ItemStack(MinepreggoModItems.DEAD_ZOMBIE_FETUS.get()));
 				entityToSpawn.setPickUpDelay(10);
 				serverLevel.addFreshEntity(entityToSpawn);
@@ -357,13 +348,13 @@ public class PreggoMobHelper {
 		}
 	}
 	
-	private static void spawnCreeperFetuses(float p, int numOfBabies, AbstractCreeperGirl creeperGirl) {
+	private static void spawnFetusCreepers(float p, int numOfBabies, AbstractCreeperGirl creeperGirl) {
 		if (!(creeperGirl.level() instanceof ServerLevel serverLevel)) {
 			return;
 		}	
 		var randomSource = creeperGirl.getRandom();
 		for (int i = 0; i < numOfBabies; ++i) {	
-			if (p < randomSource.nextFloat()) {
+			if (randomSource.nextFloat() < p) {
 				ItemEntity entityToSpawn = new ItemEntity(serverLevel, creeperGirl.getX(), creeperGirl.getY(), creeperGirl.getZ(), new ItemStack(MinepreggoModItems.DEAD_HUMANOID_CREEPER_FETUS.get()));
 				entityToSpawn.setPickUpDelay(10);
 				serverLevel.addFreshEntity(entityToSpawn);
@@ -371,36 +362,36 @@ public class PreggoMobHelper {
 		}
 	}
 		
-	public static void spawnFetusesAndBabiesZombie(AbstractTamablePregnantZombieGirl<?> zombieGirl) {		
+	public static void spawnBabyAndFetusZombies(AbstractTamablePregnantZombieGirl<?> zombieGirl) {		
 
 		final var numOfBabies = getNumberOfChildrens(zombieGirl.getMaxPregnancyStage());
 		
 		if (zombieGirl instanceof IPregnancyP3) {
-			final var alive = getSpawnProbabilityBasedPregnancy(zombieGirl, 0.6F, 0.5F, 0.2F, 0.95F);
-			spawnBabiesOrFetusesZombie(alive, numOfBabies, zombieGirl);
+			final var alive = getSpawnProbabilityBasedPregnancy(zombieGirl, 0.6F, 0.1F, 0.2F, 0.95F);
+			spawnBabyOrFetusZombies(alive, numOfBabies, zombieGirl);
 		}	
 		else {		
-			final var fetusSpawn = getSpawnProbabilityBasedPregnancy(zombieGirl, 0.7F, 0.8F, 0.1F, 0.8F);
-			spawnZombieFetuses(fetusSpawn, numOfBabies, zombieGirl);
+			final var fetusSpawn = getSpawnProbabilityBasedPregnancy(zombieGirl, 0.3F, 0.1F, 0.2F, 0.8F);
+			spawnFetusZombies(fetusSpawn, numOfBabies, zombieGirl);
 		}
 	}
 	
-	public static void spawnFetusesAndBabiesCreeper(AbstractTamablePregnantCreeperGirl<?> creeperGirl) {
+	public static void spawnBabyAndFetusCreepers(AbstractTamablePregnantCreeperGirl<?> creeperGirl) {
 		
 		final var numOfBabies = getNumberOfChildrens(creeperGirl.getMaxPregnancyStage());
 	
 		if (creeperGirl instanceof IPregnancyP3) {
-			final var alive = getSpawnProbabilityBasedPregnancy(creeperGirl, 0.7F, 0.6F, 0.15F, 0.8F);
-			spawnBabiesOrFetusesCreeper(alive, numOfBabies, creeperGirl);
+			final var alive = getSpawnProbabilityBasedPregnancy(creeperGirl, 0.6F, 0.1F, 0.15F, 0.8F);
+			spawnBabyOrFetusCreepers(alive, numOfBabies, creeperGirl);
 		}	
 		else {		
-			final var fetusSpawn = getSpawnProbabilityBasedPregnancy(creeperGirl, 0.75F, 0.85F, 0.075F, 0.7F);
-			spawnCreeperFetuses(fetusSpawn, numOfBabies, creeperGirl);
+			final var fetusSpawn = getSpawnProbabilityBasedPregnancy(creeperGirl, 0.3F, 0.1F, 0.1F, 0.7F);
+			spawnFetusCreepers(fetusSpawn, numOfBabies, creeperGirl);
 		}
 	}
 	
 	
-	public static void spawnFetusesAndBabiesCreeper(AbstractMonsterPregnantCreeperGirl creeperGirl) {	
+	public static void spawnBabyAndFetusCreepers(AbstractMonsterPregnantCreeperGirl creeperGirl) {	
 		
 		final var currentPregnancyStage = creeperGirl.getCurrentPregnancyStage();
 		
@@ -409,17 +400,24 @@ public class PreggoMobHelper {
 		}
 			
 		final var numOfBabies = getNumberOfChildrens(creeperGirl.getCurrentPregnancyStage());
-		final var t = Mth.clamp(PregnancySystemConstants.TOTAL_PREGNANCY_DAYS / (float) creeperGirl.getTotalDaysPassed(), 0, 1);
+		final var totalDaysPassed = creeperGirl.getTotalDaysPassed();
+		final var t = Mth.clamp(totalDaysPassed / (float) PregnancySystemConstants.TOTAL_PREGNANCY_DAYS, 0, 1);
+		float p;
 		
 		if (currentPregnancyStage.ordinal() > 2) {
-			spawnBabiesOrFetusesCreeper(PreggoMathHelper.sigmoid(0.2F, 0.8F, 0.5F, t, 0.6F), numOfBabies, creeperGirl);
+			p = PreggoMathHelper.sigmoid(0.2F, 0.8F, 0.1F, t, 0.6F);
+			spawnBabyOrFetusCreepers(p, numOfBabies, creeperGirl);
 		}
 		else {
-			spawnCreeperFetuses(PreggoMathHelper.sigmoid(0.2F, 0.9F, 0.5F, t, 0.6F), numOfBabies, creeperGirl);
+			p = PreggoMathHelper.sigmoid(0.2F, 0.9F, 0.1F, t, 0.3F);
+			spawnFetusCreepers(p, numOfBabies, creeperGirl);
 		}
+		
+		MinepreggoMod.LOGGER.debug("SPAWN BABY AND FETUS CREEPERS: id={}, class={}, currentPregnancytStage={}, maxPregnancyStage={}, totalDaysPassed={}, t={}",
+				creeperGirl.getId(), creeperGirl.getClass().getSimpleName(), currentPregnancyStage, creeperGirl.getMaxPregnancyStage(), totalDaysPassed, t);
 	}
 	
-	public static void spawnFetusesAndBabiesZombie(AbstractMonsterPregnantZombieGirl zombie) {	
+	public static void spawnBabyAndFetusZombies(AbstractMonsterPregnantZombieGirl zombie) {	
 		
 		final var currentPregnancyStage = zombie.getCurrentPregnancyStage();
 		
@@ -427,166 +425,129 @@ public class PreggoMobHelper {
 			return;
 		}
 		
-		final var numOfBabies = getNumberOfChildrens(zombie.getCurrentPregnancyStage());
-		final var t = Mth.clamp(PregnancySystemConstants.TOTAL_PREGNANCY_DAYS / (float) zombie.getTotalDaysPassed(), 0, 1);
+		final var numOfBabies = getNumberOfChildrens(zombie.getCurrentPregnancyStage()); 
+		final var totalDaysPassed = zombie.getTotalDaysPassed();
+		final var t = Mth.clamp(totalDaysPassed / (float) PregnancySystemConstants.TOTAL_PREGNANCY_DAYS, 0, 1);
+		float p;
 		
 		if (currentPregnancyStage.ordinal() > 2) {
-			spawnBabiesOrFetusesZombie(PreggoMathHelper.sigmoid(0.2F, 0.9F, 0.5F, t, 0.6F), numOfBabies, zombie);
+			p = PreggoMathHelper.sigmoid(0.2F, 0.9F, 0.1F, t, 0.7F);
+			spawnBabyOrFetusZombies(p, numOfBabies, zombie);
 		}
 		else {
-			spawnZombieFetuses(PreggoMathHelper.sigmoid(0.2F, 0.9F, 0.5F, t, 0.6F), numOfBabies, zombie);
+			p = PreggoMathHelper.sigmoid(0.2F, 0.9F, 0.1F, t, 0.3F);
+			spawnFetusZombies(p, numOfBabies, zombie);
 		}
+		
+		MinepreggoMod.LOGGER.debug("SPAWN BABY AND FETUS ZOMBIES: id={}, class={}, currentPregnancytStage={}, maxPregnancyStage={}, totalDaysPassed={}, t={}",
+				zombie.getId(), zombie.getClass().getSimpleName(), currentPregnancyStage, zombie.getMaxPregnancyStage(), totalDaysPassed, t);
 	}
 		
-	public static<E extends TamableAnimal & IPreggoMob> void defaultDoHurtTarget(E entity, Entity target) {
+	public static<E extends TamableAnimal & IPreggoMob> void onSuccessfulAttack(E entity) {
   	    
-		var world = entity.level();		
-		ItemStack mainHandItemStack = entity.getMainHandItem();
-	    Item mainHand = mainHandItemStack.getItem();
-		        
-	    if (mainHand == ItemStack.EMPTY.getItem() || !mainHandItemStack.isDamageableItem()) {
-	    	return;
-	    }	 
-	      
-		if (mainHand instanceof AxeItem
-				|| mainHand instanceof PickaxeItem
-				|| mainHand instanceof ShovelItem
-				|| mainHand instanceof HoeItem) {
-			
-			if (!mainHandItemStack.isEnchanted()
-					&& mainHandItemStack.hurt(2, RandomSource.create(), null)) {
-				mainHandItemStack.shrink(1);
-				mainHandItemStack.setDamageValue(0);
-			} else {
-				if (EnchantmentHelper.getTagEnchantmentLevel(Enchantments.UNBREAKING, mainHandItemStack) != 0) {
-					if (Math.random() > ((100 - 100 / (entity.getMainHandItem().getEnchantmentLevel(Enchantments.UNBREAKING) + 1D)) * 0.65) / 100
-							&& mainHandItemStack.hurt(2, RandomSource.create(), null)) {
-						mainHandItemStack.shrink(1);
-						mainHandItemStack.setDamageValue(0);
-					}
-				} else {
-					if (mainHandItemStack.hurt(2, RandomSource.create(), null)) {
-						mainHandItemStack.shrink(1);
-						mainHandItemStack.setDamageValue(0);
-					}
-				}
-			}
-		} else if (mainHand instanceof SwordItem
-				|| mainHand instanceof TridentItem) {
-			if (!(entity.getMainHandItem().isEnchanted())) {
-				if (mainHandItemStack.hurt(1, RandomSource.create(), null)) {
-					mainHandItemStack.shrink(1);
-					mainHandItemStack.setDamageValue(0);
-				}
-			} else {									
-				if (EnchantmentHelper.getTagEnchantmentLevel(Enchantments.UNBREAKING, mainHandItemStack) != 0) {
-					if (Math.random() > ((100 - 100 / (entity.getMainHandItem().getEnchantmentLevel(Enchantments.UNBREAKING) + 1D)) * 0.65) / 100
-							&& mainHandItemStack.hurt(1, RandomSource.create(), null)) {
-						mainHandItemStack.shrink(1);
-						mainHandItemStack.setDamageValue(0);
-					}
-				} else {
-					if (mainHandItemStack.hurt(1, RandomSource.create(), null)) {
-						mainHandItemStack.shrink(1);
-						mainHandItemStack.setDamageValue(0);
-					}
-				}
-			}
-		}
-		
-		if (!world.isClientSide()) {
-			if (mainHandItemStack.getDamageValue() >= mainHandItemStack.getMaxDamage()) {			
-				world.playSound((Player) null, BlockPos.containing(entity.getX(), entity.getY(), entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.item.break")), SoundSource.NEUTRAL, 1, 1);
-			} else {
-				entity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> {
-					if (capability instanceof IItemHandlerModifiable modHandlerEntSetSlot)
-						modHandlerEntSetSlot.setStackInSlot(IPreggoMob.MAINHAND_INVENTARY_SLOT, mainHandItemStack);
-				});
-			}
-		}
+	    Level world = entity.level();
+	    ItemStack stack = entity.getMainHandItem();
+	    RandomSource random = world.random;
+	    
+	    // Check Unbreaking enchantment
+	    int unbreakingLevel = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.UNBREAKING, stack);
+	    boolean bypassUnbreaking = false;
+
+	    if (unbreakingLevel > 0) {
+	        double breakChance = 0.65 / (unbreakingLevel + 1);
+	        bypassUnbreaking = random.nextDouble() < breakChance;
+	    }
+	     
+	    if (stack.isEmpty() || !stack.isDamageableItem() || bypassUnbreaking) return;
+
+
+	    // Let ItemStack handle Unbreaking internally
+	    if (stack.hurt(1, entity.getRandom(), null)) {
+	        stack.shrink(1);
+	        stack.setDamageValue(0);
+	    }
+
+	    // Sound & sync
+	    if (stack.getDamageValue() >= stack.getMaxDamage()) {
+	        world.playSound(null, entity.blockPosition(), SoundEvents.ITEM_BREAK, SoundSource.NEUTRAL, 1.0F, 1.0F);
+	    } else {
+	        entity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(cap -> {
+	            if (cap instanceof IItemHandlerModifiable mod) {
+	                mod.setStackInSlot(IPreggoMob.MAINHAND_INVENTARY_SLOT, stack);
+	            }
+	        });
+	    }	
 	}
 	
-	public static<E extends TamableAnimal & IPreggoMob> void defaultHurt(E entity, DamageSource damagesource, float amount) {
-			
-		var world = entity.level();
-		
-		int numOfArmors = 0;
-		
-		for (int i = 0; i < 4; i++) {
-			if (entity.getItemBySlot(EquipmentSlot.byTypeAndIndex(EquipmentSlot.Type.ARMOR, i)).getItem() != ItemStack.EMPTY.getItem()) {
-				++numOfArmors;
-			}
-		}
-				
-		for (int i = 0; i < 4; i++) {
-			
-			ItemStack armorItemStack = entity.getItemBySlot(EquipmentSlot.byTypeAndIndex(EquipmentSlot.Type.ARMOR, i));
-			Item armorItem = armorItemStack.getItem();
-					
-			if (armorItem == ItemStack.EMPTY.getItem()) {
-				return;
-			}
-					
-			if (EnchantmentHelper.getTagEnchantmentLevel(Enchantments.UNBREAKING, armorItemStack) != 0) {
-				if (Math.random() > (100 - (60
-						+ 40D / (1 + armorItem.getEnchantmentLevel(armorItemStack, Enchantments.UNBREAKING))))
-						* 0.01) {
-					if (damagesource.is(DamageTypes.EXPLOSION) || damagesource.is(DamageTypes.PLAYER_EXPLOSION)) {
-						if (armorItemStack.hurt(2, RandomSource.create(), null)) {
-							armorItemStack.shrink(1);
-							armorItemStack.setDamageValue(0);
-						}
-					} else {
-						if (numOfArmors > 1) {							
-							if (((i == 3 || i == 0) && Math.random() < 0.7 || ((i == 2 || i == 1) && Math.random() < 0.85))) {
-								if (armorItemStack.hurt(1, RandomSource.create(), null)) {
-									armorItemStack.shrink(1);
-									armorItemStack.setDamageValue(0);
-								}
-							} 
-						} else {
-							if (armorItemStack.hurt(1, RandomSource.create(), null)) {
-								armorItemStack.shrink(1);
-								armorItemStack.setDamageValue(0);
-							}
-						}
-					}
-				}
-			} else {
-				if (damagesource.is(DamageTypes.EXPLOSION) || damagesource.is(DamageTypes.PLAYER_EXPLOSION)) {
-					if (armorItemStack.hurt(2, RandomSource.create(), null)) {
-						armorItemStack.shrink(1);
-						armorItemStack.setDamageValue(0);
-					}
-				} else {
-					if (numOfArmors > 1) {
-						if (((i == 3 || i == 0) && Math.random() < 0.7) || ((i == 2 || i == 1) && Math.random() < 0.85)) {
-							if (armorItemStack.hurt(1, RandomSource.create(), null)) {
-								armorItemStack.shrink(1);
-								armorItemStack.setDamageValue(0);
-							}
-						} 
-					} else {
-						if (armorItemStack.hurt(1, RandomSource.create(), null)) {
-							armorItemStack.shrink(1);
-							armorItemStack.setDamageValue(0);
-						}
-					}
-				}
-			}
-			if (!world.isClientSide()) {
-				if (armorItemStack.getDamageValue() >= armorItemStack.getMaxDamage()) {					
-					world.playSound(null, BlockPos.containing(entity.getX(), entity.getY(), entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.item.break")), SoundSource.NEUTRAL, 1, 1);				
-				} else {
-					final var slotId = i + 1;
-					entity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> {	
-						if (capability instanceof IItemHandlerModifiable modHandlerEntSetSlot) {
-							modHandlerEntSetSlot.setStackInSlot(slotId, armorItemStack);
-						}		
-					});
-				}
-			}
-		}
+	public static <E extends TamableAnimal & IPreggoMob> void onSuccessfulHurt(E entity, DamageSource damageSource) {
+	    var world = entity.level();
+	
+	    List<ItemStack> armorStacks = new ArrayList<>(4);
+	
+	    // Collect valid armor stacks and count them
+	    for (int i = 0; i < 4; i++) {
+	        ItemStack stack = entity.getItemBySlot(EquipmentSlot.byTypeAndIndex(EquipmentSlot.Type.ARMOR, i));
+	        armorStacks.add(stack);
+	    }
+	
+	    RandomSource random = world.random; // Use world's RNG
+	
+	    for (int i = 0; i < 4; i++) {
+	        ItemStack stack = armorStacks.get(i);
+	        
+	        if (stack.isEmpty() || hasUnbreakingProtection(stack, random)) {
+	        	continue;
+	        }
+   
+	        boolean isExplosion = damageSource.is(DamageTypes.EXPLOSION) || damageSource.is(DamageTypes.PLAYER_EXPLOSION);
+	        int damageAmount = isExplosion ? 2 : 1;
+	        
+	        // Apply conditional damage based on armor count and slot
+	        if (shouldTakeDamage(i, random) && stack.hurt(damageAmount, random, null)) {
+                stack.shrink(1);
+                stack.setDamageValue(0);
+	        }
+	
+	        // Handle sound or update inventory
+	        EquipmentSlot slot = EquipmentSlot.byTypeAndIndex(EquipmentSlot.Type.ARMOR, i);
+	        entity.setItemSlot(slot, stack); // Syncs with entity
+	
+	        if (stack.getDamageValue() >= stack.getMaxDamage()) {
+	            world.playSound(null, entity.blockPosition(), 
+	                ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.item.break")),
+	                SoundSource.NEUTRAL, 1.0F, 1.0F);
+	        } else {
+	            // Update capability if needed (optional, often redundant if setItemSlot is used)
+	            updateItemHandler(entity, i + 1, stack);
+	        }
+	    }
+	}
+	
+	public static boolean isPlayerInCreativeOrSpectator(LivingEntity entity) {
+	    if (entity instanceof Player player) {
+	        return player.isCreative() || player.isSpectator();
+	    }
+	    return false;
+	}
+	
+	private static boolean hasUnbreakingProtection(ItemStack stack, RandomSource random) {
+	    int unbreakingLevel = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.UNBREAKING, stack);
+	    if (unbreakingLevel <= 0) return false;
+	    double avoidanceChance = (60.0 + 40.0 / (1 + unbreakingLevel)) * 0.01;
+	    return random.nextDouble() > (1.0 - avoidanceChance);
+	}
+
+	private static boolean shouldTakeDamage(int slotIndex, RandomSource random) {
+	    double threshold = (slotIndex == 3 || slotIndex == 0) ? 0.7 : 0.85;
+	    return random.nextDouble() < threshold;
+	}
+
+	private static<E extends TamableAnimal & IPreggoMob> void updateItemHandler(E entity, int slotId, ItemStack stack) {
+	    entity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(handler -> {
+	        if (handler instanceof IItemHandlerModifiable modHandler) {
+	            modHandler.setStackInSlot(slotId, stack);
+	        }
+	    });
 	}
 }
 

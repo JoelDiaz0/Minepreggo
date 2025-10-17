@@ -4,6 +4,7 @@ import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.ai.goal.RemoveBlockGoal;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.monster.ZombieVillager;
 import net.minecraft.world.entity.npc.Villager;
@@ -44,7 +45,7 @@ import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 
 
-public abstract class AbstractZombieGirl extends TamableAnimal {
+public abstract class AbstractZombieGirl extends TamableAnimal implements Enemy {
 	
 	public final AnimationState loopAnimationState = new AnimationState();
 	public final AnimationState attackAnimationState = new AnimationState();
@@ -80,6 +81,11 @@ public abstract class AbstractZombieGirl extends TamableAnimal {
 	
 	public boolean canBeTamedByPlayer() {
 		return true;
+	}
+	
+	@Override
+	public SoundSource getSoundSource() {
+		return SoundSource.HOSTILE;
 	}
 	
 	@Override

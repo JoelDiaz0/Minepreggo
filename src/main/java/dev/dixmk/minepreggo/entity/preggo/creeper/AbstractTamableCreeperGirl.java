@@ -221,8 +221,8 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	@Override
 	public boolean hurt(DamageSource damagesource, float amount) {				
 		boolean result = super.hurt(damagesource, amount);	
-		if (result) {
-			PreggoMobHelper.defaultHurt(this, damagesource, amount);			
+		if (result && !this.level().isClientSide()) {
+			PreggoMobHelper.onSuccessfulHurt(this, damagesource);			
 			if (this.isWaiting() 
 					&& !this.isPanic()
 					&& damagesource.is(DamageTypes.GENERIC)
@@ -237,8 +237,8 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	@Override
 	public boolean doHurtTarget(Entity target) {		
 		boolean result = super.doHurtTarget(target);	
-		if (result) {
-			PreggoMobHelper.defaultDoHurtTarget(this, target);
+		if (result && !this.level().isClientSide()) {
+			PreggoMobHelper.onSuccessfulAttack(this);
 		}
 		return result;
 	}

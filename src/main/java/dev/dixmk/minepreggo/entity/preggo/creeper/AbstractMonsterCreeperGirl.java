@@ -1,18 +1,13 @@
 package dev.dixmk.minepreggo.entity.preggo.creeper;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -36,6 +31,7 @@ public abstract class AbstractMonsterCreeperGirl extends AbstractCreeperGirl {
 	
 	protected AbstractMonsterCreeperGirl(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_) {
 		super(p_21803_, p_21804_);	
+		this.setRandomCombatMode();
 	}
 
 	@Override
@@ -61,30 +57,23 @@ public abstract class AbstractMonsterCreeperGirl extends AbstractCreeperGirl {
 		return this.basicCombatMode;
 	}
 	
-	protected void setRandomCombatMode() {
+	protected void setRandomCombatMode() {	
 		
-		final var p = this.getRandom().nextFloat();
+		if (this.level().isClientSide()) {
+			return;
+		}
 		
+		final var p = this.getRandom().nextFloat();		
 	    if (p < 0.4F) {    	
 	    	this.basicCombatMode = CombatMode.FIGHT_AND_EXPLODE;
 	    }
 	    else if (p < 0.9F) {
-	    	this.maxDistance = 2D;
 	    	this.basicCombatMode = CombatMode.EXPLODE;
 	    }
 	    else {
 	    	this.basicCombatMode = CombatMode.DONT_EXPLODE;
 	    }
 	}
-	
-	@Override
-	@Nullable	
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor p_34297_, DifficultyInstance p_34298_, MobSpawnType p_34299_, @Nullable SpawnGroupData p_34300_, @Nullable CompoundTag p_34301_) {
-		p_34300_ = super.finalizeSpawn(p_34297_, p_34298_, p_34299_, p_34300_, p_34301_); 
-		this.setRandomCombatMode();
-		return p_34300_;
-	}
-	
 	
 	@Override
 	protected void registerGoals() {

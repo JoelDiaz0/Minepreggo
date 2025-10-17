@@ -34,23 +34,22 @@ public class AnimatedTamableZombieGirlP0Model extends AbstractTamableZombieGirlM
 						this.animateWalk(ZombieGirlAnimation.WALK, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
 					}
 				}
-								
+					
+			
 				if (zombieGirl.isPanic()) {
 					this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.IDLE, ageInTicks, 1f);						
-				} else {
-					switch (zombieGirl.getState()) {
-					case WAIT: {
-						this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.WAIT, ageInTicks, 1f);										
-						break;
-					}
-					case SIT: {
-						this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.RIDING, ageInTicks, 1f);						
-						break;
-					}		
-					default:
-						this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.IDLE, ageInTicks, 1f);						
-					}	
+					return;
+				} 	
+				
+				if (zombieGirl.isWaiting()) {
+					this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.WAIT1, ageInTicks, 1f);										
 				}
+				else if (zombieGirl.isPassenger()) {
+					this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.RIDING, ageInTicks, 1f);						
+				}
+				else {
+					this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.IDLE, ageInTicks, 1f);						
+				}		
 			}	
 		});
 	}

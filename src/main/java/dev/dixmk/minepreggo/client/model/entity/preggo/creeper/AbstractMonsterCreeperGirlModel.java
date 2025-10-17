@@ -54,9 +54,8 @@ public abstract class AbstractMonsterCreeperGirlModel<E extends AbstractMonsterC
 						this.animateWalk(CreeperGirlAnimation.WALK, limbSwing, limbSwingAmount * 4F, 1f, 1f);
 					}
 				} 
-				else {
-					this.animate(entity.loopAnimationState, CreeperGirlAnimation.IDLE, ageInTicks, 1f);						
-				}
+
+				this.animate(entity.loopAnimationState, CreeperGirlAnimation.IDLE, ageInTicks, 1f);						
 			}	
 		};
 	}

@@ -1,5 +1,6 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.creeper;
 
+import dev.dixmk.minepreggo.client.entity.animation.preggo.HumanoidGirlAnimation;
 import dev.dixmk.minepreggo.client.entity.animation.preggo.creeper.CreeperGirlAnimation;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractMonsterPregnantCreeperGirl;
 import net.minecraft.client.model.HierarchicalModel;
@@ -41,11 +42,8 @@ public abstract class AbstractMonsterPregnantCreeperGirlModel<E extends Abstract
 			@Override
 			public void setupAnim(E creeperGirl, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 				this.root().getAllParts().forEach(ModelPart::resetPose);
-				
-				if (creeperGirl.hasPregnancyPain()) {
-					this.animateWalk(CreeperGirlAnimation.AGGRESSION, limbSwing, limbSwingAmount, 1f, 1f);
-					return;
-				}
+					
+			    this.animate(creeperGirl.loopAnimationState, HumanoidGirlAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);	
 				
 			    if (creeperGirl.isAttacking()) {
 				    this.animate(creeperGirl.attackAnimationState, CreeperGirlAnimation.ATTACK, ageInTicks, 1f);	
@@ -58,7 +56,17 @@ public abstract class AbstractMonsterPregnantCreeperGirlModel<E extends Abstract
 					else {
 						this.animateWalk(CreeperGirlAnimation.WALK, limbSwing, limbSwingAmount * 4.5F, 1f, 1f);
 					}
-				}						
+				} 
+				
+				if (creeperGirl.hasPregnancyPain()) {
+				    this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.CONTRACTION2, ageInTicks, 1f);	
+				}
+				else if (creeperGirl.isPassenger()) {
+				    this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.RIDING, ageInTicks, 1f);	
+				}
+				else {
+				    this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.IDLE, ageInTicks, 1f);	
+				}
 			}
 		};
 	}

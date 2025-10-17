@@ -1,11 +1,13 @@
 package dev.dixmk.minepreggo.entity.preggo;
 
 import java.util.Comparator;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Nonnull;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-
+import dev.dixmk.minepreggo.utils.PreggoMobHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -20,9 +22,12 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
@@ -32,7 +37,7 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 	
 	protected final RandomSource randomSource;	
 	protected final E preggoMob;
-	
+	protected int autoHealingTimer = 0;
 	
 	protected PreggoMobSystem(@Nonnull E preggopreggoMob) {
 		this.preggoMob = preggopreggoMob;	
@@ -78,7 +83,7 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 	        	preggoMob.setSavage(true);
 	        }
 	    } else {
-	        if (preggoMob.isTame() && preggoMob.getTarget() == null) {
+	        if (preggoMob.isTame() && !PreggoMobHelper.hasValidTarget(preggoMob)) {
 	            final var center = new Vec3(x, y, z);
 	        		
 	            Player player = level.getEntitiesOfClass(Player.class, new AABB(center, center).inflate(12), e -> true).stream().sorted(new Object() {
@@ -87,12 +92,60 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 					}
 				}.compareDistOf(x, y, z)).findFirst().orElse(null);
 	        	
-	        	if (player != null)
+	        	if (player != null && !PreggoMobHelper.isPlayerInCreativeOrSpectator(player))
 	        		preggoMob.setTarget(player);
 	        }
 	    }
 	}
 		
+	protected void evaluateAutoFeeding() {
+
+		var currentHungry = preggoMob.getHungry();
+		
+		if (currentHungry > 5 || preggoMob.getHealth() > 5) {
+			return;
+		}
+				
+		if (autoHealingTimer < 40) {
+			++autoHealingTimer;
+			return;
+		}
+		
+		ItemStack food;		
+		AtomicReference<ItemStack> retval = new AtomicReference<>(ItemStack.EMPTY);
+		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> 
+			retval.set(capability.getStackInSlot(IPreggoMob.FOOD_INVENTARY_SLOT)));		
+		food = retval.get();
+		
+		if (food.isEmpty()) {
+			return;
+		}		
+		
+		final var foodProperties = food.getFoodProperties(preggoMob);
+		
+		if (foodProperties == null) {
+			return;
+		}
+		
+		preggoMob.setHungry(Math.min(currentHungry + foodProperties.getNutrition(), 25));	
+		final var newFoodCount = food.getCount() - 1;
+				
+		MinepreggoMod.LOGGER.debug("AUTO FEEDING: id={}, class={}, food={}, newFoodCount={},",
+				preggoMob.getId(), preggoMob.getClass().getSimpleName(), food.getDisplayName().getString(), newFoodCount);
+		
+		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> {
+			
+			
+			
+			if (capability instanceof IItemHandlerModifiable modHandlerEntSetSlot) {
+				modHandlerEntSetSlot.setStackInSlot(IPreggoMob.FOOD_INVENTARY_SLOT, food);
+			}			
+		});
+		
+		autoHealingTimer = 0;
+	}
+	
+	
 	private final Result evaluatePregnancyBeginnigTimer() {			    	
 		if (preggoMob.isPregnant()) {
 					
@@ -130,6 +183,7 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 		}
 		
 		evaluateHungryTimer(level, x, y, z, MinepreggoModConfig.getTotalTicksOfHungryP0());
+		evaluateAutoFeeding();
 	}
 	
 	public InteractionResult evaluateRightClick(Player source) {			
@@ -176,14 +230,19 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 	        int foodValue = 0;
 
 	        if (preggoMob.isFood(mainHandItem)) {      	           	
-	        	var foodProperties = mainHandItem.getItem().getFoodProperties(mainHandItem, preggoMob);
+	        	final var foodProperties = mainHandItem.getFoodProperties(preggoMob);
+	        	
+	        	if (foodProperties == null) {
+	        		return Result.NOTHING;
+	        	}
+	        	
 	        	foodValue = foodProperties.getNutrition();     
 	        	
 		        if (foodValue > 0) {      	
 
 	                source.getInventory().clearOrCountMatchingItems(p -> mainHandItem.getItem() == p.getItem(), 1, source.inventoryMenu.getCraftSlots());
 	                currentHunger += foodValue;          
-	                preggoMob.setHungry(currentHunger);
+	                preggoMob.setHungry(Math.min(currentHunger, 25));
 		        	        	
 	                level.playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.generic.eat")), SoundSource.NEUTRAL, 0.75f, 1);	          	
 	      

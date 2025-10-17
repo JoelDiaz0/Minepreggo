@@ -130,7 +130,7 @@ public class ZombieGirlAnimation {
 		))
 		.build();
 
-	public static final AnimationDefinition WAIT = AnimationDefinition.Builder.withLength(6.0F).looping()
+	public static final AnimationDefinition WAIT1 = AnimationDefinition.Builder.withLength(6.0F).looping()
 		.addAnimation("right_arm", new AnimationChannel(AnimationChannel.Targets.ROTATION, 
 			new Keyframe(0.0F, KeyframeAnimations.degreeVec(9.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
 			new Keyframe(1.5F, KeyframeAnimations.degreeVec(10.5F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
@@ -527,7 +527,7 @@ public class ZombieGirlAnimation {
 			.build();
 
 		
-		public static final AnimationDefinition CONTRACTION = AnimationDefinition.Builder.withLength(4.0F).looping()
+		public static final AnimationDefinition CONTRACTION1 = AnimationDefinition.Builder.withLength(4.0F).looping()
 				.addAnimation("right_arm", new AnimationChannel(AnimationChannel.Targets.ROTATION, 
 					new Keyframe(0.0F, KeyframeAnimations.degreeVec(56.058F, -5.4889F, -0.9854F), AnimationChannel.Interpolations.LINEAR)
 				))
@@ -682,5 +682,50 @@ public class ZombieGirlAnimation {
 				.addAnimation("head", new AnimationChannel(AnimationChannel.Targets.POSITION, 
 					new Keyframe(0.0F, KeyframeAnimations.posVec(0.0F, -21.0F, 3.0F), AnimationChannel.Interpolations.LINEAR)
 				))
-				.build();		
+				.build();
+			
+			
+			
+			public static final AnimationDefinition CONTRACTION2 = AnimationDefinition.Builder.withLength(4.0F).looping()
+					.addAnimation("right_arm", new AnimationChannel(AnimationChannel.Targets.ROTATION, 
+						new Keyframe(0.0F, KeyframeAnimations.degreeVec(56.058F, -5.4889F, -0.9854F), AnimationChannel.Interpolations.LINEAR)
+					))
+					.addAnimation("left_arm", new AnimationChannel(AnimationChannel.Targets.ROTATION, 
+						new Keyframe(0.0F, KeyframeAnimations.degreeVec(57.1598F, -11.1611F, 0.6214F), AnimationChannel.Interpolations.LINEAR)
+					))
+					.addAnimation("right_leg", new AnimationChannel(AnimationChannel.Targets.ROTATION, 
+						new Keyframe(0.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 7.5F), AnimationChannel.Interpolations.LINEAR),
+						new Keyframe(2.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 8.0F), AnimationChannel.Interpolations.LINEAR),
+						new Keyframe(4.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 7.5F), AnimationChannel.Interpolations.LINEAR)
+					))
+					.addAnimation("left_leg", new AnimationChannel(AnimationChannel.Targets.ROTATION, 
+						new Keyframe(0.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, -7.5F), AnimationChannel.Interpolations.LINEAR),
+						new Keyframe(2.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, -8.0F), AnimationChannel.Interpolations.LINEAR),
+						new Keyframe(4.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, -7.5F), AnimationChannel.Interpolations.LINEAR)
+					))
+					.addAnimation("boobs", new AnimationChannel(AnimationChannel.Targets.ROTATION, 
+						new Keyframe(0.0F, KeyframeAnimations.degreeVec(2.5F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+						new Keyframe(2.0F, KeyframeAnimations.degreeVec(7.5F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+						new Keyframe(4.0F, KeyframeAnimations.degreeVec(2.5F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR)
+					))
+					.addAnimation("belly", new AnimationChannel(AnimationChannel.Targets.ROTATION, 
+						new Keyframe(0.0F, KeyframeAnimations.degreeVec(2.5F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+						new Keyframe(2.0F, KeyframeAnimations.degreeVec(5.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+						new Keyframe(4.0F, KeyframeAnimations.degreeVec(2.5F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR)
+					))
+					.addAnimation("body", new AnimationChannel(AnimationChannel.Targets.ROTATION, 
+						new Keyframe(0.0F, KeyframeAnimations.degreeVec(15.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR)
+					))
+					.addAnimation("body", new AnimationChannel(AnimationChannel.Targets.POSITION, 
+						new Keyframe(0.0F, KeyframeAnimations.posVec(0.0F, -0.4F, -2.5F), AnimationChannel.Interpolations.LINEAR)
+					))
+					.addAnimation("head", new AnimationChannel(AnimationChannel.Targets.ROTATION, 
+						new Keyframe(0.0F, KeyframeAnimations.degreeVec(30.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+						new Keyframe(2.0F, KeyframeAnimations.degreeVec(27.5F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+						new Keyframe(4.0F, KeyframeAnimations.degreeVec(30.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR)
+					))
+					.addAnimation("head", new AnimationChannel(AnimationChannel.Targets.POSITION, 
+						new Keyframe(0.0F, KeyframeAnimations.posVec(0.0F, 0.0F, -2.1F), AnimationChannel.Interpolations.LINEAR)
+					))
+					.build();
 }

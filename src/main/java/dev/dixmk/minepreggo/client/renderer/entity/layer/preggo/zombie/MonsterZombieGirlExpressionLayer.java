@@ -20,7 +20,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class MonsterZombieGirlExpressionLayer 
 	<E extends AbstractMonsterZombieGirl, M extends AbstractMonsterZombieGirlModel<E>> extends RenderLayer<E, M> {
 
-	protected static final RenderType HOSTIL = RenderType.entityCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/creeper_girl_face_hostil.png"));
+	protected static final RenderType HOSTIL = RenderType.entityCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_hostil.png"));
 	protected static final RenderType SURPRISED = RenderType.entityCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_hostil_surprised.png"));
 
 	public MonsterZombieGirlExpressionLayer(RenderLayerParent<E, M> p_117346_) {

@@ -1,5 +1,6 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.zombie;
 
+import dev.dixmk.minepreggo.client.entity.animation.preggo.HumanoidGirlAnimation;
 import dev.dixmk.minepreggo.client.entity.animation.preggo.zombie.ZombieGirlAnimation;
 import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.entity.preggo.zombie.TamableZombieGirlP4;
@@ -50,11 +51,11 @@ public class AnimatedTamableZombieGirlP4Model extends AbstractTamablePregnantZom
 						break;
 					}
 					case PREBIRTH: {
-						this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.BIRTH, ageInTicks, 1f);						
+						this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.MISCARRIAGE, ageInTicks, 1f);						
 						break;
 					}
 					case BIRTH: {
-						this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.MISCARRIAGE, ageInTicks, 1f);						
+						this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.BIRTH, ageInTicks, 1f);						
 						break;
 					}
 					case KICKING: {
@@ -62,31 +63,30 @@ public class AnimatedTamableZombieGirlP4Model extends AbstractTamablePregnantZom
 						break;
 					}
 					case CONTRACTION: {
-						this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.CONTRACTION, ageInTicks, 1f);						
+						this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.CONTRACTION1, ageInTicks, 1f);						
 						break;
 					}
 					default:
 						break;						
 					}	
-				} else {								
-					if (zombieGirl.isPanic()) {
-						this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.IDLE, ageInTicks, 1f);						
-						return;
-					} 
-									
-					switch (zombieGirl.getState()) {
-					case WAIT: {
-						this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.WAIT, ageInTicks, 1f);										
-						break;
-					}
-					case SIT: {
-						this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.RIDING, ageInTicks, 1f);						
-						break;
-					}		
-					default:
-						this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.IDLE, ageInTicks, 1f);						
-					}			
+				} 
+				
+				if (zombieGirl.isPanic()) {
+					this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.IDLE, ageInTicks, 1f);						
+					return;
+				} 	
+				
+				if (zombieGirl.isWaiting()) {
+					this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.WAIT1, ageInTicks, 1f);										
 				}
+				else if (zombieGirl.isPassenger()) {
+					this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.RIDING, ageInTicks, 1f);						
+				}
+				else {
+					this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.IDLE, ageInTicks, 1f);						
+				}
+				
+			    this.animate(zombieGirl.loopAnimationState, HumanoidGirlAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);	
 			}	
 		};
 	}

@@ -2,6 +2,7 @@ package dev.dixmk.minepreggo.entity.preggo.creeper;
 
 import com.google.common.collect.ImmutableMap;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.entity.preggo.BabyType;
 import dev.dixmk.minepreggo.entity.preggo.Craving;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancySystem;
@@ -11,13 +12,18 @@ import dev.dixmk.minepreggo.entity.preggo.PregnancySystemP1;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.utils.PreggoAIHelper;
+import dev.dixmk.minepreggo.utils.PreggoMobHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class AbstractTamablePregnantCreeperGirl<S extends PregnancySystemP1<?>> extends AbstractTamableCreeperGirl<S> implements IPregnancySystem {
 
@@ -128,6 +134,17 @@ public abstract class AbstractTamablePregnantCreeperGirl<S extends PregnancySyst
 	@Override
 	public boolean hasCustomHeadAnimation() {
 		return super.hasCustomHeadAnimation() || this.getPregnancyPain() != PregnancyPain.NONE;
+	}
+	
+	@Override
+	public void die(DamageSource source) {
+		super.die(source);			
+		PreggoMobHelper.spawnBabyAndFetusCreepers(this);
+	}
+	
+	@Override
+	public SoundEvent getDeathSound() {
+		return ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "preggo_death"));
 	}
 	
 	@Override

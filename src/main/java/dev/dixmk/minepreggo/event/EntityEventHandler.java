@@ -11,7 +11,6 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.animal.SnowGolem;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.MobSpawnEvent;
@@ -32,10 +31,7 @@ public class EntityEventHandler {
 		} 
 		else if (entity instanceof IronGolem golem) {
 			golem.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(golem, AbstractZombieGirl.class, false, false));
-		} 		
-		else if (entity instanceof SnowGolem snowGolem) {
-			snowGolem.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(snowGolem, AbstractZombieGirl.class, false, false));
-		} 		
+		} 				
 	}
 	
 	

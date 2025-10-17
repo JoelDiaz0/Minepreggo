@@ -90,7 +90,7 @@ public abstract class PregnancySystemP1<
 	                    .stream()
 	                    .sorted(Comparator.comparingDouble(entcnd -> entcnd.distanceToSqr(center)))
 	                    .toList();	           
-	            if (!owner.isEmpty()) {
+	            if (!owner.isEmpty() && !PreggoMobHelper.isPlayerInCreativeOrSpectator(owner.get(0))) {
 	            	preggoMob.setTarget(owner.get(0));
 	            }
 	        }

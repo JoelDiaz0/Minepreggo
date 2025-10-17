@@ -177,7 +177,7 @@ public abstract class AbstractTamableZombieGirl<S extends PreggoMobSystem<?>> ex
 	public boolean hurt(DamageSource damagesource, float amount) {
 		boolean result = super.hurt(damagesource, amount);	
 		if (result) {
-			PreggoMobHelper.defaultHurt(this, damagesource, amount);
+			PreggoMobHelper.onSuccessfulHurt(this, damagesource);
 			
 			if (canBePanicking()) {	
 				if ((damagesource.is(DamageTypes.GENERIC))
@@ -201,7 +201,7 @@ public abstract class AbstractTamableZombieGirl<S extends PreggoMobSystem<?>> ex
 	public boolean doHurtTarget(Entity target) {	
 		boolean result = super.doHurtTarget(target);	
 		if (result) {
-			PreggoMobHelper.defaultDoHurtTarget(this, target);
+			PreggoMobHelper.onSuccessfulAttack(this);
 		}
 		return result;
 	}

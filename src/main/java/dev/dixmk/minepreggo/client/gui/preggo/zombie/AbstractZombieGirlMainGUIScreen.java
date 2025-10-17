@@ -76,7 +76,7 @@ public abstract class AbstractZombieGirlMainGUIScreen<E extends AbstractTamableZ
 
 		final int zombieGirlId = zombieGirl.getId();
 		
-		buttonWait = Button.builder(Component.translatable("gui.minepreggo.zombie_girl_p_0_main_gui.button_wait"), e -> {
+		buttonWait = Button.builder(Component.translatable("gui.minepreggo.preggo_mob_main.button_wait"), e -> {
 			if (!zombieGirl.isWaiting()) {
 				MinepreggoModPacketHandler.INSTANCE.sendToServer(new ZombieGirlMainGUIPacket(x, y, z, 0, zombieGirlId));
 			}
@@ -90,7 +90,7 @@ public abstract class AbstractZombieGirlMainGUIScreen<E extends AbstractTamableZ
 		this.addRenderableWidget(buttonWait);
 
 		
-		buttonFollow = Button.builder(Component.translatable("gui.minepreggo.zombie_girl_p_0_main_gui.button_follow"), e -> {
+		buttonFollow = Button.builder(Component.translatable("gui.minepreggo.preggo_mob_main.button_follow"), e -> {
 			if (zombieGirl.isWaiting()) {
 				MinepreggoModPacketHandler.INSTANCE.sendToServer(new ZombieGirlMainGUIPacket(x, y, z, 1, zombieGirlId));
 			}
@@ -103,7 +103,7 @@ public abstract class AbstractZombieGirlMainGUIScreen<E extends AbstractTamableZ
 		});
 		this.addRenderableWidget(buttonFollow);
 	
-		buttonRide = Button.builder(Component.translatable("gui.minepreggo.zombie_girl_p_0_main_gui.button_ride"), e -> {
+		buttonRide = Button.builder(Component.translatable("gui.minepreggo.preggo_mob_main.button_ride"), e -> {
 			if (!zombieGirl.isPassenger()) {
 				MinepreggoModPacketHandler.INSTANCE.sendToServer(new ZombieGirlMainGUIPacket(x, y, z, 2, zombieGirlId));
 			}
@@ -118,7 +118,7 @@ public abstract class AbstractZombieGirlMainGUIScreen<E extends AbstractTamableZ
 
 
 		
-		buttonDismount = Button.builder(Component.translatable("gui.minepreggo.zombie_girl_p_0_main_gui.button_dismount"), e -> {
+		buttonDismount = Button.builder(Component.translatable("gui.minepreggo.preggo_mob_main.button_dismount"), e -> {
 			if (zombieGirl.isPassenger()) {
 				MinepreggoModPacketHandler.INSTANCE.sendToServer(new ZombieGirlMainGUIPacket(x, y, z, 3, zombieGirlId));
 			}
@@ -133,7 +133,7 @@ public abstract class AbstractZombieGirlMainGUIScreen<E extends AbstractTamableZ
 		
 		inventoryButton = new ImageButton(this.leftPos - 24, this.topPos + 6, 16, 16, 1, 57, 16, PreggoGUIHelper.ICONS_TEXTURE, 256, 256, 
 				e -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new ZombieGirlInventaryMenuPacket(x, y, z, zombieGirlId)));	
-		inventoryButton.setTooltip(Tooltip.create(Component.translatable("gui.minepreggo.preggo.inventary")));
+		inventoryButton.setTooltip(Tooltip.create(Component.translatable("gui.minepreggo.preggo_mob_inventory.tooltip_inventory")));
 		
 		this.addRenderableWidget(inventoryButton);
 	}

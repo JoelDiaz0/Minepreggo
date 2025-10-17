@@ -2,6 +2,7 @@ package dev.dixmk.minepreggo.entity.preggo.creeper;
 
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -28,6 +29,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -48,7 +50,7 @@ import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.PowerableMob;
 
-public abstract class AbstractCreeperGirl extends TamableAnimal implements PowerableMob {
+public abstract class AbstractCreeperGirl extends TamableAnimal implements PowerableMob, Enemy {
 	private static final EntityDataAccessor<Integer> DATA_SWELL_DIR = SynchedEntityData.defineId(AbstractCreeperGirl.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Boolean> DATA_IS_POWERED = SynchedEntityData.defineId(AbstractCreeperGirl.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Boolean> DATA_IS_IGNITED = SynchedEntityData.defineId(AbstractCreeperGirl.class, EntityDataSerializers.BOOLEAN);
@@ -87,7 +89,12 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 	public boolean canBeTamedByPlayer() {
 		return true;
 	}
-
+	
+	@Override
+	public SoundSource getSoundSource() {
+		return SoundSource.HOSTILE;
+	}
+	
 	@Override
 	public boolean isFood(ItemStack stack) {
 		return stack.is(PreggoTags.CREEPER_GIRL_FOOD);

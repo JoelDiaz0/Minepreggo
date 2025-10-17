@@ -51,7 +51,7 @@ public abstract class PregnancySystemP4<E extends TamableAnimal
 	
 	@Override
 	protected final Result evaluatePregnancyStageChange() {
-	    if (preggoMob.getDaysPassed() == preggoMob.getDaysByStage()) {
+	    if (preggoMob.getDaysPassed() >= preggoMob.getDaysByStage()) {
 	    	if (hasToGiveBirth()) {		
 	    		preggoMob.setPregnancyPain(PregnancyPain.PREBIRTH);	  
 	    		preggoMob.setPregnancyPainTimer(0);

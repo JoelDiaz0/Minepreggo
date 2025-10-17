@@ -86,19 +86,19 @@ public abstract class AbstractCreeperGirlMainGUIScreen<E extends AbstractTamable
 		final var combatMode = creeperGirl.getcombatMode();		
 		final var creeperGirlId = creeperGirl.getId();
 	
-		addCheckbox(this.leftPos + 200, this.topPos, 20, 20, Component.translatable("gui.minepreggo.abstract_creeper_girl_main_gui.explode"), combatMode == CombatMode.EXPLODE,() -> 
+		addCheckbox(this.leftPos + 200, this.topPos, 20, 20, Component.translatable("gui.minepreggo.creeper_girl_main.checkbox_explode"), combatMode == CombatMode.EXPLODE,() -> 
 			MinepreggoModPacketHandler.INSTANCE.sendToServer(new CreeperGirlCombatModePacket(x, y, z, CombatMode.EXPLODE, creeperGirlId))
 		);				
-		addCheckbox(this.leftPos + 200, this.topPos + 36, 20, 20, Component.translatable("gui.minepreggo.abstract_creeper_girl_main_gui.dont_explode"), combatMode == CombatMode.DONT_EXPLODE, () -> 
+		addCheckbox(this.leftPos + 200, this.topPos + 36, 20, 20, Component.translatable("gui.minepreggo.creeper_girl_main.checkbox_dont_explode"), combatMode == CombatMode.DONT_EXPLODE, () -> 
 			MinepreggoModPacketHandler.INSTANCE.sendToServer(new CreeperGirlCombatModePacket(x, y, z, CombatMode.DONT_EXPLODE, creeperGirlId))
 		);				
-		addCheckbox(this.leftPos + 200, this.topPos + 72, 20, 20, Component.translatable("gui.minepreggo.abstract_creeper_girl_main_gui.fight_and_explode"), combatMode == CombatMode.FIGHT_AND_EXPLODE, () -> 
+		addCheckbox(this.leftPos + 200, this.topPos + 72, 20, 20, Component.translatable("gui.minepreggo.creeper_girl_main.checkbox_fight_and_explode"), combatMode == CombatMode.FIGHT_AND_EXPLODE, () -> 
 			MinepreggoModPacketHandler.INSTANCE.sendToServer(new CreeperGirlCombatModePacket(x, y, z, CombatMode.FIGHT_AND_EXPLODE, creeperGirlId))
 		);				
 
 		
 		
-		buttonWait = Button.builder(Component.translatable("gui.minepreggo.zombie_girl_p_0_main_gui.button_wait"), e -> {
+		buttonWait = Button.builder(Component.translatable("gui.minepreggo.preggo_mob_main.button_wait"), e -> {
 			if (!creeperGirl.isWaiting()) {
 				MinepreggoModPacketHandler.INSTANCE.sendToServer(new CreeperGirlMainGUIPacket(x, y, z, 0, creeperGirlId));
 			}
@@ -112,7 +112,7 @@ public abstract class AbstractCreeperGirlMainGUIScreen<E extends AbstractTamable
 		this.addRenderableWidget(buttonWait);
 
 		
-		buttonFollow = Button.builder(Component.translatable("gui.minepreggo.zombie_girl_p_0_main_gui.button_follow"), e -> {
+		buttonFollow = Button.builder(Component.translatable("gui.minepreggo.preggo_mob_main.button_follow"), e -> {
 			if (creeperGirl.isWaiting()) {
 				MinepreggoModPacketHandler.INSTANCE.sendToServer(new CreeperGirlMainGUIPacket(x, y, z, 1, creeperGirlId));
 			}
@@ -125,7 +125,7 @@ public abstract class AbstractCreeperGirlMainGUIScreen<E extends AbstractTamable
 		});
 		this.addRenderableWidget(buttonFollow);
 			
-		buttonRide = Button.builder(Component.translatable("gui.minepreggo.zombie_girl_p_0_main_gui.button_ride"), e -> {
+		buttonRide = Button.builder(Component.translatable("gui.minepreggo.preggo_mob_main.button_ride"), e -> {
 			if (!creeperGirl.isPassenger()) {
 				MinepreggoModPacketHandler.INSTANCE.sendToServer(new CreeperGirlMainGUIPacket(x, y, z, 2, creeperGirlId));
 			}
@@ -138,7 +138,7 @@ public abstract class AbstractCreeperGirlMainGUIScreen<E extends AbstractTamable
 		});
 		this.addRenderableWidget(buttonRide);
 
-		buttonDismount = Button.builder(Component.translatable("gui.minepreggo.zombie_girl_p_0_main_gui.button_dismount"), e -> {
+		buttonDismount = Button.builder(Component.translatable("gui.minepreggo.preggo_mob_main.button_dismount"), e -> {
 			if (creeperGirl.isPassenger()) {
 				MinepreggoModPacketHandler.INSTANCE.sendToServer(new CreeperGirlMainGUIPacket(x, y, z, 3, creeperGirlId));
 			}
@@ -153,7 +153,7 @@ public abstract class AbstractCreeperGirlMainGUIScreen<E extends AbstractTamable
 	
 		inventoryButton = new ImageButton(this.leftPos - 24, this.topPos + 6, 16, 16, 1, 57, 16, PreggoGUIHelper.ICONS_TEXTURE, 256, 256, 
 				e -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new CreeperGirlInventaryMenuPacket(x, y, z, creeperGirlId)));	
-		inventoryButton.setTooltip(Tooltip.create(Component.translatable("gui.minepreggo.preggo.inventary")));
+		inventoryButton.setTooltip(Tooltip.create(Component.translatable("gui.minepreggo.preggo_mob_inventory.tooltip_inventory")));
 		
 		
 		this.addRenderableWidget(inventoryButton);

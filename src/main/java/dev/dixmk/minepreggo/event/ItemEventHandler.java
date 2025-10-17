@@ -4,7 +4,7 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 
 import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(modid = MinepreggoMod.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@Mod.EventBusSubscriber(modid = MinepreggoMod.MODID)
 public class ItemEventHandler {
 
 

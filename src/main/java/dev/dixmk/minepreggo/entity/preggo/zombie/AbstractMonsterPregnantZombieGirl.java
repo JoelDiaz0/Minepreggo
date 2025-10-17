@@ -3,6 +3,8 @@ package dev.dixmk.minepreggo.entity.preggo.zombie;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.entity.preggo.ISimplePregnancy;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
+import dev.dixmk.minepreggo.entity.preggo.PregnancySystemConstants;
+import dev.dixmk.minepreggo.utils.PreggoMathHelper;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -10,6 +12,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.TamableAnimal;
@@ -36,7 +39,7 @@ public abstract class AbstractMonsterPregnantZombieGirl extends AbstractMonsterZ
 	private PregnancyStage currentPregnanctStage;
 	private PregnancyStage maxPregnanctStage;
 	private int totalDaysPassed;
-	private static final int PREGNANCY_PAIN_COOLDOWN = 80;
+	private static final int PREGNANCY_PAIN_COOLDOWN = 100;
 	
 	
 	protected AbstractMonsterPregnantZombieGirl(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_, PregnancyStage currentPregnancyStage, PregnancyStage maxPregnancyStage) {
@@ -67,7 +70,7 @@ public abstract class AbstractMonsterPregnantZombieGirl extends AbstractMonsterZ
 	@Override
 	public void die(DamageSource source) {
 		super.die(source);			
-		PreggoMobHelper.spawnFetusesAndBabiesZombie(this);
+		PreggoMobHelper.spawnBabyAndFetusZombies(this);
 	}
 	
 	@Override
@@ -93,6 +96,18 @@ public abstract class AbstractMonsterPregnantZombieGirl extends AbstractMonsterZ
         	  this.setPregnancyPainTimer(timer + 1);
     	  }
       }  
+	}
+	
+	@Override
+	public boolean hurt(DamageSource damagesource, float amount) {	
+		if (super.hurt(damagesource, amount) && !this.hasPregnancyPain() && !this.level().isClientSide()) {		
+			final var p = PreggoMathHelper.sigmoid(0.1F, 0.4F, 0.1F, Mth.clamp(this.getTotalDaysPassed() /(float) PregnancySystemConstants.TOTAL_PREGNANCY_DAYS , 0, 1), 0.6F);		
+			if (this.getRandom().nextFloat() < p) {
+				this.setPregnancyPain(true);
+			}			
+			return true;
+		}
+		return false;
 	}
 	
 	@Override

@@ -21,6 +21,6 @@ public enum PregnancyStage {
 			c = 4;
 		}
 		
-		return PregnancyStage.values()[RANDOM.nextInt(c, 7)];	
+		return PregnancyStage.values()[RANDOM.nextInt(c, 8)];	
     }
 }

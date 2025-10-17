@@ -29,31 +29,29 @@ public class PreggoMessageHelper {
 	
 
 	public static<T extends TamableAnimal & IPreggoMob & IPregnancySystem> void warningOwnerPossibleMiscarriageEvent(T preggoMob) {	
-		if (preggoMob.isTame() && !preggoMob.level().isClientSide()) {		
-			sendMessagePlayer((Player) preggoMob.getOwner(), String.format("%s feels pain below her pregnant belly, something isn't right...", preggoMob.getPreggoName()));
-			
+		if (preggoMob.isTame() && preggoMob.getOwner() != null  && !preggoMob.level().isClientSide()) {		
+			sendMessagePlayer((Player) preggoMob.getOwner(), String.format(Component.translatable("chat.minepreggo.preggo_mob.message_miscarriage_warning").getString(), preggoMob.getName()));		
 		}			
 	}
 	
-	
-	/*
-	public static<T extends TamableAnimal & PostPregnancy> void warningOwnerPospartumEvent(T preggoMob) {	
-		if (preggoMob.isTame() && !preggoMob.level().isClientSide) {		
-			var owner = (Player) preggoMob.getOwner();  
-			sendMessagePlayer(owner, String.format("%s just gave birth your babies, congratulation %s!", preggoMob.getPreggoName(), owner.getDisplayName().getString()));	
+	public static<T extends TamableAnimal & IPreggoMob & IPregnancySystem> void warningOwnerPospartumEvent(T preggoMob) {	
+		if (preggoMob.isTame() && preggoMob.getOwner() != null && !preggoMob.level().isClientSide()) {		
+			final var owner = (Player) preggoMob.getOwner();
+			sendMessagePlayer(owner, String.format(Component.translatable("chat.minepreggo.preggo_mob.message_post_partum").getString(), preggoMob.getPreggoName(), owner.getDisplayName().getString()));	
 		}			
 	}
 	
-	public static<T extends TamableAnimal & PostPregnancy> void warningOwnerMiscarriageEvent(T preggoMob) {	
-		if (preggoMob.isTame() && !preggoMob.level().isClientSide) {		
-			sendMessagePlayer((Player) preggoMob.getOwner(), String.format(String.format("%s just lose the baby...", preggoMob.getPreggoName())));	
+	public static<T extends TamableAnimal & IPreggoMob & IPregnancySystem> void warningOwnerMiscarriageEvent(T preggoMob) {	
+		if (preggoMob.isTame() && preggoMob.getOwner() != null && !preggoMob.level().isClientSide()) {		
+			sendMessagePlayer((Player) preggoMob.getOwner(), String.format(String.format(Component.translatable("chat.minepreggo.preggo_mob.message_miscarriage").getString(), preggoMob.getPreggoName())));	
 		}			
 	}
-	 */
 	
 	public static void sendMessagePlayer(Player player, String message) {
-		if (!player.level().isClientSide()) {		
-			player.displayClientMessage(Component.literal(message), true);
-		}	
+		player.displayClientMessage(Component.literal(message), true);	
+	}
+	
+	public static void sendMessagePlayer(Player player, Component component) {
+		player.displayClientMessage(component, true);	
 	}
 }

@@ -52,7 +52,7 @@ public abstract class AbstractZombieGirlInventaryGUIMenu<T extends AbstractTamab
 		if (extraData != null) {
 			this.access = ContainerLevelAccess.create(world, extraData.readBlockPos());		
 			
-			if (world.getEntity(extraData.readVarInt()) instanceof AbstractTamableZombieGirl e)		
+			if (world.getEntity(extraData.readVarInt()) instanceof AbstractTamableZombieGirl<?> e)		
 				zombieGirl = create(e);
 			if (zombieGirl != null)
 				zombieGirl.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> {
@@ -70,9 +70,12 @@ public abstract class AbstractZombieGirlInventaryGUIMenu<T extends AbstractTamab
 		
 		this.customSlots.put(IPreggoMob.CHEST_INVENTARY_SLOT, this.addSlot(new SlotItemHandler(internal, 3, 8, 26) {
 			@Override
-			public boolean mayPlace(ItemStack itemstack) {		
-				final var stage = zombieGirl.getCurrentPregnancyStage();
-									
+			public boolean mayPlace(ItemStack itemstack) {													
+				if (!PreggoArmorHelper.isChest(itemstack)) {
+					return false;
+				}
+				
+				final var stage = zombieGirl.getCurrentPregnancyStage();			
 				if (!PreggoArmorHelper.canPreggoMobUseChestplate(itemstack, stage)) {
 	                final var message = PreggoMessageHelper.ARMOR_MESSAGES.get(stage.ordinal());                                
 	                if (!entity.level().isClientSide && message != null && message[1] != null) 
@@ -86,8 +89,11 @@ public abstract class AbstractZombieGirlInventaryGUIMenu<T extends AbstractTamab
 		this.customSlots.put(IPreggoMob.LEGS_INVENTARY_SLOT, this.addSlot(new SlotItemHandler(internal, 2, 8, 44) {
 			@Override
 			public boolean mayPlace(ItemStack itemstack) {
-				final var stage = zombieGirl.getCurrentPregnancyStage();
-									
+				if (!PreggoArmorHelper.isLegging(itemstack)) {
+					return false;
+				}
+				
+				final var stage = zombieGirl.getCurrentPregnancyStage();							
 				if (!PreggoArmorHelper.canPreggoMobUseLegging(itemstack, stage)) {
 	                final var message = PreggoMessageHelper.ARMOR_MESSAGES.get(-1);                                
 	                if (!entity.level().isClientSide && message != null && message[1] != null) 
@@ -283,7 +289,7 @@ public abstract class AbstractZombieGirlInventaryGUIMenu<T extends AbstractTamab
 	@SubscribeEvent
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
 		Player player = event.player;
-		if (event.phase == TickEvent.Phase.END && player.containerMenu instanceof AbstractZombieGirlInventaryGUIMenu container) {	
+		if (event.phase == TickEvent.Phase.END && player.containerMenu instanceof AbstractZombieGirlInventaryGUIMenu<?> container) {	
 			PreggoGUIHelper.syncPreggoMobInventaryOnTick(player.level(), container.zombieGirl);
 		}
 	}

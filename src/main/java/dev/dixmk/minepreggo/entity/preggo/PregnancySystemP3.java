@@ -126,6 +126,7 @@ public abstract class PregnancySystemP3 <E extends TamableAnimal
 		
 		this.evaluatePregnancySymptoms();
 		this.evaluatePregnancyPains();
+		this.evaluateAutoFeeding();
 	}
 	
 	

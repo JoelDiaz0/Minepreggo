@@ -147,6 +147,18 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PregnancySyste
 	}
 	
 	@Override
+	public boolean hurt(DamageSource damagesource, float amount) {
+		boolean result = super.hurt(damagesource, amount);	
+		
+		if (result) {
+			preggoMobSystem.evaluateOnSuccessfulHurt(damagesource);
+		}
+		
+		return result;
+	}
+	
+	
+	@Override
 	public int getDaysByStage() {
 		return this.entityData.get(DATA_DAYS_BY_STAGE);
 	}

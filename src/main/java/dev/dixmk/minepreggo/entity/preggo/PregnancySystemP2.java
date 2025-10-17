@@ -105,6 +105,7 @@ public abstract class PregnancySystemP2<E extends TamableAnimal
 		
 		this.evaluatePregnancySymptoms();
 		this.evaluatePregnancyPains();
+		this.evaluateAutoFeeding();
 	}
 
 	@Override

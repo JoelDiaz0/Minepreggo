@@ -150,8 +150,8 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 		return this.entityData.get(DATA_IS_POWERED);
 	}
 
-	public void power() {
-		this.entityData.set(DATA_IS_POWERED, true);
+	public void setPower(boolean power) {
+		this.entityData.set(DATA_IS_POWERED, power);
 	}
 	
 	public boolean isIgnited() {
@@ -224,7 +224,7 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 	@Override
 	public void thunderHit(ServerLevel p_32286_, LightningBolt p_32287_) {
 		super.thunderHit(p_32286_, p_32287_);
-		this.entityData.set(DATA_IS_POWERED, true);
+		this.setPower(true);
 	}
 
 	@Override

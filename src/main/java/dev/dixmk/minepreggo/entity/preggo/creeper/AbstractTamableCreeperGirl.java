@@ -25,9 +25,12 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.TamableAnimal;
@@ -67,7 +70,7 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	
 	private int pregnancyTimer = 0;
 	private int hungryTimer = 0;
-	private int healingCooldownTimer = 0;
+	private int poweredTimer = 0; 
 	protected final S preggoMobSystem;
 	
 	protected AbstractTamableCreeperGirl(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_) {
@@ -113,6 +116,7 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 		compound.putBoolean("DataPanic", this.entityData.get(DATA_PANIC));
 		
 		compound.putInt("DataPregnancyTimer", this.pregnancyTimer);
+		compound.putInt("DataPoweredTimer", this.poweredTimer);
 		compound.putInt("DataMaxPregnancyStage", this.entityData.get(DATA_MAX_PREGNANCY_STAGE).ordinal());
 		compound.putInt("DataPregnancySymptom", this.entityData.get(DATA_PREGNANCY_SYMPTOM).ordinal());	
 	
@@ -135,6 +139,7 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 		this.entityData.set(DATA_ANGRY, compound.getBoolean("DataAngry"));	
 		this.entityData.set(DATA_PANIC, compound.getBoolean("DataPanic"));	
 		this.pregnancyTimer = compound.getInt("DataPregnancyTimer");
+		this.poweredTimer = compound.getInt("DataPoweredTimer");
 		this.entityData.set(DATA_PREGNANCY_SYMPTOM, PregnancySymptom.values()[compound.getInt("DataPregnancySymptom")]);
 		this.entityData.set(DATA_MAX_PREGNANCY_STAGE, PregnancyStage.values()[compound.getInt("DataMaxPregnancyStage")]);
 		this.entityData.set(DATA_STATE, PreggoMobState.values()[compound.getInt("DataStage")]);
@@ -262,7 +267,7 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {				
 		var retval = super.mobInteract(sourceentity, hand);	
 		
-		if (retval == InteractionResult.SUCCESS) {
+		if (retval == InteractionResult.SUCCESS || retval == InteractionResult.CONSUME) {
 			return retval;
 		}
 		
@@ -297,6 +302,31 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	}
 	
 	@Override
+	public void tick() {
+		super.tick();
+		
+		if (this.isPowered() && !this.level().isClientSide()) {		
+			if (this.poweredTimer > 24000) {
+				this.poweredTimer = 0;
+				this.setPower(false);
+			}
+			else {
+				--this.poweredTimer;
+			}
+		}
+	}
+	
+	@Override
+	public void thunderHit(ServerLevel p_32286_, LightningBolt p_32287_) {
+		super.thunderHit(p_32286_, p_32287_);
+		if (this.isTame() && !this.level().isClientSide()) {
+			this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 24000, 0, false, true));
+			this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 24000, 0, false, true));
+			this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 24000, 0, false, true));
+		}
+	}
+	
+	@Override
 	public int getHungry() {
 	    return this.entityData.get(DATA_HUNGRY);
 	}
@@ -314,16 +344,6 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	@Override
 	public void setHungryTimer(int ticks) {
 	    this.hungryTimer = ticks;
-	}
-		
-	@Override
-	public int getHealingTimer() {
-		return healingCooldownTimer;
-	}
-
-	@Override
-	public void setHealingTimer(int ticks) {
-		this.healingCooldownTimer = ticks;
 	}
 	
 	@Override

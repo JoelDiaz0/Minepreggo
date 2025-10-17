@@ -7,6 +7,8 @@ import javax.annotation.Nonnull;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
+import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.utils.PreggoMessageHelper;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -14,6 +16,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -128,6 +133,46 @@ public abstract class PregnancySystemP1<
 	}
 	
 	@Override
+	protected boolean canAutoFeeding() {
+		return super.canAutoFeeding() && !preggoMob.isIncapacitated();
+	}
+	
+	
+	public void evaluateOnSuccessfulHurt(DamageSource damagesource) {	
+		if ((preggoMob.hasEffect(MinepreggoModMobEffects.PREGNANCY_RESISTANCE_EFFECT.get()) && randomSource.nextFloat() < 0.9F)
+				|| (!damagesource.is(DamageTypes.FALL) && !preggoMob.getItemBySlot(EquipmentSlot.CHEST).isEmpty() && randomSource.nextFloat() < 0.5)) {
+			return;
+		}
+		
+		int damage = 0;
+		var currentPregnancyHealth = preggoMob.getPregnancyHealth();
+		
+		if (preggoMob.getHealth() < preggoMob.getMaxHealth() / 2F) {
+			damage = preggoMob.getCurrentPregnancyStage().ordinal() + randomSource.nextInt(3);
+				
+			if (damagesource.is(DamageTypes.EXPLOSION) || damagesource.is(DamageTypes.PLAYER_EXPLOSION) || damagesource.is(DamageTypes.FALL)) {
+				damage *= 2;
+			}
+
+			currentPregnancyHealth = Math.max(0, currentPregnancyHealth - damage);
+			preggoMob.setPregnancyHealth(currentPregnancyHealth);			
+		} 
+		else if (damagesource.is(DamageTypes.EXPLOSION) || damagesource.is(DamageTypes.PLAYER_EXPLOSION) || damagesource.is(DamageTypes.FALL)) {
+			currentPregnancyHealth = Math.max(0, currentPregnancyHealth - 5);
+			preggoMob.setPregnancyHealth(currentPregnancyHealth);
+		}
+		
+		if (damage > 0) {		
+			if (preggoMob.getPregnancyHealth() < 40) {
+				PreggoMessageHelper.warningOwnerPossibleMiscarriageEvent(preggoMob);
+			}					
+			MinepreggoMod.LOGGER.debug("PREGNANCY HEALTH: id={}, class={}, pregnancyHealth={}, damage={}, damageSource={}",
+					preggoMob.getId(), preggoMob.getClass().getSimpleName(), currentPregnancyHealth, damage, damagesource);
+		}
+	}
+	
+	
+	@Override
 	public void evaluateOnTick() {		
 		
 		final var level = preggoMob.level();
@@ -158,6 +203,7 @@ public abstract class PregnancySystemP1<
 		
 		this.evaluatePregnancySymptoms();
 		this.evaluatePregnancyPains();
+		this.evaluateAutoFeeding();
 	}
 	
 	protected boolean activateAngry() {

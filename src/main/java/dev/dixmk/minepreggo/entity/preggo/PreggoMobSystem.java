@@ -37,7 +37,8 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 	
 	protected final RandomSource randomSource;	
 	protected final E preggoMob;
-	protected int autoHealingTimer = 0;
+	protected int autoFeedingCooldownTimer = 0;
+	protected int healingCooldownTimer = 0;
 	
 	protected PreggoMobSystem(@Nonnull E preggopreggoMob) {
 		this.preggoMob = preggopreggoMob;	
@@ -69,13 +70,13 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 	                    
 	            if (currentHungry >= MIN_HUNGRY_TO_HEAL
 	            		&& preggoMob.getHealth() < preggoMob.getMaxHealth()) {     	
-	            	if (preggoMob.getHealingTimer() >= IPreggoMob.HEALING_COOLDOWN_DURATION) {
+	            	if (healingCooldownTimer >= IPreggoMob.HEALING_COOLDOWN_DURATION) {
 		            	preggoMob.heal(1F);
 		            	preggoMob.setHungry(currentHungry - 1);
-		            	preggoMob.setHealingTimer(0);
+		            	healingCooldownTimer = 0;
 	            	}
 	            	else {
-		            	preggoMob.setHealingTimer(preggoMob.getHealingTimer() + 1);
+	            		++healingCooldownTimer;
 	            	}
 	            }            
 	        } 
@@ -98,16 +99,20 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 	    }
 	}
 		
+	protected boolean canAutoFeeding() {
+		return (preggoMob.getHungry() > 5 || preggoMob.getHealth() > 5) && !preggoMob.isAggressive();
+	}
+	
 	protected void evaluateAutoFeeding() {
 
 		var currentHungry = preggoMob.getHungry();
 		
-		if (currentHungry > 5 || preggoMob.getHealth() > 5) {
+		if (!this.canAutoFeeding()) {
 			return;
 		}
 				
-		if (autoHealingTimer < 40) {
-			++autoHealingTimer;
+		if (autoFeedingCooldownTimer < 40) {
+			++autoFeedingCooldownTimer;
 			return;
 		}
 		
@@ -115,6 +120,7 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 		AtomicReference<ItemStack> retval = new AtomicReference<>(ItemStack.EMPTY);
 		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> 
 			retval.set(capability.getStackInSlot(IPreggoMob.FOOD_INVENTARY_SLOT)));		
+		
 		food = retval.get();
 		
 		if (food.isEmpty()) {
@@ -130,19 +136,16 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 		preggoMob.setHungry(Math.min(currentHungry + foodProperties.getNutrition(), 25));	
 		final var newFoodCount = food.getCount() - 1;
 				
-		MinepreggoMod.LOGGER.debug("AUTO FEEDING: id={}, class={}, food={}, newFoodCount={},",
+		MinepreggoMod.LOGGER.debug("AUTO FEEDING: id={}, class={}, food={}, newFoodCount={}",
 				preggoMob.getId(), preggoMob.getClass().getSimpleName(), food.getDisplayName().getString(), newFoodCount);
 		
-		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> {
-			
-			
-			
-			if (capability instanceof IItemHandlerModifiable modHandlerEntSetSlot) {
-				modHandlerEntSetSlot.setStackInSlot(IPreggoMob.FOOD_INVENTARY_SLOT, food);
+		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> {			
+			if (capability instanceof IItemHandlerModifiable modHandlerEntSetSlot) {			
+				modHandlerEntSetSlot.setStackInSlot(IPreggoMob.FOOD_INVENTARY_SLOT, newFoodCount == 0 ? ItemStack.EMPTY : food);
 			}			
 		});
 		
-		autoHealingTimer = 0;
+		autoFeedingCooldownTimer = 0;
 	}
 	
 	

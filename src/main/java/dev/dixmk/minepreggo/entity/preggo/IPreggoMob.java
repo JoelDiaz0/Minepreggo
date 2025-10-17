@@ -39,10 +39,7 @@ public interface IPreggoMob {
     
     int getHungryTimer();
     void setHungryTimer(int ticks);
-
-    int getHealingTimer();
-    void setHealingTimer(int ticks);
-    
+ 
     boolean isPregnant();
 
     boolean isPanic();

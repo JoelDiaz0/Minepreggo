@@ -189,6 +189,7 @@ public abstract class PregnancySystemP4<E extends TamableAnimal
 				PregnancySystemConstants.MEDIUM_PREGNANCY_PAIN_PROBABILITY,
 				PregnancySystemConstants.TOTAL_TICKS_KICKING_P4,
 				PregnancySystemConstants.TOTAL_TICKS_CONTRACTION_P4);
+		this.evaluateAutoFeeding();
 	}
 	
 	protected abstract void finishBirth();

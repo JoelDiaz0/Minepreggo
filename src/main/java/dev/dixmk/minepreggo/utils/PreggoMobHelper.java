@@ -25,7 +25,6 @@ import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractTamablePregnantZombieGi
 import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractZombieGirl;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
-import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.IItemHandler;
@@ -215,37 +214,6 @@ public class PreggoMobHelper {
 		
 	public static<E extends TamableAnimal & IPreggoMob & IPregnancySystem> void startPregnancy(E preggoMob) {		
 		startPregnancy(preggoMob, PregnancyStage.getRandomFinalCurrentStage(preggoMob.getCurrentPregnancyStage()));
-	}
-	
-	public static <E extends TamableAnimal & IPreggoMob & IPregnancySystem> void defaultDamagePregnancyHealth(E preggoMob, DamageSource damagesource) {
-		
-		var randomSource = preggoMob.getRandom();
-		
-		if ((preggoMob.hasEffect(MinepreggoModMobEffects.PREGNANCY_RESISTANCE_EFFECT.get()) && randomSource.nextFloat() < 0.9F)
-				|| (!damagesource.is(DamageTypes.FALL) && !preggoMob.getItemBySlot(EquipmentSlot.CHEST).isEmpty() && randomSource.nextFloat() < 0.5)) {
-			return;
-		}
-		
-		boolean showMessage = false;
-		
-		if (preggoMob.getHealth() < preggoMob.getMaxHealth() / 2F) {
-			int damage = 0;
-			
-			if (damagesource.is(DamageTypes.EXPLOSION) || damagesource.is(DamageTypes.PLAYER_EXPLOSION) || damagesource.is(DamageTypes.FALL)) {
-				damage *= 2;
-			}
-			
-			preggoMob.setPregnancyHealth(Math.max(0, preggoMob.getPregnancyHealth() - damage));			
-			showMessage = true;
-		} 
-		else if (damagesource.is(DamageTypes.EXPLOSION) || damagesource.is(DamageTypes.PLAYER_EXPLOSION) || damagesource.is(DamageTypes.FALL)) {
-			preggoMob.setPregnancyHealth(Math.max(0, preggoMob.getPregnancyHealth() - 5));
-			showMessage = true;
-		}
-		
-		if (showMessage && preggoMob.getPregnancyHealth() < 40) {
-			PreggoMessageHelper.warningOwnerPossibleMiscarriageEvent(preggoMob);
-		}
 	}
 	
 	private static<E extends TamableAnimal & IPreggoMob & IPregnancySystem> float getSpawnProbabilityBasedPregnancy(E preggoMob, float t0, float k, float pMin, float pMax) {

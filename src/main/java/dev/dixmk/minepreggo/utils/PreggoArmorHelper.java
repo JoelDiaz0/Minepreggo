@@ -23,10 +23,15 @@ public class PreggoArmorHelper {
 	}
 	
 	public static boolean isLegging(ItemStack item) {
-		if (item == null) return false;
-		
+		if (item == null) return false;	
 		return item.getItem() instanceof ArmorItem armorItem && armorItem.getEquipmentSlot() == EquipmentSlot.LEGS;
 	}
+	
+	public static boolean isChest(ItemStack item) {
+		if (item == null) return false;	
+		return item.getItem() instanceof ArmorItem armorItem && armorItem.getEquipmentSlot() == EquipmentSlot.CHEST;
+	}
+	
 	
 	public static boolean canPreggoMobUseChestplate(ItemStack armor, PregnancyStage stage) {
 		switch (stage) {
@@ -57,7 +62,7 @@ public class PreggoArmorHelper {
 	}
 	
 	public static boolean canPreggoMobUseLegging(ItemStack armor, PregnancyStage stage) {	
-		if (stage == PregnancyStage.P0 && armor.getItem() instanceof ArmorItem armorItem && armorItem.getEquipmentSlot() == EquipmentSlot.LEGS) {
+		if (stage == PregnancyStage.P0 && isLegging(armor)) {
 			return true;
 		}
 		else {

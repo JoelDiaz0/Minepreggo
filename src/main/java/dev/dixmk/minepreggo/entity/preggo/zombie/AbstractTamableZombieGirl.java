@@ -71,7 +71,6 @@ public abstract class AbstractTamableZombieGirl<S extends PreggoMobSystem<?>> ex
 	
 	private int pregnancyTimer = 0;
 	private int hungryTimer = 0;
-	private int healingCooldownTimer = 0;
 	
 	protected final S preggoMobSystem;
 	
@@ -308,16 +307,6 @@ public abstract class AbstractTamableZombieGirl<S extends PreggoMobSystem<?>> ex
 	@Override
 	public void setHungryTimer(int ticks) {
 	    this.hungryTimer = ticks;
-	}
-		
-	@Override
-	public int getHealingTimer() {
-		return healingCooldownTimer;
-	}
-
-	@Override
-	public void setHealingTimer(int ticks) {
-		this.healingCooldownTimer = ticks;
 	}
 	
 	@Override

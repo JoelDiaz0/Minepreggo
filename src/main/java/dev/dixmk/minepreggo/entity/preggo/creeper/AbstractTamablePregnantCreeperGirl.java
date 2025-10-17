@@ -143,6 +143,17 @@ public abstract class AbstractTamablePregnantCreeperGirl<S extends PregnancySyst
 	}
 	
 	@Override
+	public boolean hurt(DamageSource damagesource, float amount) {
+		boolean result = super.hurt(damagesource, amount);	
+		
+		if (result) {
+			preggoMobSystem.evaluateOnSuccessfulHurt(damagesource);
+		}
+		
+		return result;
+	}
+	
+	@Override
 	public SoundEvent getDeathSound() {
 		return ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "preggo_death"));
 	}

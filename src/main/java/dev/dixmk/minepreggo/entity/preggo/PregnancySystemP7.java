@@ -60,5 +60,6 @@ public abstract class PregnancySystemP7<E extends TamableAnimal
 				PregnancySystemConstants.HIGH_PREGNANCY_PAIN_PROBABILITY,
 				PregnancySystemConstants.TOTAL_TICKS_KICKING_P7,
 				PregnancySystemConstants.TOTAL_TICKS_CONTRACTION_P7);
+		this.evaluateAutoFeeding();
 	}
 }

@@ -53,12 +53,11 @@ import net.minecraftforge.items.wrapper.EntityArmorInvWrapper;
 import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
 import net.minecraftforge.network.NetworkHooks;
 
-public abstract class AbstractTamableZombieGirl<S extends PreggoMobSystem<?>> extends AbstractZombieGirl implements IPreggoMob {
+public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> extends AbstractZombieGirl implements IPreggoMob {
 
 	protected static final EntityDataAccessor<Integer> DATA_HUNGRY = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<PregnancyStage> DATA_MAX_PREGNANCY_STAGE = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, MinepreggoModEntityDataSerializers.PREGNANCY_STAGE);
 	protected static final EntityDataAccessor<PregnancySymptom> DATA_PREGNANCY_SYMPTOM = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, MinepreggoModEntityDataSerializers.PREGNANCY_SYMPTOM);
-	protected static final EntityDataAccessor<Boolean> DATA_PREGNANT = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> DATA_SAVAGE = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> DATA_ANGRY = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Boolean> DATA_WAITING = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.BOOLEAN);
@@ -69,10 +68,9 @@ public abstract class AbstractTamableZombieGirl<S extends PreggoMobSystem<?>> ex
 	protected final CombinedInvWrapper combined;
 	public static final int INVENTORY_SIZE = 15;
 	
-	private int pregnancyTimer = 0;
 	private int hungryTimer = 0;
 	
-	protected final S preggoMobSystem;
+	protected final P preggoMobSystem;
 	
 	protected AbstractTamableZombieGirl(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_) {
 	      super(p_21803_, p_21804_);
@@ -83,22 +81,18 @@ public abstract class AbstractTamableZombieGirl<S extends PreggoMobSystem<?>> ex
 	}
 	
 	@Nonnull
-	protected abstract S createPreggoMobSystem();
+	protected abstract P createPreggoMobSystem();
 	
 	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();
-		this.entityData.define(DATA_HUNGRY, 4);
-			
-		this.entityData.define(DATA_PREGNANT, false);
+		this.entityData.define(DATA_HUNGRY, 4);		
 		this.entityData.define(DATA_SAVAGE, false);
 		this.entityData.define(DATA_ANGRY, false);
 		this.entityData.define(DATA_WAITING, false);
 		this.entityData.define(DATA_PANIC, false);
-		
 		this.entityData.define(DATA_MAX_PREGNANCY_STAGE, PregnancyStage.P0);
-		this.entityData.define(DATA_PREGNANCY_SYMPTOM, PregnancySymptom.NONE);
-		
+		this.entityData.define(DATA_PREGNANCY_SYMPTOM, PregnancySymptom.NONE);	
 		this.entityData.define(DATA_STATE, PreggoMobState.IDLE);
 	}
 	
@@ -108,17 +102,12 @@ public abstract class AbstractTamableZombieGirl<S extends PreggoMobSystem<?>> ex
 		compound.put("InventoryCustom", inventory.serializeNBT());
 		compound.putInt("DataHungry", this.entityData.get(DATA_HUNGRY));
 		compound.putInt("DataHungryTimer", hungryTimer);
-		
-		compound.putBoolean("DataPregnant", this.entityData.get(DATA_PREGNANT));
 		compound.putBoolean("DataSavage", this.entityData.get(DATA_SAVAGE));
 		compound.putBoolean("DataWaiting", this.entityData.get(DATA_WAITING));
 		compound.putBoolean("DataAngry", this.entityData.get(DATA_ANGRY));
-		compound.putBoolean("DataPanic", this.entityData.get(DATA_PANIC));
-		
-		compound.putInt("DataPregnancyTimer", pregnancyTimer);
+		compound.putBoolean("DataPanic", this.entityData.get(DATA_PANIC));		
 		compound.putInt("DataMaxPregnancyStage", this.entityData.get(DATA_MAX_PREGNANCY_STAGE).ordinal());
 		compound.putInt("DataPregnancySymptom", this.entityData.get(DATA_PREGNANCY_SYMPTOM).ordinal());	
-	
 		compound.putInt("DataStage", this.entityData.get(DATA_STATE).ordinal());
 	}
 	
@@ -129,13 +118,11 @@ public abstract class AbstractTamableZombieGirl<S extends PreggoMobSystem<?>> ex
 		if (inventoryCustom instanceof CompoundTag inventoryTag)
 			inventory.deserializeNBT(inventoryTag);	
 		this.entityData.set(DATA_HUNGRY, compound.getInt("DataHungry"));
-		hungryTimer = compound.getInt("DataHungryTimer");
-		this.entityData.set(DATA_PREGNANT, compound.getBoolean("DataPregnant"));		
+		this.hungryTimer = compound.getInt("DataHungryTimer");		
 		this.entityData.set(DATA_SAVAGE, compound.getBoolean("DataSavage"));		
 		this.entityData.set(DATA_WAITING, compound.getBoolean("DataWaiting"));		
 		this.entityData.set(DATA_ANGRY, compound.getBoolean("DataAngry"));	
 		this.entityData.set(DATA_PANIC, compound.getBoolean("DataPanic"));	
-		pregnancyTimer = compound.getInt("DataPregnancyTimer");
 		this.entityData.set(DATA_PREGNANCY_SYMPTOM, PregnancySymptom.values()[compound.getInt("DataPregnancySymptom")]);
 		this.entityData.set(DATA_MAX_PREGNANCY_STAGE, PregnancyStage.values()[compound.getInt("DataMaxPregnancyStage")]);
 		this.entityData.set(DATA_STATE, PreggoMobState.values()[compound.getInt("DataStage")]);
@@ -310,8 +297,13 @@ public abstract class AbstractTamableZombieGirl<S extends PreggoMobSystem<?>> ex
 	}
 	
 	@Override
-	public boolean isPregnant() {
-	    return this.entityData.get(DATA_PREGNANT);
+	public PreggoMobState getState() {
+		return this.entityData.get(DATA_STATE);
+	}
+
+	@Override
+	public void setState(PreggoMobState state) {
+		this.entityData.set(DATA_STATE, state);
 	}
 	
 	@Override
@@ -352,36 +344,6 @@ public abstract class AbstractTamableZombieGirl<S extends PreggoMobSystem<?>> ex
 	@Override
 	public void setPanic(boolean panic) {
 	    this.entityData.set(DATA_PANIC, panic);
-	}
-	
-	@Override
-	public int getPregnancyTimer() {
-	    return this.pregnancyTimer;
-	}
-	
-	@Override
-	public void setPregnancyTimer(int ticks) {
-	    this.pregnancyTimer = ticks;
-	}
-	
-	@Override
-	public PregnancyStage getMaxPregnancyStage() {
-		return this.entityData.get(DATA_MAX_PREGNANCY_STAGE); 
-	}
-	
-	@Override
-	public void setMaxPregnancyStage(PregnancyStage stage) {
-		this.entityData.set(DATA_MAX_PREGNANCY_STAGE, stage);
-	}
-	
-	@Override
-	public PreggoMobState getState() {
-		return this.entityData.get(DATA_STATE);
-	}
-
-	@Override
-	public void setState(PreggoMobState state) {
-		this.entityData.set(DATA_STATE, state);
 	}
 	
 	@Override

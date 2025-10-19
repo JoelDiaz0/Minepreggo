@@ -21,7 +21,7 @@ public class MonsterCreeperGirlP7 extends AbstractMonsterPregnantCreeperGirl {
 	}
 	
 	public static AttributeSupplier.Builder createAttributes() {
-		return getBasicAttributes(0.24);
+		return getBasicAttributes(0.19);
 	}
 	
 

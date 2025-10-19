@@ -75,8 +75,6 @@ public class PreggoMobHelper {
 		target.setWaiting(source.isWaiting());
 		target.setAngry(source.isAngry());
 		target.setSavage(source.isSavage());
-		target.setPregnancyTimer(0);
-		target.setMaxPregnancyStage(source.getMaxPregnancyStage());
 	}
 	
 	public static<E extends TamableAnimal & IPreggoMob & IPregnancySystem & IPregnancyP1> void transferPregnancyP1Data(E source, E target) {
@@ -92,6 +90,8 @@ public class PreggoMobHelper {
 		target.setPregnancyPain(source.getPregnancyPain());
 		target.setPregnancySymptom(source.getPregnancySymptom());
 		target.setPregnancyPainTimer(source.getPregnancyPainTimer());
+		target.setPregnancyTimer(0);
+		target.setMaxPregnancyStage(source.getMaxPregnancyStage());
 	}
 	
 	public static<E extends TamableAnimal & IPreggoMob & IPregnancySystem & IPregnancyP2> void transferPregnancyP2Data(E source, E target) {
@@ -330,7 +330,7 @@ public class PreggoMobHelper {
 		}
 	}
 		
-	public static void spawnBabyAndFetusZombies(AbstractTamablePregnantZombieGirl<?> zombieGirl) {		
+	public static void spawnBabyAndFetusZombies(AbstractTamablePregnantZombieGirl<?,?> zombieGirl) {		
 
 		final var numOfBabies = getNumberOfChildrens(zombieGirl.getMaxPregnancyStage());
 		
@@ -339,21 +339,21 @@ public class PreggoMobHelper {
 			spawnBabyOrFetusZombies(alive, numOfBabies, zombieGirl);
 		}	
 		else {		
-			final var fetusSpawn = getSpawnProbabilityBasedPregnancy(zombieGirl, 0.3F, 0.1F, 0.2F, 0.8F);
+			final var fetusSpawn = getSpawnProbabilityBasedPregnancy(zombieGirl, 0.3F, 0.1F, 0.5F, 0.9F);
 			spawnFetusZombies(fetusSpawn, numOfBabies, zombieGirl);
 		}
 	}
 	
-	public static void spawnBabyAndFetusCreepers(AbstractTamablePregnantCreeperGirl<?> creeperGirl) {
+	public static void spawnBabyAndFetusCreepers(AbstractTamablePregnantCreeperGirl<?,?> creeperGirl) {
 		
 		final var numOfBabies = getNumberOfChildrens(creeperGirl.getMaxPregnancyStage());
 	
 		if (creeperGirl instanceof IPregnancyP3) {
-			final var alive = getSpawnProbabilityBasedPregnancy(creeperGirl, 0.6F, 0.1F, 0.15F, 0.8F);
+			final var alive = getSpawnProbabilityBasedPregnancy(creeperGirl, 0.6F, 0.15F, 0.15F, 0.8F);
 			spawnBabyOrFetusCreepers(alive, numOfBabies, creeperGirl);
 		}	
 		else {		
-			final var fetusSpawn = getSpawnProbabilityBasedPregnancy(creeperGirl, 0.3F, 0.1F, 0.1F, 0.7F);
+			final var fetusSpawn = getSpawnProbabilityBasedPregnancy(creeperGirl, 0.3F, 0.15F, 0.5F, 0.9F);
 			spawnFetusCreepers(fetusSpawn, numOfBabies, creeperGirl);
 		}
 	}
@@ -363,7 +363,7 @@ public class PreggoMobHelper {
 		
 		final var currentPregnancyStage = creeperGirl.getCurrentPregnancyStage();
 		
-		if (currentPregnancyStage == PregnancyStage.P0) {
+		if (currentPregnancyStage == PregnancyStage.getNonPregnancyStage()) {
 			return;
 		}
 			
@@ -373,11 +373,11 @@ public class PreggoMobHelper {
 		float p;
 		
 		if (currentPregnancyStage.ordinal() > 2) {
-			p = PreggoMathHelper.sigmoid(0.2F, 0.8F, 0.1F, t, 0.6F);
+			p = PreggoMathHelper.sigmoid(0.2F, 0.8F, 0.15F, t, 0.6F);
 			spawnBabyOrFetusCreepers(p, numOfBabies, creeperGirl);
 		}
 		else {
-			p = PreggoMathHelper.sigmoid(0.2F, 0.9F, 0.1F, t, 0.3F);
+			p = PreggoMathHelper.sigmoid(0.5F, 0.9F, 0.15F, t, 0.3F);
 			spawnFetusCreepers(p, numOfBabies, creeperGirl);
 		}
 		
@@ -389,7 +389,7 @@ public class PreggoMobHelper {
 		
 		final var currentPregnancyStage = zombie.getCurrentPregnancyStage();
 		
-		if (currentPregnancyStage == PregnancyStage.P0) {
+		if (currentPregnancyStage == PregnancyStage.getNonPregnancyStage()) {
 			return;
 		}
 		
@@ -441,7 +441,7 @@ public class PreggoMobHelper {
 	    } else {
 	        entity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(cap -> {
 	            if (cap instanceof IItemHandlerModifiable mod) {
-	                mod.setStackInSlot(IPreggoMob.MAINHAND_INVENTARY_SLOT, stack);
+	                mod.setStackInSlot(IPreggoMob.MAINHAND_INVENTORY_SLOT, stack);
 	            }
 	        });
 	    }	

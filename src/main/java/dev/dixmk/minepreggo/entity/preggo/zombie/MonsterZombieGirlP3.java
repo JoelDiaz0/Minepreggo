@@ -22,6 +22,6 @@ public class MonsterZombieGirlP3 extends AbstractMonsterPregnantZombieGirl {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return getBasicAttributes(0.235);
+		return getBasicAttributes(0.225);
 	}
 }

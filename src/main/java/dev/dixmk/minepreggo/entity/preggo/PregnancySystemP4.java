@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
+import dev.dixmk.minepreggo.entity.preggo.PreggoMobSystem.Result;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.TamableAnimal;
@@ -176,20 +177,17 @@ public abstract class PregnancySystemP4<E extends TamableAnimal
 		}
 		
 		this.evaluatePregnancyTimer();
-		this.evaluateHungryTimer(level, x, y, z, MinepreggoModConfig.getTotalTicksOfHungryP4());
 		this.evaluateCravingTimer(MinepreggoModConfig.getTotalTicksOfCravingP4());
 		this.evaluateMilkingTimer(MinepreggoModConfig.getTotalTicksOfMilkingP4());
 		this.evaluateBellyRubsTimer(MinepreggoModConfig.getTotalTicksOfBellyRubsP4());
 		this.evaluateHornyTimer(MinepreggoModConfig.getTotalTicksOfHornyP4());
-		this.evaluateAngry(level, x, y, z, PregnancySystemConstants.HIGH_ANGER_PROBABILITY);
-		
+		this.evaluateAngry(level, x, y, z, PregnancySystemConstants.HIGH_ANGER_PROBABILITY);		
 		this.evaluatePregnancySymptoms();
 		this.evaluatePregnancyPains(
 				PregnancySystemConstants.LOW_MORNING_SICKNESS_PROBABILITY,
 				PregnancySystemConstants.MEDIUM_PREGNANCY_PAIN_PROBABILITY,
 				PregnancySystemConstants.TOTAL_TICKS_KICKING_P4,
 				PregnancySystemConstants.TOTAL_TICKS_CONTRACTION_P4);
-		this.evaluateAutoFeeding();
 	}
 	
 	protected abstract void finishBirth();

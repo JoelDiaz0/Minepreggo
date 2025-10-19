@@ -16,7 +16,7 @@ public class AnimatedTamableCreeperGirlP4Model extends AbstractTamablePregnantCr
 		super(root, createDefaultP4HierarchicalModel(root));
 	}
 
-	public static<E extends AbstractTamablePregnantCreeperGirl<?>> HierarchicalModel<E> createDefaultP4HierarchicalModel(ModelPart root) {
+	public static<E extends AbstractTamablePregnantCreeperGirl<?,?>> HierarchicalModel<E> createDefaultP4HierarchicalModel(ModelPart root) {
 		return new HierarchicalModel<E>() {		
 			@Override
 			public ModelPart root() {

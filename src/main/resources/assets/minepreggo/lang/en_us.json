@@ -21,6 +21,11 @@
 	"gui.minepreggo.player_main_gui.label_skin": "Skin",
 	"gui.minepreggo.player_main_gui.isFemaleCheckbox": "Female",
 	
+	
+	"gui.minepreggo.preggo_mob_inventory.tooltip_sex": "Wanna Fun?",
+	
+	
+	
 	"entity.minepreggo.monster_zombie_girl_p0": "Monster Zombie Girl (P0)",
 	"entity.minepreggo.monster_zombie_girl_p3": "Monster Zombie Girl (P3)",
 	"entity.minepreggo.monster_zombie_girl_p5": "Monster Zombie Girl (P5)",
@@ -260,28 +265,30 @@
 	"subtitles.kicking2": "kicking belly",
 	"subtitles.kicking1": "kicking belly",
 	
-	"chat.minepreggo.preggo_mob.armor.message_miscarriage_warning": "%s feels pain below her pregnant belly, something isn't right...",
-	"chat.minepreggo.preggo_mob.armor.message_post_partum": "%s just gave birth your babies, congratulation %s!",
-	"chat.minepreggo.preggo_mob.armor.message_miscarriage": "%s just lose the babies...",
-	"chat.minepreggo.preggo_mob.armor.message_chestplate_p0_does_not_fit": "%s's boobs don't fit in this armor!",
-	"chat.minepreggo.preggo_mob.armor.message_chestplate_p1_does_not_fit": "%s's slightly swollen belly doesn't fit in this armor!",
-	"chat.minepreggo.preggo_mob.armor.message_chestplate_p2_does_not_fit": "%s's swollen belly couldn't fit in this armor...",
-	"chat.minepreggo.preggo_mob.armor.message_chestplate_p3_does_not_fit": "%s's belly is too big to wear this armor...",
-	"chat.minepreggo.preggo_mob.armor.message_chestplate_p4_does_not_fit": "%s's belly is too huge to wear this armor...",
-	"chat.minepreggo.preggo_mob.armor.message_chestplate_p5_does_not_fit": "%s's belly is too huge to wear this armor...",
-	"chat.minepreggo.preggo_mob.armor.message_chestplate_p6_does_not_fit": "%s's belly is too heavy to wear this armor...",
-	"chat.minepreggo.preggo_mob.armor.message_chestplate_p7_does_not_fit": "%s's belly is out of bounds...",
-	"chat.minepreggo.preggo_mob.armor.message_leggings_p1_does_not_fit": "%s's hips are too big to wear this armor...",
-	"chat.minepreggo.preggo_mob.armor.message_lactating": "%s's lactating boobs don't fit in this armor",
+	"chat.minepreggo.preggo_mob.pregnancy.message.miscarriage_warning": "%s feels pain below her pregnant belly, something isn't right...",
+	"chat.minepreggo.preggo_mob.pregnancy.message.post_partum": "%s just gave birth your babies, congratulation %s!",
+	"chat.minepreggo.preggo_mob.pregnancy.message.post_miscarriage": "%s just lost the babies...",
 	
-	"chat.minepreggo.player.armor.message_chestplate_p0_does_not_fit": "Your boobs don't fit in this armor!",
-	"chat.minepreggo.player.armor.message_chestplate_p1_does_not_fit": "Your slightly swollen belly doesn't fit in this armor!",
-	"chat.minepreggo.player.armor.message_chestplate_p2_does_not_fit": "Your swollen belly can't fit in this armor...",
-	"chat.minepreggo.player.armor.message_chestplate_p3_does_not_fit": "Your belly is too big to wear this armor!",
-	"chat.minepreggo.player.armor.message_chestplate_p4_does_not_fit": "A belly that huge couldn't fit this armor!",
-	"chat.minepreggo.player.armor.message_chestplate_p5_does_not_fit": "Do you wanna kill your babies?",
-	"chat.minepreggo.player.armor.message_chestplate_p6_does_not_fit": "A belly that heavy couldn't fit this armor!",
-	"chat.minepreggo.player.armor.message_chestplate_p7_does_not_fit": "Do you really think this armor could fit this belly?",
-	"chat.minepreggo.player.armor.message_leggings_p1_does_not_fit": "Your butt and hips are too big to fit this armor",
-	"chat.minepreggo.player.armor.message_lactating": "Your lactating boobs don't fit in this armor"
+	"chat.minepreggo.preggo_mob.armor.message.chestplate_p0_does_not_fit": "%s's boobs don't fit in this armor!",
+	"chat.minepreggo.preggo_mob.armor.message.chestplate_p1_does_not_fit": "%s's slightly swollen belly doesn't fit in this armor!",
+	"chat.minepreggo.preggo_mob.armor.message.chestplate_p2_does_not_fit": "%s's swollen belly couldn't fit in this armor...",
+	"chat.minepreggo.preggo_mob.armor.message.chestplate_p3_does_not_fit": "%s's belly is too big to wear this armor...",
+	"chat.minepreggo.preggo_mob.armor.message.chestplate_p4_does_not_fit": "%s's belly is too huge to wear this armor...",
+	"chat.minepreggo.preggo_mob.armor.message.chestplate_p5_does_not_fit": "%s's belly is too huge to wear this armor...",
+	"chat.minepreggo.preggo_mob.armor.message.chestplate_p6_does_not_fit": "%s's belly is too heavy to wear this armor...",
+	"chat.minepreggo.preggo_mob.armor.message.chestplate_p7_does_not_fit": "%s's belly is out of bounds...",
+	"chat.minepreggo.preggo_mob.armor.message.leggings_p1_does_not_fit": "%s's hips are too big to wear this armor...",
+	"chat.minepreggo.preggo_mob.armor.message.lactating": "%s's lactating boobs don't fit in this armor",
+	
+	"chat.minepreggo.player.armor.message.chestplate_p0_does_not_fit": "Your boobs don't fit in this armor!",
+	"chat.minepreggo.player.armor.message.chestplate_p1_does_not_fit": "Your slightly swollen belly doesn't fit in this armor!",
+	"chat.minepreggo.player.armor.message.chestplate_p2_does_not_fit": "Your swollen belly can't fit in this armor...",
+	"chat.minepreggo.player.armor.message.chestplate_p3_does_not_fit": "Your belly is too big to wear this armor!",
+	"chat.minepreggo.player.armor.message.chestplate_p4_does_not_fit": "A belly that huge couldn't fit this armor!",
+	"chat.minepreggo.player.armor.message.chestplate_p5_does_not_fit": "Do you wanna kill your babies?",
+	"chat.minepreggo.player.armor.message.chestplate_p6_does_not_fit": "A belly that heavy couldn't fit this armor!",
+	"chat.minepreggo.player.armor.message.chestplate_p7_does_not_fit": "Do you really think this armor could fit this belly?",
+	"chat.minepreggo.player.armor.message.leggings_p1_does_not_fit": "Your butt and hips are too big to fit this armor",
+	"chat.minepreggo.player.armor.message.lactating": "Your lactating boobs don't fit in this armor"
+
 }

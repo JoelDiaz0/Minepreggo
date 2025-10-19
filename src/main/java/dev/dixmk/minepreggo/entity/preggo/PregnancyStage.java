@@ -3,7 +3,7 @@ package dev.dixmk.minepreggo.entity.preggo;
 import java.util.Random;
 
 public enum PregnancyStage {
-    P0,
+	P0,
     P1,
     P2,
     P3,
@@ -14,13 +14,15 @@ public enum PregnancyStage {
 
 	protected static final Random RANDOM =  new Random();
     
-	public static PregnancyStage getRandomFinalCurrentStage(PregnancyStage currentStage) {	
-		
+	public static PregnancyStage getNonPregnancyStage() {		
+		return PregnancyStage.P0;
+	}
+	
+	public static PregnancyStage getRandomFinalCurrentStage(PregnancyStage currentStage) {		
 		int c = currentStage.ordinal();
 		if (c < 4) {
 			c = 4;
-		}
-		
+		}	
 		return PregnancyStage.values()[RANDOM.nextInt(c, 8)];	
     }
 }

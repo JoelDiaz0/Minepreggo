@@ -83,11 +83,11 @@ public class ZombieGirlGUIMenuFactory {
     }
     
 	
-	public static<T extends AbstractTamableZombieGirl<?>> MenuProvider createInventaryGUIMenuProvider(Class<T> zombieGirlClass, BlockPos blockPos, int entityId) {
+	public static<T extends AbstractTamableZombieGirl<?>> MenuProvider createInventoryGUIMenuProvider(Class<T> zombieGirlClass, BlockPos blockPos, int entityId) {
         return new MenuProvider() {
             @Override
             public Component getDisplayName() {
-                return Component.literal("ZombieGirlMainGUI");
+                return Component.literal("ZombieGirlInventoryGUI");
             }
 
             @Override

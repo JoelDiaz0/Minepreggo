@@ -4,7 +4,7 @@ import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractTamablePregnantZombieGi
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 
-public abstract class AbstractTamablePregnantZombieGirlModel<E extends AbstractTamablePregnantZombieGirl<?>> extends AbstractTamableZombieGirlModel<E> {
+public abstract class AbstractTamablePregnantZombieGirlModel<E extends AbstractTamablePregnantZombieGirl<?,?>> extends AbstractTamableZombieGirlModel<E> {
 
 	protected AbstractTamablePregnantZombieGirlModel(ModelPart root, HierarchicalModel<E> animator) {
 		super(root, animator);

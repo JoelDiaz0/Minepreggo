@@ -38,7 +38,7 @@ public abstract class AbstractCreeperGirlMainGUIScreen<E extends AbstractTamable
 	protected Button buttonRide;
 	protected Button buttonDismount;
 	protected ImageButton inventoryButton;
-
+	protected ImageButton sexButton;
 	
 	private final List<ToggleableCheckbox> checkboxes = new ArrayList<>();
 	
@@ -86,13 +86,13 @@ public abstract class AbstractCreeperGirlMainGUIScreen<E extends AbstractTamable
 		final var combatMode = creeperGirl.getcombatMode();		
 		final var creeperGirlId = creeperGirl.getId();
 	
-		addCheckbox(this.leftPos + 200, this.topPos, 20, 20, Component.translatable("gui.minepreggo.creeper_girl_main.checkbox_explode"), combatMode == CombatMode.EXPLODE,() -> 
+		addCheckbox(this.leftPos + 170, this.topPos, 20, 20, Component.translatable("gui.minepreggo.creeper_girl_main.checkbox_explode"), combatMode == CombatMode.EXPLODE,() -> 
 			MinepreggoModPacketHandler.INSTANCE.sendToServer(new CreeperGirlCombatModePacket(x, y, z, CombatMode.EXPLODE, creeperGirlId))
 		);				
-		addCheckbox(this.leftPos + 200, this.topPos + 36, 20, 20, Component.translatable("gui.minepreggo.creeper_girl_main.checkbox_dont_explode"), combatMode == CombatMode.DONT_EXPLODE, () -> 
+		addCheckbox(this.leftPos + 170, this.topPos + 36, 20, 20, Component.translatable("gui.minepreggo.creeper_girl_main.checkbox_dont_explode"), combatMode == CombatMode.DONT_EXPLODE, () -> 
 			MinepreggoModPacketHandler.INSTANCE.sendToServer(new CreeperGirlCombatModePacket(x, y, z, CombatMode.DONT_EXPLODE, creeperGirlId))
 		);				
-		addCheckbox(this.leftPos + 200, this.topPos + 72, 20, 20, Component.translatable("gui.minepreggo.creeper_girl_main.checkbox_fight_and_explode"), combatMode == CombatMode.FIGHT_AND_EXPLODE, () -> 
+		addCheckbox(this.leftPos + 170, this.topPos + 72, 20, 20, Component.translatable("gui.minepreggo.creeper_girl_main.checkbox_fight_and_explode"), combatMode == CombatMode.FIGHT_AND_EXPLODE, () -> 
 			MinepreggoModPacketHandler.INSTANCE.sendToServer(new CreeperGirlCombatModePacket(x, y, z, CombatMode.FIGHT_AND_EXPLODE, creeperGirlId))
 		);				
 
@@ -154,9 +154,12 @@ public abstract class AbstractCreeperGirlMainGUIScreen<E extends AbstractTamable
 		inventoryButton = new ImageButton(this.leftPos - 24, this.topPos + 6, 16, 16, 1, 57, 16, PreggoGUIHelper.ICONS_TEXTURE, 256, 256, 
 				e -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new CreeperGirlInventaryMenuPacket(x, y, z, creeperGirlId)));	
 		inventoryButton.setTooltip(Tooltip.create(Component.translatable("gui.minepreggo.preggo_mob_inventory.tooltip_inventory")));
-		
-		
 		this.addRenderableWidget(inventoryButton);
+			
+		sexButton = new ImageButton(this.leftPos - 24, this.topPos + 32, 8, 8, 1, 89, 8, PreggoGUIHelper.ICONS_TEXTURE, 256, 256, 
+				e -> MinepreggoModPacketHandler.INSTANCE.sendToServer(new CreeperGirlInventaryMenuPacket(x, y, z, creeperGirlId)));	
+		sexButton.setTooltip(Tooltip.create(Component.translatable("gui.minepreggo.preggo_mob_inventory.tooltip_sex")));
+		this.addRenderableWidget(sexButton);
 	}	
 
 	private void addCheckbox(int p_93826_, int p_93827_, int p_93828_, int p_93829_, Component p_93830_, boolean p_93831_, Runnable action) {

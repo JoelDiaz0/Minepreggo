@@ -6,7 +6,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.Nonnull;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
@@ -17,8 +16,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
@@ -30,7 +27,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
+public class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 	
 	public static final int MIN_HUNGRY_TO_HEAL = 16;
 	public static final int MIN_HUNGRY_TO_TAME_AGAIN = 12;
@@ -39,13 +36,15 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 	protected final E preggoMob;
 	protected int autoFeedingCooldownTimer = 0;
 	protected int healingCooldownTimer = 0;
+	protected final int totalTicksOfHungry;
 	
-	protected PreggoMobSystem(@Nonnull E preggopreggoMob) {
-		this.preggoMob = preggopreggoMob;	
-		this.randomSource = preggopreggoMob.getRandom();
+	public PreggoMobSystem(@Nonnull E preggoMob, int totalTicksOfHungry) {
+		this.preggoMob = preggoMob;	
+		this.randomSource = preggoMob.getRandom();
+		this.totalTicksOfHungry = totalTicksOfHungry;
 	}
 	
-	protected void evaluateHungryTimer(Level level, double x, double y, double z, final int totalTicksOfHungry) {
+	protected void evaluateHungryTimer(Level level, double x, double y, double z) {
 
 	    final var currentHungry = preggoMob.getHungry();
 	    final var currentHungryTimer = preggoMob.getHungryTimer();
@@ -70,7 +69,7 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 	                    
 	            if (currentHungry >= MIN_HUNGRY_TO_HEAL
 	            		&& preggoMob.getHealth() < preggoMob.getMaxHealth()) {     	
-	            	if (healingCooldownTimer >= IPreggoMob.HEALING_COOLDOWN_DURATION) {
+	            	if (healingCooldownTimer >= 60) {
 		            	preggoMob.heal(1F);
 		            	preggoMob.setHungry(currentHungry - 1);
 		            	healingCooldownTimer = 0;
@@ -103,7 +102,7 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 		return (preggoMob.getHungry() > 5 || preggoMob.getHealth() > 5) && !preggoMob.isAggressive();
 	}
 	
-	protected void evaluateAutoFeeding() {
+	protected void evaluateAutoFeeding(Level level) {
 
 		var currentHungry = preggoMob.getHungry();
 		
@@ -119,7 +118,7 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 		ItemStack food;		
 		AtomicReference<ItemStack> retval = new AtomicReference<>(ItemStack.EMPTY);
 		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> 
-			retval.set(capability.getStackInSlot(IPreggoMob.FOOD_INVENTARY_SLOT)));		
+			retval.set(capability.getStackInSlot(IPreggoMob.FOOD_INVENTORY_SLOT)));		
 		
 		food = retval.get();
 		
@@ -134,6 +133,8 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 		}
 		
 		preggoMob.setHungry(Math.min(currentHungry + foodProperties.getNutrition(), 25));	
+        level.playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.generic.eat")), SoundSource.NEUTRAL, 0.75f, 1);	          	
+
 		final var newFoodCount = food.getCount() - 1;
 				
 		MinepreggoMod.LOGGER.debug("AUTO FEEDING: id={}, class={}, food={}, newFoodCount={}",
@@ -141,34 +142,12 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 		
 		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> {			
 			if (capability instanceof IItemHandlerModifiable modHandlerEntSetSlot) {			
-				modHandlerEntSetSlot.setStackInSlot(IPreggoMob.FOOD_INVENTARY_SLOT, newFoodCount == 0 ? ItemStack.EMPTY : food);
+				modHandlerEntSetSlot.setStackInSlot(IPreggoMob.FOOD_INVENTORY_SLOT, newFoodCount == 0 ? ItemStack.EMPTY : food);
 			}			
 		});
 		
 		autoFeedingCooldownTimer = 0;
 	}
-	
-	
-	private final Result evaluatePregnancyBeginnigTimer() {			    	
-		if (preggoMob.isPregnant()) {
-					
-	        if (preggoMob.getPregnancyTimer() >= MinepreggoModConfig.getTicksToStartPregnancy()) {
-	        	startPregnancy();
-	        	return Result.SUCCESS;
-	        } else {
-	        	preggoMob.setPregnancyTimer(preggoMob.getPregnancyTimer() + 1);
-                if (randomSource.nextFloat() < 0.0001F
-                		&& !preggoMob.hasEffect(MobEffects.CONFUSION)) {
-                	preggoMob.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 100, 0, false, true));                 
-                }        
-                return Result.PROCESS;
-	        }  
-	    }
-        return Result.NOTHING;
-	}
-	
-	
-	protected abstract void startPregnancy();
 	
 	public void evaluateOnTick() {
 		final var level = preggoMob.level();
@@ -180,13 +159,9 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 		final var x = preggoMob.getX();
 		final var y = preggoMob.getY();
 		final var z = preggoMob.getZ();
-		
-		if (evaluatePregnancyBeginnigTimer() == Result.SUCCESS) {
-			return;
-		}
-		
-		evaluateHungryTimer(level, x, y, z, MinepreggoModConfig.getTotalTicksOfHungryP0());
-		evaluateAutoFeeding();
+			
+		evaluateHungryTimer(level, x, y, z);
+		evaluateAutoFeeding(level);
 	}
 	
 	public InteractionResult evaluateRightClick(Player source) {			
@@ -199,29 +174,16 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 		Result result;
 		
 		if ((result = evaluateHungry(level, source)) != Result.NOTHING && level instanceof ServerLevel serverLevel) {
-			spawnParticles(serverLevel, result);
+			spawnParticles(preggoMob, serverLevel, result);
 		}
 			
 		return onRightClickResult(result);	
 	}
 	
-	
 	public boolean canOwnerAccessGUI(Player source) {			
 		return preggoMob.isOwnedBy(source)
 				&& !preggoMob.isSavage()
 				&& !preggoMob.isFood(source.getMainHandItem());
-	}
-	
-	protected final InteractionResult onRightClickResult(Result result) {
-		if (result == Result.SUCCESS) {
-			return InteractionResult.SUCCESS;
-		}
-		else if (result == Result.NOTHING) {
-			return InteractionResult.PASS;
-		}
-		else {
-			return InteractionResult.CONSUME;
-		}
 	}
 	
 	protected Result evaluateHungry(Level level, Player source) {		
@@ -261,7 +223,19 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 	    return Result.NOTHING;		
 	}
 	
-	protected void spawnParticles(ServerLevel serverLevel, Result result) {
+	public static final InteractionResult onRightClickResult(Result result) {
+		if (result == Result.SUCCESS) {
+			return InteractionResult.SUCCESS;
+		}
+		else if (result == Result.NOTHING) {
+			return InteractionResult.PASS;
+		}
+		else {
+			return InteractionResult.CONSUME;
+		}
+	}
+	
+	public static<E extends TamableAnimal & IPreggoMob> void spawnParticles(E preggoMob, ServerLevel serverLevel, Result result) {
 
 		ParticleOptions particleoptions;
 			
@@ -277,10 +251,12 @@ public abstract class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 		for (ServerPlayer player : serverLevel.getServer().getPlayerList().getPlayers()) {
 		    if (player.distanceToSqr(preggoMob) <= 1024.0) { // 32 blocks
 				serverLevel.sendParticles(player, particleoptions, true, preggoMob.getRandomX(1.0), preggoMob.getRandomY() + 0.5, preggoMob.getRandomZ(1.0),
-						7, randomSource.nextGaussian() * 0.3, randomSource.nextGaussian() * 0.5, randomSource.nextGaussian() * 0.3, 0.02);
+						7, serverLevel.random.nextGaussian() * 0.3, serverLevel.random.nextGaussian() * 0.5, serverLevel.random.nextGaussian() * 0.3, 0.02);
 		    }
 		}
 	}
+	
+	
 	
 	protected enum Result {
 		ANGRY,

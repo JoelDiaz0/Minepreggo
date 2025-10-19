@@ -32,8 +32,8 @@ public class PreggoMobDebugHelper {
 	private PreggoMobDebugHelper() {}
 	
 	public static<E extends TamableAnimal & IPreggoMob> void showBasicInfo(E preggoMob) {
-		MinepreggoMod.LOGGER.debug("BASIC INFO: id={} class={}, hungry={}, hungryTimer={}, isPregnant={}, isAngry={}",
-				preggoMob.getId(), preggoMob.getClass().getSimpleName(), preggoMob.getHungry(), preggoMob.getHungryTimer(), preggoMob.isPregnant(), 
+		MinepreggoMod.LOGGER.debug("BASIC INFO: id={} class={}, hungry={}, hungryTimer={}, isAngry={}",
+				preggoMob.getId(), preggoMob.getClass().getSimpleName(), preggoMob.getHungry(), preggoMob.getHungryTimer(), 
 				preggoMob.isAngry());		
 	}
 	
@@ -70,7 +70,7 @@ public class PreggoMobDebugHelper {
 			return;
 		}
 		
-		if (entity instanceof AbstractTamablePregnantCreeperGirl<?> c) {
+		if (entity instanceof AbstractTamablePregnantCreeperGirl<?,?> c) {
 			PreggoMobDebugHelper.showBasicInfo(c);	
 			PreggoMobDebugHelper.showPregnancyInfo(c);			
 			if (c instanceof TamableCreeperGirlP7 c7) {
@@ -110,7 +110,7 @@ public class PreggoMobDebugHelper {
 				PreggoMobDebugHelper.showPregnancyP1Info(c1);	
 			}
 		}
-		else if (entity instanceof AbstractTamablePregnantZombieGirl<?> z) {
+		else if (entity instanceof AbstractTamablePregnantZombieGirl<?,?> z) {
 			PreggoMobDebugHelper.showBasicInfo(z);	
 			PreggoMobDebugHelper.showPregnancyInfo(z);	
 			

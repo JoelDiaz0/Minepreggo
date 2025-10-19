@@ -7,16 +7,17 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.BlockPos;
-
+import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.entity.preggo.Craving;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancyP1;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySystemP1;
+import dev.dixmk.minepreggo.entity.preggo.PregnantPreggoMobSystem;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
 
 
-public class TamableCreeperGirlP1 extends AbstractTamablePregnantCreeperGirl<PregnancySystemP1<TamableCreeperGirlP1>> implements IPregnancyP1 {
+public class TamableCreeperGirlP1 extends AbstractTamablePregnantCreeperGirl<PregnantPreggoMobSystem<TamableCreeperGirlP1>, PregnancySystemP1<TamableCreeperGirlP1>> implements IPregnancyP1 {
 	
 	public TamableCreeperGirlP1(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P1.get(), world);
@@ -30,13 +31,20 @@ public class TamableCreeperGirlP1 extends AbstractTamablePregnantCreeperGirl<Pre
 	}
 	
 	@Override
-	protected PregnancySystemP1<TamableCreeperGirlP1> createPreggoMobSystem() {
+	protected PregnantPreggoMobSystem<TamableCreeperGirlP1> createPreggoMobSystem() {
+		return new PregnantPreggoMobSystem<>(this, MinepreggoModConfig.getTotalTicksOfHungryP1());
+	}
+	
+	@Override
+	protected PregnancySystemP1<TamableCreeperGirlP1> createPregnancySystem() {
 		return new PregnancySystemP1<TamableCreeperGirlP1>(this) {
 			@Override
 			protected void changePregnancyStage() {
 				if (preggoMob.level() instanceof ServerLevel serverLevel) {
 					var creeperGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P2.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);
 					PreggoMobHelper.transferPregnancyP1Data(preggoMob, creeperGirl);
+					PreggoMobHelper.transferPreggoMobInventary(preggoMob, creeperGirl);
+					PreggoMobHelper.transferAttackTarget(preggoMob, creeperGirl);
 					preggoMob.discard();
 				}
 			}

@@ -3,7 +3,7 @@ package dev.dixmk.minepreggo.entity.preggo;
 import javax.annotation.Nonnull;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
-
+import dev.dixmk.minepreggo.entity.preggo.PreggoMobSystem.Result;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.TamableAnimal;
 
@@ -44,7 +44,6 @@ public abstract class PregnancySystemP6<E extends TamableAnimal
 		}
 		
 		this.evaluatePregnancyTimer();
-		this.evaluateHungryTimer(level, x, y, z, MinepreggoModConfig.getTotalTicksOfHungryP6());
 		this.evaluateCravingTimer(MinepreggoModConfig.getTotalTicksOfCravingP6());
 		this.evaluateMilkingTimer(MinepreggoModConfig.getTotalTicksOfMilkingP6());
 		this.evaluateBellyRubsTimer(MinepreggoModConfig.getTotalTicksOfBellyRubsP6());
@@ -57,6 +56,5 @@ public abstract class PregnancySystemP6<E extends TamableAnimal
 				PregnancySystemConstants.HIGH_PREGNANCY_PAIN_PROBABILITY,
 				PregnancySystemConstants.TOTAL_TICKS_KICKING_P6,
 				PregnancySystemConstants.TOTAL_TICKS_CONTRACTION_P6);
-		this.evaluateAutoFeeding();
 	}
 }

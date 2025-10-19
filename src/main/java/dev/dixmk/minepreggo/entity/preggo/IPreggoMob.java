@@ -5,25 +5,14 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
 public interface IPreggoMob {
-		
-	static final int HEALING_COOLDOWN_DURATION = 60;
 	
-	static final int HEAD_INVENTARY_SLOT = EquipmentSlot.HEAD.getFilterFlag();
-	static final int CHEST_INVENTARY_SLOT = EquipmentSlot.CHEST.getFilterFlag();
-	static final int LEGS_INVENTARY_SLOT = EquipmentSlot.LEGS.getFilterFlag();
-	static final int FEET_INVENTARY_SLOT = EquipmentSlot.FEET.getFilterFlag();
-	static final int MAINHAND_INVENTARY_SLOT = EquipmentSlot.MAINHAND.getFilterFlag();
-	static final int OFFHAND_INVENTARY_SLOT = EquipmentSlot.OFFHAND.getFilterFlag();
-	static final int FOOD_INVENTARY_SLOT = 6;
-	
-	
-	PregnancyStage getMaxPregnancyStage();
-	void setMaxPregnancyStage(PregnancyStage stage);
-
-	PregnancyStage getCurrentPregnancyStage();
-	
-	PreggoMobState getState();
-	void setState(PreggoMobState state);
+	static final int HEAD_INVENTORY_SLOT = EquipmentSlot.HEAD.getFilterFlag();
+	static final int CHEST_INVENTORY_SLOT = EquipmentSlot.CHEST.getFilterFlag();
+	static final int LEGS_INVENTORY_SLOT = EquipmentSlot.LEGS.getFilterFlag();
+	static final int FEET_INVENTORY_SLOT = EquipmentSlot.FEET.getFilterFlag();
+	static final int MAINHAND_INVENTORY_SLOT = EquipmentSlot.MAINHAND.getFilterFlag();
+	static final int OFFHAND_INVENTORY_SLOT = EquipmentSlot.OFFHAND.getFilterFlag();
+	static final int FOOD_INVENTORY_SLOT = 6;
 	
     int getHungry();
     void setHungry(int hungry);
@@ -39,22 +28,18 @@ public interface IPreggoMob {
     
     int getHungryTimer();
     void setHungryTimer(int ticks);
- 
-    boolean isPregnant();
-
+    
     boolean isPanic();
     void setPanic(boolean panic);
-    
-    int getPregnancyTimer();
-    void setPregnancyTimer(int ticks);
-    
-    
+      
     boolean hasCustomHeadAnimation();
+    
+	PreggoMobState getState();
+	void setState(PreggoMobState state);
     
 	String getPreggoName();
 	
 	ItemStackHandler getInventary();
 	
 	CombinedInvWrapper getCombined();
-	
 }

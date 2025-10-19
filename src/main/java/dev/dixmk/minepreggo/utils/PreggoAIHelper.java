@@ -109,7 +109,7 @@ public class PreggoAIHelper {
 		});	
 	}
 		
-	public static<T extends AbstractTamablePregnantZombieGirl<?>> void setTamablePregnantZombieGirlGoals(T zombieGirl) {
+	public static<T extends AbstractTamablePregnantZombieGirl<?,?>> void setTamablePregnantZombieGirlGoals(T zombieGirl) {
 		setBasicPregnantPreggoMobGoals(zombieGirl);	
 		
 		zombieGirl.goalSelector.addGoal(1, new RestrictSunGoal(zombieGirl) {
@@ -228,7 +228,7 @@ public class PreggoAIHelper {
 	
 	
 	
-	public static<T extends AbstractTamablePregnantCreeperGirl<?>> void setTamablePregnantCreeperGirlGoals(T creeperGirl) {
+	public static<T extends AbstractTamablePregnantCreeperGirl<?,?>> void setTamablePregnantCreeperGirlGoals(T creeperGirl) {
 		setBasicPregnantPreggoMobGoals(creeperGirl);
 		
 		creeperGirl.goalSelector.addGoal(2, new AvoidEntityGoal<>(creeperGirl, Ocelot.class, 6F, 1, 1.2) {

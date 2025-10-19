@@ -12,6 +12,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.BlockPos;
@@ -22,23 +23,29 @@ import java.util.UUID;
 
 import javax.annotation.Nonnull;
 
+import dev.dixmk.minepreggo.MinepreggoModConfig;
+import dev.dixmk.minepreggo.entity.preggo.FertilitySystem;
+import dev.dixmk.minepreggo.entity.preggo.IBreedable;
 import dev.dixmk.minepreggo.entity.preggo.PostPregnancy;
 import dev.dixmk.minepreggo.entity.preggo.PreggoMobSystem;
-import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
 
-public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl<PreggoMobSystem<TamableCreeperGirlP0>> {
+public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl<PreggoMobSystem<TamableCreeperGirlP0>> implements IBreedable {
 	
 	private static final UUID SPEED_MODIFIER_TIRENESS_UUID = UUID.fromString("fa6a4626-c325-4835-8259-69577a99c9c8");
 	private static final AttributeModifier SPEED_MODIFIER_TIRENESS = new AttributeModifier(SPEED_MODIFIER_TIRENESS_UUID, "Tireness speed boost", -0.1D, AttributeModifier.Operation.MULTIPLY_BASE);
 	private static final UUID MAX_HEALTH_MODIFIER_TIRENESS_UUID = UUID.fromString("94d78c8b-0983-4ae4-af65-8e477ee52f2e");
 	private static final AttributeModifier MAX_HEALTH_MODIFIER_TIRENESS = new AttributeModifier(MAX_HEALTH_MODIFIER_TIRENESS_UUID, "Tireness max health", -0.3D, AttributeModifier.Operation.MULTIPLY_BASE);
+	
 	private static final EntityDataAccessor<PostPregnancy> DATA_POST_PREGNANCY = SynchedEntityData.defineId(TamableCreeperGirlP0.class, MinepreggoModEntityDataSerializers.POST_PREGNANCY);
+	protected static final EntityDataAccessor<Boolean> DATA_PREGNANT = SynchedEntityData.defineId(TamableCreeperGirlP0.class, EntityDataSerializers.BOOLEAN);
 
 	private int postPregnancyTimer = 0;
-	private static final int POST_PREGNANCY_COOLDOWN = 7000;
+	private int pregnancyInitializerTimer = 0;
+	
+	private final FertilitySystem<TamableCreeperGirlP0> fertilitySystem;
 	
 	public TamableCreeperGirlP0(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P0.get(), world);
@@ -49,12 +56,7 @@ public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl<PreggoMobSy
 		xpReward = 10;
 		setNoAi(false);
 		setMaxUpStep(0.6f);
-	}
-	
-	@Override
-	@Nonnull
-	protected PreggoMobSystem<TamableCreeperGirlP0> createPreggoMobSystem() {
-		return new PreggoMobSystem<>(this) {
+		fertilitySystem = new FertilitySystem<>(this) {
 			@Override
 			protected void startPregnancy() {		
 				if (preggoMob.level() instanceof ServerLevel serverLevel) {
@@ -69,21 +71,30 @@ public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl<PreggoMobSy
 	}
 	
 	@Override
+	@Nonnull
+	protected PreggoMobSystem<TamableCreeperGirlP0> createPreggoMobSystem() {
+		return new PreggoMobSystem<>(this, MinepreggoModConfig.getTotalTicksOfHungryP0());
+	}
+	
+	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();
 		this.entityData.define(DATA_POST_PREGNANCY, PostPregnancy.NONE);
+		this.entityData.define(DATA_PREGNANT, false);
 	}
 	
 	@Override
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
 		compound.putInt("DataPostPregnancy", this.entityData.get(DATA_POST_PREGNANCY).ordinal());
+		compound.putBoolean("DataPregnant", this.entityData.get(DATA_PREGNANT));
 	}
 	
 	@Override
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		this.entityData.set(DATA_POST_PREGNANCY, PostPregnancy.values()[compound.getInt("DataPostPregnancy")]);
+		this.entityData.set(DATA_PREGNANT, compound.getBoolean("DataPregnant"));
 	}
 	
 	@Override
@@ -99,8 +110,10 @@ public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl<PreggoMobSy
     	  return;
       }
       
+      fertilitySystem.onTick();
+      
       if (this.entityData.get(DATA_POST_PREGNANCY) != PostPregnancy.NONE) {	  
-    	  if (postPregnancyTimer > POST_PREGNANCY_COOLDOWN) {
+    	  if (postPregnancyTimer > 7000) {
     		  postPregnancyTimer = 0;
     		  this.entityData.set(DATA_POST_PREGNANCY, PostPregnancy.NONE);
     		  removePostPregnancyAttibutes(this);
@@ -113,6 +126,31 @@ public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl<PreggoMobSy
 
 	public static AttributeSupplier.Builder createAttributes() {
 		return getBasicAttributes(0.24);
+	}
+	
+	@Override
+	public int getPregnancyInitializerTimer() {
+		return this.pregnancyInitializerTimer;
+	}
+
+	@Override
+	public void setPregnancyInitializerTimer(int ticks) {
+		this.pregnancyInitializerTimer = ticks;		
+	}
+	
+	@Override
+	public boolean isPregnant() {
+	    return this.entityData.get(DATA_PREGNANT);
+	}
+	
+	@Override
+	public void impregnate() {
+		this.entityData.set(DATA_PREGNANT, true);		
+	}
+	
+	@Override
+	public boolean canGetPregnant() {
+		return this.entityData.get(DATA_POST_PREGNANCY) == PostPregnancy.NONE;
 	}
 	
 	public static TamableCreeperGirlP0 spawnPostMiscarriage(ServerLevel serverLevel, double x, double y, double z) {
@@ -129,7 +167,7 @@ public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl<PreggoMobSy
 		return creeperGirl;
 	}
 	
-	public static<E extends AbstractTamablePregnantCreeperGirl<?>> void applyDefaultPostPartum(E source) {
+	public static<E extends AbstractTamablePregnantCreeperGirl<?,?>> void applyDefaultPostPartum(E source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
 			var creeperGirl = TamableCreeperGirlP0.spawnPostPartum(serverLevel, source.getX(), source.getY(), source.getZ());
 			PreggoMobHelper.transferPreggoMobBasicData(source, creeperGirl);
@@ -139,7 +177,7 @@ public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl<PreggoMobSy
 		}
 	}
 	
-	public static<E extends AbstractTamablePregnantCreeperGirl<?>> void applyDefaultPostMiscarriage(E source) {
+	public static<E extends AbstractTamablePregnantCreeperGirl<?,?>> void applyDefaultPostMiscarriage(E source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
 			var creeperGirl = TamableCreeperGirlP0.spawnPostMiscarriage(serverLevel, source.getX(), source.getY(), source.getZ());
 			PreggoMobHelper.transferPreggoMobBasicData(source, creeperGirl);
@@ -162,11 +200,4 @@ public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl<PreggoMobSy
 		speed.removeModifier(TamableCreeperGirlP0.SPEED_MODIFIER_TIRENESS);	
 		maxHealth.removeModifier(TamableCreeperGirlP0.MAX_HEALTH_MODIFIER_TIRENESS);	
 	}
-	
-	
-	@Override
-	public PregnancyStage getCurrentPregnancyStage() {
-		return PregnancyStage.P0;
-	}
-
 }

@@ -62,7 +62,7 @@ public class PreggoArmorHelper {
 	}
 	
 	public static boolean canPreggoMobUseLegging(ItemStack armor, PregnancyStage stage) {	
-		if (stage == PregnancyStage.P0 && isLegging(armor)) {
+		if (stage == PregnancyStage.P0) {
 			return true;
 		}
 		else {

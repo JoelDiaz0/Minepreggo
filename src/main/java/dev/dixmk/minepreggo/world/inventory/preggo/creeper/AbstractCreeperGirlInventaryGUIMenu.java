@@ -5,13 +5,14 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
+import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractTamableCreeperGirl;
+import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import dev.dixmk.minepreggo.utils.PreggoArmorHelper;
 import dev.dixmk.minepreggo.utils.PreggoGUIHelper;
 import dev.dixmk.minepreggo.utils.PreggoMessageHelper;
 import dev.dixmk.minepreggo.utils.PreggoTags;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -50,7 +51,7 @@ public abstract class AbstractCreeperGirlInventaryGUIMenu<T extends AbstractTama
 		if (extraData != null) {
 			access = ContainerLevelAccess.create(world, extraData.readBlockPos());
 					
-			if (world.getEntity(extraData.readVarInt()) instanceof AbstractTamableCreeperGirl e)		
+			if (world.getEntity(extraData.readVarInt()) instanceof AbstractTamableCreeperGirl<?> e)		
 				creeperGirl = create(e);
 						
 			if (creeperGirl != null)
@@ -61,51 +62,55 @@ public abstract class AbstractCreeperGirlInventaryGUIMenu<T extends AbstractTama
 		}
 			
 
-		this.customSlots.put(IPreggoMob.HEAD_INVENTARY_SLOT, this.addSlot(new SlotItemHandler(internal, 4, 8, 8) {
+		this.customSlots.put(IPreggoMob.HEAD_INVENTORY_SLOT, this.addSlot(new SlotItemHandler(internal, 4, 8, 8) {
 			@Override
 			public boolean mayPlace(ItemStack itemstack) {
 				return PreggoArmorHelper.isHelmet(itemstack);
 			}
 		}));
-		this.customSlots.put(IPreggoMob.CHEST_INVENTARY_SLOT, this.addSlot(new SlotItemHandler(internal, 3, 8, 26) {
+		this.customSlots.put(IPreggoMob.CHEST_INVENTORY_SLOT, this.addSlot(new SlotItemHandler(internal, 3, 8, 26) {
 			@Override
-			public boolean mayPlace(ItemStack itemstack) {			
-				final var stage = creeperGirl.getCurrentPregnancyStage();
-				
-				if (!PreggoArmorHelper.canPreggoMobUseChestplate(itemstack, stage)) {
-	                final var message = PreggoMessageHelper.ARMOR_MESSAGES.get(stage.ordinal());                                
-	                if (!entity.level().isClientSide && message != null && message[1] != null) 
-	                	entity.displayClientMessage(Component.literal(String.format(message[1], creeperGirl.getPreggoName())), true);
-	                return false;
+			public boolean mayPlace(ItemStack itemstack) {						
+				if (!PreggoArmorHelper.isChest(itemstack)) {
+					return false;
 				}
-			
+				var stage = PregnancyStage.getNonPregnancyStage();
+				if (creeperGirl instanceof AbstractTamablePregnantCreeperGirl<?,?> pregnantCreeperGirl) {
+					stage = pregnantCreeperGirl.getCurrentPregnancyStage();		
+				}
+				if (!PreggoArmorHelper.canPreggoMobUseChestplate(itemstack, stage) && !entity.level().isClientSide()) {                                               
+	                entity.displayClientMessage(PreggoMessageHelper.getPreggoMobArmorChestMessage(stage, creeperGirl.getPreggoName()), true);        
+	                return false;
+				}				
 				return true;			
 			}
 		}));
-		this.customSlots.put(IPreggoMob.LEGS_INVENTARY_SLOT, this.addSlot(new SlotItemHandler(internal, 2, 8, 44) {
+		this.customSlots.put(IPreggoMob.LEGS_INVENTORY_SLOT, this.addSlot(new SlotItemHandler(internal, 2, 8, 44) {
 			@Override
 			public boolean mayPlace(ItemStack itemstack) {
-				final var stage = creeperGirl.getCurrentPregnancyStage();
-				
-				if (!PreggoArmorHelper.canPreggoMobUseLegging(itemstack, stage)) {
-	                final var message = PreggoMessageHelper.ARMOR_MESSAGES.get(-1);     
-	                if (!entity.level().isClientSide && message != null && message[1] != null)     
-	                	entity.displayClientMessage(Component.literal(String.format(message[1], creeperGirl.getPreggoName())), true);           
+				if (!PreggoArmorHelper.isLegging(itemstack)) {
+					return false;
+				}		
+				var stage = PregnancyStage.getNonPregnancyStage();
+				if (creeperGirl instanceof AbstractTamablePregnantCreeperGirl<?,?> pregnantCreeperGirl) {
+					stage = pregnantCreeperGirl.getCurrentPregnancyStage();
+				}
+				if (!PreggoArmorHelper.canPreggoMobUseLegging(itemstack, stage) && !entity.level().isClientSide()) {            	
+	                entity.displayClientMessage(PreggoMessageHelper.getPreggoMobArmorLeggingsMessage(creeperGirl.getPreggoName()), true);           
 	                return false;
-				}	
-						
+				}			
 				return true;			
 			}
 		}));
-		this.customSlots.put(IPreggoMob.FEET_INVENTARY_SLOT, this.addSlot(new SlotItemHandler(internal, 1, 8, 62) {
+		this.customSlots.put(IPreggoMob.FEET_INVENTORY_SLOT, this.addSlot(new SlotItemHandler(internal, 1, 8, 62) {
 			@Override
 			public boolean mayPlace(ItemStack itemstack) {
 				return PreggoArmorHelper.isBoot(itemstack);
 			}
 		}));
-		this.customSlots.put(IPreggoMob.MAINHAND_INVENTARY_SLOT, this.addSlot(new SlotItemHandler(internal, 0, 77, 62)));
-		this.customSlots.put(IPreggoMob.OFFHAND_INVENTARY_SLOT, this.addSlot(new SlotItemHandler(internal, 5, 95, 62)));
-		this.customSlots.put(IPreggoMob.FOOD_INVENTARY_SLOT, this.addSlot(new SlotItemHandler(internal, 6, 113, 62) {
+		this.customSlots.put(IPreggoMob.MAINHAND_INVENTORY_SLOT, this.addSlot(new SlotItemHandler(internal, 0, 77, 62)));
+		this.customSlots.put(IPreggoMob.OFFHAND_INVENTORY_SLOT, this.addSlot(new SlotItemHandler(internal, 5, 95, 62)));
+		this.customSlots.put(IPreggoMob.FOOD_INVENTORY_SLOT, this.addSlot(new SlotItemHandler(internal, 6, 113, 62) {
 			@Override
 			public boolean mayPlace(ItemStack itemstack) {
 				return itemstack.is(PreggoTags.CREEPER_GIRL_FOOD);
@@ -282,7 +287,7 @@ public abstract class AbstractCreeperGirlInventaryGUIMenu<T extends AbstractTama
 	@SubscribeEvent
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
 		Player player = event.player;
-		if (event.phase == TickEvent.Phase.END && player.containerMenu instanceof AbstractCreeperGirlInventaryGUIMenu container) {						
+		if (event.phase == TickEvent.Phase.END && player.containerMenu instanceof AbstractCreeperGirlInventaryGUIMenu<?> container) {						
 			PreggoGUIHelper.syncPreggoMobInventaryOnTick(player.level(), container.creeperGirl);
 		}
 	}

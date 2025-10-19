@@ -84,11 +84,11 @@ public class CreeperGirlGUIMenuFactory {
     }
     
 	
-	public static<T extends AbstractTamableCreeperGirl<?>> MenuProvider createInventaryGUIMenuProvider(Class<T> creeperGirlClass, BlockPos blockPos, int entityId) {
+	public static<T extends AbstractTamableCreeperGirl<?>> MenuProvider createInventoryGUIMenuProvider(Class<T> creeperGirlClass, BlockPos blockPos, int entityId) {
         return new MenuProvider() {
             @Override
             public Component getDisplayName() {
-                return Component.literal("CreeperGirlMainGUI");
+                return Component.literal("CreeperGirlInventoryGUI");
             }
 
             @Override

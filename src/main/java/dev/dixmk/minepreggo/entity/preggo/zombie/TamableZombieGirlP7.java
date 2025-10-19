@@ -1,16 +1,18 @@
 package dev.dixmk.minepreggo.entity.preggo.zombie;
 
+import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.entity.preggo.Craving;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancyP7;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySystemP7;
+import dev.dixmk.minepreggo.entity.preggo.PregnantPreggoMobSystem;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PlayMessages;
 
-public class TamableZombieGirlP7 extends AbstractTamablePregnantZombieGirl<PregnancySystemP7<TamableZombieGirlP7>> implements IPregnancyP7 {
+public class TamableZombieGirlP7 extends AbstractTamablePregnantZombieGirl<PregnantPreggoMobSystem<TamableZombieGirlP7>, PregnancySystemP7<TamableZombieGirlP7>> implements IPregnancyP7 {
 		
 	public TamableZombieGirlP7(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P7.get(), world);
@@ -24,7 +26,12 @@ public class TamableZombieGirlP7 extends AbstractTamablePregnantZombieGirl<Pregn
 	}
 	
 	@Override
-	protected PregnancySystemP7<TamableZombieGirlP7> createPreggoMobSystem() {
+	protected PregnantPreggoMobSystem<TamableZombieGirlP7> createPreggoMobSystem() {
+		return new PregnantPreggoMobSystem<>(this, MinepreggoModConfig.getTotalTicksOfHungryP7());
+	}
+	
+	@Override
+	protected PregnancySystemP7<TamableZombieGirlP7> createPregnancySystem() {
 		return new PregnancySystemP7<>(this) {
 			@Override
 			protected void finishBirth() {

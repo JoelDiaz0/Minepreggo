@@ -4,7 +4,6 @@ import java.util.Comparator;
 import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.entity.preggo.PreggoMobState;
 import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractTamableZombieGirl;
 
 import net.minecraft.core.BlockPos;
@@ -17,8 +16,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
-
-
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ZombieGirlMainGUIPacket {
@@ -73,9 +70,7 @@ public class ZombieGirlMainGUIPacket {
 				int buttonId = message.buttonId;
 				
 				if ((buttonId == 0 || buttonId == 1)) {			
-					boolean flag = buttonId == 0;						
-					zombieGirl.setWaiting(flag);	
-					zombieGirl.setState(flag ? PreggoMobState.WAIT : PreggoMobState.IDLE);
+					zombieGirl.setWaiting(buttonId == 0);	
 				}
 				else if (buttonId == 2 && !zombieGirl.isPassenger()) {
 					var abstractHorse = world.getEntitiesOfClass(AbstractHorse.class, AABB.ofSize(new Vec3(x, y, z), 6, 6, 6), e -> true).stream().sorted(new Object() {

@@ -1,12 +1,16 @@
 package dev.dixmk.minepreggo.entity.preggo.creeper;
 
+import javax.annotation.Nonnull;
+
 import com.google.common.collect.ImmutableMap;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.entity.preggo.BabyType;
 import dev.dixmk.minepreggo.entity.preggo.Craving;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancySystem;
+import dev.dixmk.minepreggo.entity.preggo.PreggoMobSystem;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyPain;
+import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySystemP1;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
@@ -25,7 +29,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public abstract class AbstractTamablePregnantCreeperGirl<S extends PregnancySystemP1<?>> extends AbstractTamableCreeperGirl<S> implements IPregnancySystem {
+public abstract class AbstractTamablePregnantCreeperGirl<S extends PreggoMobSystem<?>, P extends PregnancySystemP1<?>> extends AbstractTamableCreeperGirl<S> implements IPregnancySystem {
 
 	protected static final EntityDataAccessor<Integer> DATA_PREGNANCY_HEALTH = SynchedEntityData.defineId(AbstractTamablePregnantCreeperGirl.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<Integer> DATA_DAYS_PASSED = SynchedEntityData.defineId(AbstractTamablePregnantCreeperGirl.class, EntityDataSerializers.INT);
@@ -44,6 +48,8 @@ public abstract class AbstractTamablePregnantCreeperGirl<S extends PregnancySyst
 	protected int bellyRubsTimer = 0;
 	protected int hornyTimer = 0;
 	protected int pregnancyPainTimer = 0;
+	protected int pregnancyTimer = 0;
+	protected final P pregnancySystem;
 	
 	protected static final ImmutableMap<Craving, Item> CRAVING_ENUM_MAP = ImmutableMap.of(
 			Craving.SALTY, MinepreggoModItems.ACTIVATED_GUNPOWDER_WITH_SALT.get(), 
@@ -53,7 +59,11 @@ public abstract class AbstractTamablePregnantCreeperGirl<S extends PregnancySyst
 	
 	protected AbstractTamablePregnantCreeperGirl(EntityType<? extends AbstractTamableCreeperGirl<?>> p_21803_, Level p_21804_) {
 		super(p_21803_, p_21804_);
+		pregnancySystem = createPregnancySystem();
 	}
+	
+	@Nonnull
+	protected abstract P createPregnancySystem();
 	
 	@Override
 	protected void defineSynchedData() {
@@ -86,6 +96,7 @@ public abstract class AbstractTamablePregnantCreeperGirl<S extends PregnancySyst
 		compoundTag.putInt("DataBellyRubsTimer", this.bellyRubsTimer);
 		compoundTag.putInt("DataHorny", this.entityData.get(DATA_HORNY));
 		compoundTag.putInt("DataHornyTimer", this.hornyTimer);
+		compoundTag.putInt("DataPregnancyTimer", this.pregnancyTimer);
 		compoundTag.putInt("DataPregnancySymptom", this.entityData.get(DATA_PREGNANCY_SYMPTOM).ordinal());
 		compoundTag.putInt("DataPregnancyPain", this.entityData.get(DATA_PREGNANCY_PAIN).ordinal());
 		compoundTag.putInt("DataPregnancyPainTimer", this.pregnancyPainTimer);
@@ -107,6 +118,7 @@ public abstract class AbstractTamablePregnantCreeperGirl<S extends PregnancySyst
 		this.bellyRubsTimer =  compoundTag.getInt("DataBellyRubsTimer");
 		this.entityData.set(DATA_HORNY, compoundTag.getInt("DataHorny"));
 		this.hornyTimer = compoundTag.getInt("DataHornyTimer");
+		this.pregnancyTimer = compoundTag.getInt("DataPregnancyTimer");
 		this.entityData.set(DATA_PREGNANCY_SYMPTOM, PregnancySymptom.values()[compoundTag.getInt("DataPregnancySymptom")]);
 		this.entityData.set(DATA_PREGNANCY_PAIN, PregnancyPain.values()[compoundTag.getInt("DataPregnancyPain")]);
 		this.entityData.set(DATA_CRAVING_CHOSEN, Craving.values()[compoundTag.getInt("DataCravingChosen")]);
@@ -147,7 +159,7 @@ public abstract class AbstractTamablePregnantCreeperGirl<S extends PregnancySyst
 		boolean result = super.hurt(damagesource, amount);	
 		
 		if (result) {
-			preggoMobSystem.evaluateOnSuccessfulHurt(damagesource);
+			pregnancySystem.evaluateOnSuccessfulHurt(damagesource);
 		}
 		
 		return result;
@@ -216,6 +228,26 @@ public abstract class AbstractTamablePregnantCreeperGirl<S extends PregnancySyst
 	@Override
 	public void setPregnancyPain(PregnancyPain symptom) {
 		this.entityData.set(DATA_PREGNANCY_PAIN, symptom);
+	}
+	
+	@Override
+	public int getPregnancyTimer() {
+	    return this.pregnancyTimer;
+	}
+	
+	@Override
+	public void setPregnancyTimer(int ticks) {
+	    this.pregnancyTimer = ticks;
+	}
+	
+	@Override
+	public PregnancyStage getMaxPregnancyStage() {
+		return this.entityData.get(DATA_MAX_PREGNANCY_STAGE); 
+	}
+	
+	@Override
+	public void setMaxPregnancyStage(PregnancyStage stage) {
+		this.entityData.set(DATA_MAX_PREGNANCY_STAGE, stage);
 	}
 	
 	@Override

@@ -58,7 +58,7 @@ public class CreeperGirlInventaryMenuPacket {
 				final var entityId = creeperGirl.getId();
 				final var blockPos = serverPlayer.blockPosition();
 				
-				NetworkHooks.openScreen(serverPlayer, CreeperGirlGUIMenuFactory.createInventaryGUIMenuProvider(creeperGirl.getClass(), blockPos, entityId), buf -> {
+				NetworkHooks.openScreen(serverPlayer, CreeperGirlGUIMenuFactory.createInventoryGUIMenuProvider(creeperGirl.getClass(), blockPos, entityId), buf -> {
 				    buf.writeBlockPos(blockPos);
 				    buf.writeVarInt(entityId);
 				});			

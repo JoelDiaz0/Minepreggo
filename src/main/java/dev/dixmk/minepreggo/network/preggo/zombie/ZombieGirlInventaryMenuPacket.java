@@ -59,7 +59,7 @@ public class ZombieGirlInventaryMenuPacket {
 				final var entityId = zombieGirl.getId();
 				final var blockPos = serverPlayer.blockPosition();
 			
-				NetworkHooks.openScreen(serverPlayer, ZombieGirlGUIMenuFactory.createInventaryGUIMenuProvider(zombieGirl.getClass(), blockPos, entityId), buf -> {
+				NetworkHooks.openScreen(serverPlayer, ZombieGirlGUIMenuFactory.createInventoryGUIMenuProvider(zombieGirl.getClass(), blockPos, entityId), buf -> {
 				    buf.writeBlockPos(blockPos);
 				    buf.writeVarInt(entityId);
 				});			

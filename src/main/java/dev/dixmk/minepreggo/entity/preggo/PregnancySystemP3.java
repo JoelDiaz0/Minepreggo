@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
+import dev.dixmk.minepreggo.entity.preggo.PreggoMobSystem.Result;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -118,18 +119,15 @@ public abstract class PregnancySystemP3 <E extends TamableAnimal
 		}
 		
 		this.evaluatePregnancyTimer();
-		this.evaluateHungryTimer(level, x, y, z, MinepreggoModConfig.getTotalTicksOfHungryP3());
 		this.evaluateCravingTimer(MinepreggoModConfig.getTotalTicksOfCravingP3());
 		this.evaluateMilkingTimer(MinepreggoModConfig.getTotalTicksOfMilkingP3());
 		this.evaluateBellyRubsTimer(MinepreggoModConfig.getTotalTicksOfBellyRubsP3());
-		this.evaluateAngry(level, x, y, z, PregnancySystemConstants.MEDIUM_ANGER_PROBABILITY);
-		
+		this.evaluateAngry(level, x, y, z, PregnancySystemConstants.MEDIUM_ANGER_PROBABILITY);	
 		this.evaluatePregnancySymptoms();
 		this.evaluatePregnancyPains();
-		this.evaluateAutoFeeding();
 	}
 	
-	
+
 	@Override
 	public InteractionResult evaluateRightClick(Player source) {		
 		final var level = preggoMob.level();
@@ -140,14 +138,13 @@ public abstract class PregnancySystemP3 <E extends TamableAnimal
 		
 		Result result;
 		
-		if ((result = evaluateHungry(serverLevel, source)) != Result.NOTHING
-				|| (result = evaluateCraving(serverLevel, source)) != Result.NOTHING
+		if ((result = evaluateCraving(serverLevel, source)) != Result.NOTHING
 				|| (result = evaluateMilking(serverLevel, source)) != Result.NOTHING
 				|| (result = evaluateBellyRubs(serverLevel, source)) != Result.NOTHING) {
-			spawnParticles(serverLevel, result);
+			PreggoMobSystem.spawnParticles(preggoMob, serverLevel, result);
 		}
 		
-		return onRightClickResult(result);
+		return PreggoMobSystem.onRightClickResult(result);
 	}
 	
 	

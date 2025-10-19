@@ -7,7 +7,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class AbstractTamablePregnantCreeperGirlModel<E extends AbstractTamablePregnantCreeperGirl<?>> extends AbstractTamableCreeperGirlModel<E> {
+public abstract class AbstractTamablePregnantCreeperGirlModel<E extends AbstractTamablePregnantCreeperGirl<?,?>> extends AbstractTamableCreeperGirlModel<E> {
 	protected AbstractTamablePregnantCreeperGirlModel(ModelPart root, HierarchicalModel<E> animator) {
 		super(root, animator);
 		this.belly.visible = true;

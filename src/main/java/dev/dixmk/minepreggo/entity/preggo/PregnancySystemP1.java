@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
+import dev.dixmk.minepreggo.entity.preggo.PreggoMobSystem.Result;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.utils.PreggoMessageHelper;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
@@ -15,6 +16,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -27,10 +29,14 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class PregnancySystemP1<
-	E extends TamableAnimal & IPreggoMob & IPregnancySystem & IPregnancyP1> extends PreggoMobSystem<E> {
+	E extends TamableAnimal & IPreggoMob & IPregnancySystem & IPregnancyP1> {
 
+	protected final RandomSource randomSource;	
+	protected final E preggoMob;
+	
 	protected PregnancySystemP1(@Nonnull E preggoMob) {
-		super(preggoMob);
+		this.preggoMob = preggoMob;	
+		this.randomSource = preggoMob.getRandom();
 	}
 	
 	protected Result evaluatePregnancyStageChange() {
@@ -132,12 +138,6 @@ public abstract class PregnancySystemP1<
 		}
 	}
 	
-	@Override
-	protected boolean canAutoFeeding() {
-		return super.canAutoFeeding() && !preggoMob.isIncapacitated();
-	}
-	
-	
 	public void evaluateOnSuccessfulHurt(DamageSource damagesource) {	
 		if ((preggoMob.hasEffect(MinepreggoModMobEffects.PREGNANCY_RESISTANCE_EFFECT.get()) && randomSource.nextFloat() < 0.9F)
 				|| (!damagesource.is(DamageTypes.FALL) && !preggoMob.getItemBySlot(EquipmentSlot.CHEST).isEmpty() && randomSource.nextFloat() < 0.5)) {
@@ -171,8 +171,6 @@ public abstract class PregnancySystemP1<
 		}
 	}
 	
-	
-	@Override
 	public void evaluateOnTick() {		
 		
 		final var level = preggoMob.level();
@@ -194,23 +192,17 @@ public abstract class PregnancySystemP1<
 			return; 
 		}
 		
-		this.evaluatePregnancyTimer();
-		this.evaluateHungryTimer(level, x, y, z, MinepreggoModConfig.getTotalTicksOfHungryP1());
-		
-		
+		this.evaluatePregnancyTimer();	
 		this.evaluateCravingTimer(MinepreggoModConfig.getTotalTicksOfCravingP1());
-		this.evaluateAngry(level, x, y, z, PregnancySystemConstants.LOW_ANGER_PROBABILITY);
-		
+		this.evaluateAngry(level, x, y, z, PregnancySystemConstants.LOW_ANGER_PROBABILITY);	
 		this.evaluatePregnancySymptoms();
 		this.evaluatePregnancyPains();
-		this.evaluateAutoFeeding();
 	}
 	
 	protected boolean activateAngry() {
 		return preggoMob.getCraving() >= 20 || preggoMob.getHungry() <= 2;
 	}
 
-	@Override
 	public InteractionResult evaluateRightClick(Player source) {	
 		final var level = preggoMob.level();
 		
@@ -220,20 +212,13 @@ public abstract class PregnancySystemP1<
 		
 		Result result;
 		
-		if ((result = evaluateHungry(serverLevel, source)) != Result.NOTHING
-				|| (result = evaluateCraving(serverLevel, source)) != Result.NOTHING) {
-			spawnParticles(serverLevel, result);
+		if ((result = evaluateCraving(serverLevel, source)) != Result.NOTHING) {
+			PreggoMobSystem.spawnParticles(preggoMob, serverLevel, result);
 		}
 		
-		return onRightClickResult(result);	
+		return PreggoMobSystem.onRightClickResult(result);	
 	}
-	
-	
-	@Override
-	public boolean canOwnerAccessGUI(Player source) {	
-		return super.canOwnerAccessGUI(source) && !preggoMob.isIncapacitated();
-	}
-	
+		
 	protected Result evaluateCraving(Level level, Player source) {
 		if (preggoMob.getPregnancySymptom() != PregnancySymptom.CRAVING) {
 			return Result.NOTHING;
@@ -273,8 +258,5 @@ public abstract class PregnancySystemP1<
 	protected abstract void changePregnancyStage();
 	
 	protected abstract void finishMiscarriage();
-	
-	@Override
-	protected final void startPregnancy() {}
 }
 

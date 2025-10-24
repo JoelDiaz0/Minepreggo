@@ -1,58 +1,71 @@
 package dev.dixmk.minepreggo.client.gui.components;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 
 public class ToggleableCheckbox extends Checkbox {
 	
 	private final List<ToggleableCheckbox> group;
-    private final Runnable onSelect;
-    
-    public ToggleableCheckbox(int x, int y, int width, int height, Component label, boolean checked, List<ToggleableCheckbox> group, @Nullable Runnable onSelect) {
-        super(x, y, width, height, label, checked);
-        this.group = group;
-		this.onSelect = onSelect;
-
+    private final Optional<Runnable> onSelect;
+       
+    public ToggleableCheckbox(ToggleableCheckbox.Builder builder) {
+    	super(builder.x, builder.y, builder.width, builder.height, builder.label, builder.checked);
+    	this.group = builder.group;
+    	this.onSelect = Optional.ofNullable(builder.onSelect);
     }
-    
-    public ToggleableCheckbox(int x, int y, int width, int height, MutableComponent label, boolean checked, List<ToggleableCheckbox> group, @Nullable Runnable onSelect) {
-        super(x, y, width, height, label, checked);
-        this.group = group;
-		this.onSelect = onSelect;
-    }
-    
-     
+       
 	@Override
     public void onPress() {
-        // Deselect all in the group (including this one)
         for (ToggleableCheckbox cb : group) {
             if (cb.selected()) {
-                cb.forceSet(false);
+            	cb.selected = false;
             }
         }
-
-        // Select only this one
-        this.forceSet(true);
-        
-        if (onSelect != null) {
-            onSelect.run();
-        }
+        this.selected = true;               
+        onSelect.ifPresent(r -> r.run());     
     }
 
-    // Helper: because Checkbox doesn’t expose setSelected
-    private void forceSet(boolean value) {
-        if (this.selected() != value) {
-            super.onPress(); // toggles state
-        }
-    }
+	public static ToggleableCheckbox.Builder builder(int x, int y, int width, int height, Component label, boolean checked) {
+		return new ToggleableCheckbox.Builder(x, y, width, height, label, checked);
+	}
     
     public static class Builder {
+    	List<ToggleableCheckbox> group;
+    	@Nullable Runnable onSelect;
+    	int x;
+    	int y; 
+    	int width; 
+    	int height; 
+    	Component label;
+    	boolean checked;
+    	 		
+    	protected Builder(int x, int y, int width, int height, Component label, boolean checked) {
+    		this.x = x;
+    		this.y = y;
+    		this.width = width;
+    		this.height = height;
+    		this.label = label;
+    		this.checked = checked;
+    	}
+    	
+    	public Builder group(List<ToggleableCheckbox> group) {
+    		this.group = group;
+    		return this;
+    	}
+    		
+    	public Builder onSelect(@Nullable Runnable onSelect) {
+    		this.onSelect = onSelect;
+    		return this;
+    	}
+    	
+    	public ToggleableCheckbox build() {
+    		return new ToggleableCheckbox(this);
+    	}
     	
     }
-    
 }

@@ -44,18 +44,17 @@ public class TamableZombieGirlP4 extends AbstractTamablePregnantZombieGirl<Pregn
 					PreggoMobHelper.transferPregnancyP4Data(preggoMob, zombieGirl);			
 					PreggoMobHelper.transferPreggoMobInventary(preggoMob, zombieGirl);
 					PreggoMobHelper.transferAttackTarget(preggoMob, zombieGirl);
-					preggoMob.discard();
 				}
 			}
 			
 			@Override
-			protected void finishMiscarriage() {
-				TamableZombieGirlP0.applyDefaultPostMiscarriage(preggoMob);
+			protected void postMiscarriage() {
+				TamableZombieGirlP0.onPostMiscarriage(preggoMob);
 			}
 
 			@Override
-			protected void finishBirth() {
-				TamableZombieGirlP0.applyDefaultPostPartum(preggoMob);
+			protected void postBirth() {
+				TamableZombieGirlP0.onPostPartum(preggoMob);
 			}
 		};
 	}

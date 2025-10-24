@@ -26,18 +26,14 @@ public class CreeperGirlP1MainGUIScreen extends AbstractCreeperGirlMainGUIScreen
 		RenderSystem.defaultBlendFunc();
 
 		guiGraphics.blit(PreggoGUIHelper.DEFAULT_P1_MAIN_GUI_TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
+	
+		this.preggoMob.ifPresent(creeperGirl -> PreggoGUIHelper.renderCreeperGirlP1MainGUI(guiGraphics, this.leftPos, this.topPos, creeperGirl.getHealth(), creeperGirl));
 
-		if (this.creeperGirl != null) {
-			PreggoGUIHelper.renderCreeperGirlP1MainGUI(guiGraphics, this.leftPos, this.topPos, this.creeperGirl.getHealth(), this.creeperGirl);
-		}
-		
-		
 		RenderSystem.disableBlend();
 	}
 
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		if (this.creeperGirl != null)
-			PreggoGUIHelper.renderP1LabelMainGUI(guiGraphics, this.font, this.creeperGirl);
+		this.preggoMob.ifPresent(creeperGirl -> PreggoGUIHelper.renderP1LabelMainGUI(guiGraphics, this.font, creeperGirl));
 	}
 }

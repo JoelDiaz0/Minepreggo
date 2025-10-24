@@ -7,6 +7,6 @@ import net.minecraft.network.FriendlyByteBuf;
 
 public class CreeperGirlP0InventaryGUIMenu extends AbstractCreeperGirlInventaryGUIMenu<TamableCreeperGirlP0> {
 	public CreeperGirlP0InventaryGUIMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
-		super(MinepreggoModMenus.CREEPER_GIRL_P0_INVENTARY_GUI.get(), TamableCreeperGirlP0.class, id, inv, extraData);
+		super(MinepreggoModMenus.CREEPER_GIRL_P0_INVENTARY_GUI.get(), id, inv, extraData, TamableCreeperGirlP0.class);
 	}
 }

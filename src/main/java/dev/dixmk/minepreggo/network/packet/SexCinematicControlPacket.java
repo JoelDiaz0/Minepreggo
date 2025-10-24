@@ -2,6 +2,7 @@ package dev.dixmk.minepreggo.network.packet;
 
 import java.util.function.Supplier;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.SexCinematicManager;
 import net.minecraft.client.Minecraft;
@@ -35,17 +36,19 @@ public class SexCinematicControlPacket {
 	
 	public static void handler(SexCinematicControlPacket message, Supplier<NetworkEvent.Context> contextSupplier) {
 		NetworkEvent.Context context = contextSupplier.get();
-		context.enqueueWork(() -> {
+		context.enqueueWork(() -> {		
             if (context.getDirection().getReceptionSide().isClient()) {
                 Minecraft mc = Minecraft.getInstance();
                 if (mc.player != null) {
                     if (message.start) {
-                        SexCinematicManager.startCinematic(mc.player, message.mobEntityId);
+                    	SexCinematicManager.startCinematic(mc.player, message.mobEntityId);                   	
                     } else {
-                        SexCinematicManager.endCinematic();
-                    }
-                }            	          	
-            }		
+                    	SexCinematicManager.endCinematic();
+                    }                 
+                    MinepreggoMod.LOGGER.debug("SEX CINEMATIC CONTROL: player={}, id={}, mobId={}, start={}",
+                    		mc.player.getName().getString(), mc.player.getId(), message.mobEntityId, message.start);
+                }       	
+            }	  
 		});
 		context.setPacketHandled(true);
 	}

@@ -5,9 +5,13 @@ import javax.annotation.Nonnull;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.entity.preggo.PreggoMobSystem.Result;
+import dev.dixmk.minepreggo.utils.PreggoMobHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.item.ItemStack;
 
 public abstract class PregnancySystemP4<E extends TamableAnimal
 	& IPreggoMob & IPregnancySystem & IPregnancyP4> extends PregnancySystemP3<E> {
@@ -19,22 +23,32 @@ public abstract class PregnancySystemP4<E extends TamableAnimal
 		this.currentPregnancyStage = preggoMob.getCurrentPregnancyStage();
 	}
 	
-	protected Result evaluteBirth(ServerLevel level, double x, double y, double z, final int totalTicksOfPrebirth, final int totalTicksOfBirth) {	
+	protected Result evaluteBirth(ServerLevel serverLevel, double x, double y, double z, final int totalTicksOfPrebirth, final int totalTicksOfBirth) {	
 		if (preggoMob.getPregnancyPain() == PregnancyPain.PREBIRTH) {		
 			if (preggoMob.getPregnancyPainTimer() >= totalTicksOfPrebirth) {
 				preggoMob.setPregnancyPain(PregnancyPain.BIRTH);
 	    		preggoMob.setPregnancyPainTimer(0);    		
+				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(preggoMob, EquipmentSlot.CHEST);
+				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(preggoMob, EquipmentSlot.MAINHAND);
+				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(preggoMob, EquipmentSlot.OFFHAND);
 			}	
 			else {
 	    		preggoMob.setPregnancyPainTimer(preggoMob.getPregnancyPainTimer() + 1);
-	            level.addParticle(ParticleTypes.FALLING_DRIPSTONE_WATER, x, (y + preggoMob.getBbHeight() * 0.35), z, 0, 1, 0);
+	    		for (ServerPlayer player : serverLevel.getServer().getPlayerList().getPlayers()) {
+	    		    if (player.distanceToSqr(preggoMob) <= 512.0) { // 32 blocks
+	    				serverLevel.sendParticles(player, ParticleTypes.FALLING_DRIPSTONE_WATER, true, x, (y + preggoMob.getBbHeight() * 0.35), z,
+	    						1, 0, 1, 0, 0.02);
+	    		    }
+	    		}
 			}
 			
 			return Result.SUCCESS;
 		}
 		else if (preggoMob.getPregnancyPain() == PregnancyPain.BIRTH) {
 			if (preggoMob.getPregnancyPainTimer() >= totalTicksOfBirth) {
-				finishBirth();
+	        	PreggoMobHelper.setItemstackOnOffHand(preggoMob, new ItemStack(BabyType.getAliveBabyItem(preggoMob.getBabyType()), PreggoMobHelper.getNumberOfChildrens(preggoMob.getMaxPregnancyStage())));
+				this.postBirth();
+	        	this.preggoMob.discard();
 			}	
 			else {
 	    		preggoMob.setPregnancyPainTimer(preggoMob.getPregnancyPainTimer() + 1);
@@ -53,7 +67,7 @@ public abstract class PregnancySystemP4<E extends TamableAnimal
 	@Override
 	protected final Result evaluatePregnancyStageChange() {
 	    if (preggoMob.getDaysPassed() >= preggoMob.getDaysByStage()) {
-	    	if (hasToGiveBirth()) {		
+	    	if (this.hasToGiveBirth()) {		
 	    		preggoMob.setPregnancyPain(PregnancyPain.PREBIRTH);	  
 	    		preggoMob.setPregnancyPainTimer(0);
 	    	}
@@ -67,8 +81,8 @@ public abstract class PregnancySystemP4<E extends TamableAnimal
 	}
 	
 	@Override
-	protected boolean activateAngry() {
-		return super.activateAngry() || preggoMob.getHorny() >= 20;
+	protected boolean canBeAngry() {
+		return super.canBeAngry() || preggoMob.getHorny() >= 20;
 	}
 	
 	
@@ -88,6 +102,7 @@ public abstract class PregnancySystemP4<E extends TamableAnimal
 				else {
 					preggoMob.setPregnancyPain(PregnancyPain.KICKING);		
 				}
+				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(preggoMob, EquipmentSlot.CHEST);
 				flag = true;
 			}	
 			
@@ -161,18 +176,18 @@ public abstract class PregnancySystemP4<E extends TamableAnimal
 		final var z = preggoMob.getZ();
 		
 		if (level instanceof ServerLevel serverLevel
-				&& evaluteBirth(serverLevel, x, y, z,
+				&& this.evaluteBirth(serverLevel, x, y, z,
 				PregnancySystemConstants.TOTAL_TICKS_PREBIRTH_P4,
 				PregnancySystemConstants.TOTAL_TICKS_BIRTH_P4) == Result.SUCCESS) {
 			return;
 		}
 		
-		if (evaluatePregnancyStageChange() == Result.SUCCESS) {
+		if (this.evaluatePregnancyStageChange() == Result.SUCCESS) {
 			return;
 		}
 		
 		if (level instanceof ServerLevel serverLevel
-				&& evaluateMiscarriage(serverLevel, x, y, z, PregnancySystemConstants.TOTAL_TICKS_MISCARRIAGE) == Result.SUCCESS) {
+				&& this.evaluateMiscarriage(serverLevel, x, y, z, PregnancySystemConstants.TOTAL_TICKS_MISCARRIAGE) == Result.SUCCESS) {
 			return; 
 		}
 		
@@ -190,6 +205,6 @@ public abstract class PregnancySystemP4<E extends TamableAnimal
 				PregnancySystemConstants.TOTAL_TICKS_CONTRACTION_P4);
 	}
 	
-	protected abstract void finishBirth();
+	protected abstract void postBirth();
 	
 }

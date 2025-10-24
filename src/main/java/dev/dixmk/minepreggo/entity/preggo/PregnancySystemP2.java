@@ -71,8 +71,8 @@ public abstract class PregnancySystemP2<E extends TamableAnimal
 	}
 	
 	@Override
-	protected boolean activateAngry() {
-		return super.activateAngry() || preggoMob.getMilking() >= 20;
+	protected boolean canBeAngry() {
+		return super.canBeAngry() || preggoMob.getMilking() >= 20;
 	}
 	
 	@Override

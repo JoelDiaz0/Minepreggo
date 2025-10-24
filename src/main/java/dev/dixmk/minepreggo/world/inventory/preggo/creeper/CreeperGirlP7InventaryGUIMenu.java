@@ -7,6 +7,6 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class CreeperGirlP7InventaryGUIMenu extends AbstractCreeperGirlInventaryGUIMenu<TamableCreeperGirlP7> {
 	public CreeperGirlP7InventaryGUIMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
-		super(MinepreggoModMenus.CREEPER_GIRL_P7_INVENTARY_GUI.get(), TamableCreeperGirlP7.class, id, inv, extraData);
+		super(MinepreggoModMenus.CREEPER_GIRL_P7_INVENTARY_GUI.get(), id, inv, extraData, TamableCreeperGirlP7.class);
 	}
 }

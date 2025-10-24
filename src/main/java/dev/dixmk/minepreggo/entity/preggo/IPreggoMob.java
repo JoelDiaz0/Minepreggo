@@ -1,8 +1,7 @@
 package dev.dixmk.minepreggo.entity.preggo;
 
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
 public interface IPreggoMob {
 	
@@ -39,7 +38,13 @@ public interface IPreggoMob {
     
 	String getPreggoName();
 	
-	ItemStackHandler getInventary();
-	
-	CombinedInvWrapper getCombined();
+	void setCinematicOwner(ServerPlayer player);
+    
+    void setCinematicEndTime(long time);
+    
+    boolean canPickUpItems();
+    void setPickUpItems(boolean value);
+    
+    boolean canBreakBlocks();
+    void setBreakBlocks(boolean value);
 }

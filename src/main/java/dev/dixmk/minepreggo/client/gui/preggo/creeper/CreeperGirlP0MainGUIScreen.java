@@ -14,6 +14,8 @@ public class CreeperGirlP0MainGUIScreen extends AbstractCreeperGirlMainGUIScreen
 
 	public CreeperGirlP0MainGUIScreen(CreeperGirlP0MainGUIMenu container, Inventory inventory, Component text) {
 		super(container, inventory, text);
+		this.imageWidth = 187;
+		this.imageHeight = 103;
 	}
 
 
@@ -25,18 +27,13 @@ public class CreeperGirlP0MainGUIScreen extends AbstractCreeperGirlMainGUIScreen
 		
 		guiGraphics.blit(PreggoGUIHelper.DEFAULT_P0_MAIN_GUI_TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
 		
-		if (this.creeperGirl != null)
-			PreggoGUIHelper.renderDefaultPreggoP0MainGUI(guiGraphics, this.leftPos, this.topPos, this.creeperGirl.getHealth(), this.creeperGirl);
-
-
-		
+		this.preggoMob.ifPresent(creeperGirl -> PreggoGUIHelper.renderDefaultPreggoP0MainGUI(guiGraphics, this.leftPos, this.topPos, creeperGirl.getHealth(), creeperGirl));
+	
 		RenderSystem.disableBlend();
 	}
 
 	@Override
-	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		if (this.creeperGirl != null)
-			PreggoGUIHelper.renderDefaultPreggoP0LabelMainGUI(guiGraphics, this.font, this.creeperGirl);
+	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {	
+		this.preggoMob.ifPresent(creeperGirl -> PreggoGUIHelper.renderDefaultPreggoP0LabelMainGUI(guiGraphics, this.font, creeperGirl));
 	}
-
 }

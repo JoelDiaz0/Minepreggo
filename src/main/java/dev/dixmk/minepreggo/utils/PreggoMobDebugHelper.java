@@ -39,9 +39,10 @@ public class PreggoMobDebugHelper {
 	
 	public static<E extends TamableAnimal & IPreggoMob & IPregnancySystem> void showPregnancyInfo(E preggoMob) {
 		MinepreggoMod.LOGGER.debug("BASIC PREGNANCY INFO: pregnancyTimer={}, daysByStage={}, daysByStage={}, daysToGiveBirth={}, pregnancyPain={}, "
-				+ "pregnancyPainTimer={}, pregnanctSymptom={}",
+				+ "pregnancyPainTimer={}, pregnanctSymptom={}, isIncapacitated={}",
 				preggoMob.getPregnancyTimer(), preggoMob.getDaysByStage(), preggoMob.getDaysByStage(),
-				preggoMob.getDaysToGiveBirth(), preggoMob.getPregnancyPain(), preggoMob.getPregnancyPainTimer(), preggoMob.getPregnancySymptom());
+				preggoMob.getDaysToGiveBirth(), preggoMob.getPregnancyPain(), preggoMob.getPregnancyPainTimer(),
+				preggoMob.getPregnancySymptom(), preggoMob.isIncapacitated());
 	}
 	
 	public static<E extends TamableAnimal & IPreggoMob & IPregnancySystem & IPregnancyP1> void showPregnancyP1Info(E preggoMob) {

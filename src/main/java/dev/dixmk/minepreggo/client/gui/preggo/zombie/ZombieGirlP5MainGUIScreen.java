@@ -23,18 +23,14 @@ public class ZombieGirlP5MainGUIScreen extends AbstractZombieGirlMainGUIScreen<T
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		guiGraphics.blit(PreggoGUIHelper.DEFAULT_P4_MAIN_GUI_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+		
+		this.preggoMob.ifPresent(zombieGirl -> PreggoGUIHelper.renderZombieGirlP4MainGUI(guiGraphics, this.leftPos, this.topPos, zombieGirl.getHealth(), zombieGirl));
 
-		if (this.zombieGirl != null) {
-			PreggoGUIHelper.renderZombieGirlP4MainGUI(guiGraphics, this.leftPos, this.topPos, this.zombieGirl.getHealth(), this.zombieGirl);
-		}
-	
 		RenderSystem.disableBlend();
 	}
 
 	@Override
-	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		if (this.zombieGirl != null)
-			PreggoGUIHelper.renderP4LabelMainGUI(guiGraphics, this.font, this.zombieGirl);
+	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {	
+		this.preggoMob.ifPresent(zombieGirl -> PreggoGUIHelper.renderP4LabelMainGUI(guiGraphics, this.font, zombieGirl));
 	}
-
 }

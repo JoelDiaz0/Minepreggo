@@ -14,6 +14,8 @@ public class ZombieGirlP0MainGUIScreen extends AbstractZombieGirlMainGUIScreen<T
 
 	public ZombieGirlP0MainGUIScreen(ZombieGirlP0MainGUIMenu container, Inventory inventory, Component text) {
 		super(container, inventory, text);
+		this.imageWidth = 187;
+		this.imageHeight = 103;
 	}
 
 	@Override
@@ -24,17 +26,14 @@ public class ZombieGirlP0MainGUIScreen extends AbstractZombieGirlMainGUIScreen<T
 		
 		guiGraphics.blit(PreggoGUIHelper.DEFAULT_P0_MAIN_GUI_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
 	
-		if (this.zombieGirl != null)
-			PreggoGUIHelper.renderDefaultPreggoP0MainGUI(guiGraphics, this.leftPos, this.topPos, this.zombieGirl.getHealth(), this.zombieGirl);
-
+		this.preggoMob.ifPresent(zombieGirl -> PreggoGUIHelper.renderDefaultPreggoP0MainGUI(guiGraphics, this.leftPos, this.topPos, zombieGirl.getHealth(), zombieGirl));
+		
 		RenderSystem.disableBlend();
 	}
 	
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		if (this.zombieGirl != null)
-			PreggoGUIHelper.renderDefaultPreggoP0LabelMainGUI(guiGraphics, this.font, this.zombieGirl);
+		this.preggoMob.ifPresent(zombieGirl -> PreggoGUIHelper.renderDefaultPreggoP0LabelMainGUI(guiGraphics, this.font, zombieGirl));
 	}
-
 }
 

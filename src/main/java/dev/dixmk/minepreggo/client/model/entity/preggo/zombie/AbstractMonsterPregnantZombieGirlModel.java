@@ -5,6 +5,7 @@ import dev.dixmk.minepreggo.client.entity.animation.preggo.zombie.ZombieGirlAnim
 import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractMonsterPregnantZombieGirl;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.world.entity.EquipmentSlot;
 
 public abstract class AbstractMonsterPregnantZombieGirlModel<E extends AbstractMonsterPregnantZombieGirl> extends AbstractMonsterZombieGirlModel<E> {
 
@@ -38,9 +39,11 @@ public abstract class AbstractMonsterPregnantZombieGirlModel<E extends AbstractM
 			@Override
 			public void setupAnim(E zombieGirl, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 				this.root().getAllParts().forEach(ModelPart::resetPose);	
-
-			    this.animate(zombieGirl.loopAnimationState, HumanoidGirlAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);	
 				
+			    if (zombieGirl.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {
+			    	this.animate(zombieGirl.loopAnimationState, HumanoidGirlAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);
+			    }
+			    		    
 			    if (zombieGirl.isAttacking()) {
 				    this.animate(zombieGirl.attackAnimationState, ZombieGirlAnimation.ATTACK, ageInTicks, 1f);	
 			    }

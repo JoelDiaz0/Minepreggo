@@ -45,7 +45,7 @@ public class WorldEventHandler {
     					preggoMob.setDaysPassed(Math.min(preggoMob.getDaysByStage(), preggoMob.getDaysPassed() + numOfDays));
     					preggoMob.setDaysToGiveBirth(Math.max(0, preggoMob.getDaysToGiveBirth() - numOfDays));
     				} else {
-    					preggoMob.setPregnancyTimer(remainingTicks);
+    					preggoMob.setPregnancyTimer(tickResult);
     				}
     				
     				MinepreggoMod.LOGGER.debug("TIME SKIP EVENT: currentPregnanctStage={}, tickResult={}, numOfDaysPassed={}, remainingTicks={}",

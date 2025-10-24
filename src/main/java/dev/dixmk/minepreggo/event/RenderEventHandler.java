@@ -1,9 +1,7 @@
 package dev.dixmk.minepreggo.event;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.client.screen.effect.SexOverlay;
+import dev.dixmk.minepreggo.client.screen.effect.SexOverlayManager;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGuiEvent;
@@ -17,37 +15,20 @@ public class RenderEventHandler {
 	
     @SubscribeEvent
     public static void onRenderGui(RenderGuiEvent.Post event) {
-        if (!SexOverlay.isActive()) return;
-        GuiGraphics guiGraphics = event.getGuiGraphics();
-         
-        float alpha = SexOverlay.getAlpha();
-        if (alpha > 0) {
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
-            guiGraphics.blit(SexOverlay.VIGNETTE, 0, 0, 
-                0, 0, 
-                event.getWindow().getGuiScaledWidth(),
-                event.getWindow().getGuiScaledHeight(),
-                event.getWindow().getGuiScaledWidth(),
-                event.getWindow().getGuiScaledHeight()
-            );
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        if (SexOverlayManager.isActive()) {
+            final float alpha = SexOverlayManager.getAlpha();    
+            
+            if (alpha <= 0.0F) return;
+
+            GuiGraphics guiGraphics = event.getGuiGraphics();
+            int width = event.getWindow().getGuiScaledWidth();
+            int height = event.getWindow().getGuiScaledHeight();
+
+            // Pack alpha into ARGB color (black with alpha)
+            int color = ((int)(alpha * 255) << 24) | 0x000000;
+
+            // Draw solid black overlay — exactly like vanilla sleep
+            guiGraphics.fill(0, 0, width, height, color);
         }
-        
-
-        // Enable blending manually if needed (GuiGraphics usually handles it)
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShaderColor(0.0F, 0.0F, 0.0F, alpha);
-
-        // Draw fullscreen black rectangle
-        guiGraphics.fill(0, 0, 
-            event.getWindow().getGuiScaledWidth(), 
-            event.getWindow().getGuiScaledHeight(), 
-            0x00000000 | ((int)(alpha * 255) << 24) // ARGB: alpha in high byte
-        );
-
-        // Reset color
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.disableBlend();
     }
 }

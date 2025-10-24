@@ -7,7 +7,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class ZombieGirlP6InventaryGUIMenu extends AbstractZombieGirlInventaryGUIMenu<TamableZombieGirlP6> {
 	public ZombieGirlP6InventaryGUIMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
-		super(MinepreggoModMenus.ZOMBIE_GIRL_P6_INVENTARY_GUI.get(), TamableZombieGirlP6.class, id, inv, extraData);
+		super(MinepreggoModMenus.ZOMBIE_GIRL_P6_INVENTARY_GUI.get(), id, inv, extraData, TamableZombieGirlP6.class);
 	
 	}
 }

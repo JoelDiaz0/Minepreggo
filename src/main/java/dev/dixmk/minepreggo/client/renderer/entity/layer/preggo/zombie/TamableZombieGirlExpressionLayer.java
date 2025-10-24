@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractTamableZombieGirlModel;
+import dev.dixmk.minepreggo.entity.preggo.PreggoMobState;
 import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractTamableZombieGirl;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -25,6 +26,7 @@ public class TamableZombieGirlExpressionLayer
 	protected static final RenderType SAD3 = RenderType.entityCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_sad3.png"));
 	protected static final RenderType PAIN4 = RenderType.entityCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_pain4.png"));
 	protected static final RenderType SURPRISED2 = RenderType.entityCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_surprised2.png"));
+	protected static final RenderType HORNY2 = RenderType.entityCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/expressions/zombie_girl_face_horny2.png"));
 
 	public TamableZombieGirlExpressionLayer(RenderLayerParent<E, M> p_117346_) {
 		super(p_117346_);
@@ -40,9 +42,12 @@ public class TamableZombieGirlExpressionLayer
 		
 		if (zombieGirl.isOnFire()) {
 			return Optional.of(SURPRISED2);
-		}
+		}		
 		else if (zombieGirl.hasEffect(MobEffects.CONFUSION)) {
 			return Optional.of(PAIN4);
+		}
+		else if (zombieGirl.getState() == PreggoMobState.BLUSHED) {
+			return Optional.of(HORNY2);
 		}
 		else if (zombieGirl.isWaiting()) {
 			return Optional.of(SAD2);

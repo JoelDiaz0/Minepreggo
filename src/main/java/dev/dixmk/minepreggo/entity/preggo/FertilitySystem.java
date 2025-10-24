@@ -22,7 +22,8 @@ public abstract class FertilitySystem<E extends TamableAnimal & IPreggoMob & IBr
 	private final Result evaluatePregnancyInitializerTimer() {			    	
 		if (preggoMob.isPregnant()) {					
 	        if (preggoMob.getPregnancyInitializerTimer() >= MinepreggoModConfig.getTicksToStartPregnancy()) {
-	        	startPregnancy();
+	        	this.startPregnancy();
+	        	preggoMob.discard();
 	        	return Result.SUCCESS;
 	        } else {
 	        	preggoMob.setPregnancyInitializerTimer(preggoMob.getPregnancyInitializerTimer() + 1);

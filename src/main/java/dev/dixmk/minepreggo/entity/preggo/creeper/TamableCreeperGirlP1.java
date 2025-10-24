@@ -45,13 +45,12 @@ public class TamableCreeperGirlP1 extends AbstractTamablePregnantCreeperGirl<Pre
 					PreggoMobHelper.transferPregnancyP1Data(preggoMob, creeperGirl);
 					PreggoMobHelper.transferPreggoMobInventary(preggoMob, creeperGirl);
 					PreggoMobHelper.transferAttackTarget(preggoMob, creeperGirl);
-					preggoMob.discard();
 				}
 			}
 			
 			@Override
-			protected void finishMiscarriage() {
-				TamableCreeperGirlP0.applyDefaultPostPartum(preggoMob);
+			protected void postMiscarriage() {
+				TamableCreeperGirlP0.onPostPartum(preggoMob);
 			}
 		};
 	}

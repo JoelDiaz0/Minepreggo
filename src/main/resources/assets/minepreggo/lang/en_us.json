@@ -21,8 +21,15 @@
 	"gui.minepreggo.player_main_gui.label_skin": "Skin",
 	"gui.minepreggo.player_main_gui.isFemaleCheckbox": "Female",
 	
+	"gui.minepreggo.preggo_mob_inventory.tooltip_sex": "Wanna Have Fun?",
+	"gui.minepreggo.preggo_mob_inventory.tooltip_checkbox_break": "Allow Her Break Soft Blocks",
+	"gui.minepreggo.preggo_mob_inventory.tooltip_checkbox_pickup": "Allow Her Pick Up Items",
+
+	"gui.minepreggo.preggo_mob_main.checkbox_follow": "Follow",
+	"gui.minepreggo.preggo_mob_main.checkbox_wait": "Wait",
+	"gui.minepreggo.preggo_mob_main.checkbox_break": "Break",
+	"gui.minepreggo.preggo_mob_main.checkbox_pickup": "PickUp",
 	
-	"gui.minepreggo.preggo_mob_inventory.tooltip_sex": "Wanna Fun?",
 	
 	
 	

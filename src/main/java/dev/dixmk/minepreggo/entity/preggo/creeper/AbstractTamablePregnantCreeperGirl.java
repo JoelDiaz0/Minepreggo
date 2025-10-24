@@ -16,6 +16,7 @@ import dev.dixmk.minepreggo.entity.preggo.PregnancySystemP1;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.utils.PreggoAIHelper;
+import dev.dixmk.minepreggo.utils.PreggoArmorHelper;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -26,6 +27,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -166,6 +168,24 @@ public abstract class AbstractTamablePregnantCreeperGirl<S extends PreggoMobSyst
 	}
 	
 	@Override
+   	public void aiStep() {
+      super.aiStep();  
+      if (this.isAlive()) {	  
+          this.pregnancySystem.evaluateOnTick();       
+      }
+	}
+	
+	@Override
+	protected boolean canReplaceCurrentItem(ItemStack p_21428_, ItemStack p_21429_) {	
+		if ((PreggoArmorHelper.isChest(p_21428_) && !PreggoArmorHelper.canPreggoMobUseChestplate(p_21428_, this.getCurrentPregnancyStage()))
+					|| (PreggoArmorHelper.isLegging(p_21428_) && !PreggoArmorHelper.canPreggoMobUseLegging(p_21428_, this.getCurrentPregnancyStage()))) {
+			return false;
+		}	
+		return super.canReplaceCurrentItem(p_21428_, p_21429_);
+	}
+	
+	
+	@Override
 	public SoundEvent getDeathSound() {
 		return ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "preggo_death"));
 	}
@@ -266,7 +286,7 @@ public abstract class AbstractTamablePregnantCreeperGirl<S extends PreggoMobSyst
 	}
 	
 	@Override
-	public boolean isIncapacitated() {
+	public boolean isIncapacitated() {	
 		return this.getPregnancyPain() != PregnancyPain.NONE;
 	}
 	

@@ -1,11 +1,13 @@
 package dev.dixmk.minepreggo.entity.preggo;
 
 import java.util.Comparator;
-import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Nonnull;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
+import dev.dixmk.minepreggo.network.packet.SexCinematicControlPacket;
+import dev.dixmk.minepreggo.server.ServerSexCinematicManager;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
@@ -24,7 +26,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
@@ -38,11 +40,39 @@ public class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 	protected int healingCooldownTimer = 0;
 	protected final int totalTicksOfHungry;
 	
+    private long cinematicEndTime = -1; 
+    private ServerPlayer cinematicOwner = null;
+
+	
 	public PreggoMobSystem(@Nonnull E preggoMob, int totalTicksOfHungry) {
 		this.preggoMob = preggoMob;	
 		this.randomSource = preggoMob.getRandom();
 		this.totalTicksOfHungry = totalTicksOfHungry;
 	}
+	
+    public void setCinematicOwner(ServerPlayer player) { this.cinematicOwner = player; }
+   
+    public void setCinematicEndTime(long time) { this.cinematicEndTime = time; }
+	
+	public void cinematicTick() {
+        if (cinematicEndTime > 0 && preggoMob.level().getGameTime() >= cinematicEndTime) {
+            endCinematic();
+        }
+	}
+	
+	private void endCinematic() {
+        if (cinematicOwner != null && ServerSexCinematicManager.isInCinematic(cinematicOwner)) {
+            ServerSexCinematicManager.end(cinematicOwner);
+            preggoMob.setState(PreggoMobState.IDLE);
+            MinepreggoModPacketHandler.INSTANCE.send(
+                PacketDistributor.PLAYER.with(() -> cinematicOwner),
+                new SexCinematicControlPacket(false, preggoMob.getId())
+            );
+        }
+        cinematicOwner = null;
+        cinematicEndTime = -1;
+    }
+	
 	
 	protected void evaluateHungryTimer(Level level, double x, double y, double z) {
 
@@ -98,15 +128,14 @@ public class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 	    }
 	}
 		
-	protected boolean canAutoFeeding() {
-		return (preggoMob.getHungry() > 5 || preggoMob.getHealth() > 5) && !preggoMob.isAggressive();
+	protected boolean canFeedHerself() {
+		final var currentHungry = preggoMob.getHungry();
+		return (currentHungry < 10 || (preggoMob.getHealth() < 20 && currentHungry < 18)) && !preggoMob.isAggressive();
 	}
 	
 	protected void evaluateAutoFeeding(Level level) {
-
-		var currentHungry = preggoMob.getHungry();
-		
-		if (!this.canAutoFeeding()) {
+	
+		if (!this.canFeedHerself()) {
 			return;
 		}
 				
@@ -115,38 +144,27 @@ public class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 			return;
 		}
 		
-		ItemStack food;		
-		AtomicReference<ItemStack> retval = new AtomicReference<>(ItemStack.EMPTY);
-		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> 
-			retval.set(capability.getStackInSlot(IPreggoMob.FOOD_INVENTORY_SLOT)));		
+		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> {		
+			ItemStack food = capability.extractItem(IPreggoMob.FOOD_INVENTORY_SLOT, 1, false);
+			
+			if (food.isEmpty()) {
+				return;
+			}
+			
+			final var foodProperties = food.getFoodProperties(preggoMob);
+			
+			if (foodProperties == null) {
+				return;
+			}
+			
+			preggoMob.setHungry(Math.min(preggoMob.getHungry() + foodProperties.getNutrition(), 25));	
+	        level.playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.generic.eat")), SoundSource.NEUTRAL, 0.75f, 1);	          	
 		
-		food = retval.get();
+			MinepreggoMod.LOGGER.debug("AUTO FEEDING: id={}, class={}, food={}",
+					preggoMob.getId(), preggoMob.getClass().getSimpleName(), food.getDisplayName().getString());
 		
-		if (food.isEmpty()) {
-			return;
-		}		
-		
-		final var foodProperties = food.getFoodProperties(preggoMob);
-		
-		if (foodProperties == null) {
-			return;
-		}
-		
-		preggoMob.setHungry(Math.min(currentHungry + foodProperties.getNutrition(), 25));	
-        level.playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.generic.eat")), SoundSource.NEUTRAL, 0.75f, 1);	          	
-
-		final var newFoodCount = food.getCount() - 1;
-				
-		MinepreggoMod.LOGGER.debug("AUTO FEEDING: id={}, class={}, food={}, newFoodCount={}",
-				preggoMob.getId(), preggoMob.getClass().getSimpleName(), food.getDisplayName().getString(), newFoodCount);
-		
-		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> {			
-			if (capability instanceof IItemHandlerModifiable modHandlerEntSetSlot) {			
-				modHandlerEntSetSlot.setStackInSlot(IPreggoMob.FOOD_INVENTORY_SLOT, newFoodCount == 0 ? ItemStack.EMPTY : food);
-			}			
+			autoFeedingCooldownTimer = 0;			
 		});
-		
-		autoFeedingCooldownTimer = 0;
 	}
 	
 	public void evaluateOnTick() {
@@ -155,13 +173,9 @@ public class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 		if (level.isClientSide()) {
 			return;
 		}
-		
-		final var x = preggoMob.getX();
-		final var y = preggoMob.getY();
-		final var z = preggoMob.getZ();
 			
-		evaluateHungryTimer(level, x, y, z);
-		evaluateAutoFeeding(level);
+		this.evaluateHungryTimer(level, preggoMob.getX(), preggoMob.getY(), preggoMob.getZ());
+		this.evaluateAutoFeeding(level);
 	}
 	
 	public InteractionResult evaluateRightClick(Player source) {			
@@ -173,7 +187,7 @@ public class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 		
 		Result result;
 		
-		if ((result = evaluateHungry(level, source)) != Result.NOTHING && level instanceof ServerLevel serverLevel) {
+		if ((result = this.evaluateHungry(level, source)) != Result.NOTHING && level instanceof ServerLevel serverLevel) {
 			spawnParticles(preggoMob, serverLevel, result);
 		}
 			
@@ -182,6 +196,7 @@ public class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 	
 	public boolean canOwnerAccessGUI(Player source) {			
 		return preggoMob.isOwnedBy(source)
+				&& !preggoMob.isAggressive()
 				&& !preggoMob.isSavage()
 				&& !preggoMob.isFood(source.getMainHandItem());
 	}

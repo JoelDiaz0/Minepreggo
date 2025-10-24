@@ -14,4 +14,9 @@ public class PregnantPreggoMobSystem
 	public boolean canOwnerAccessGUI(Player source) {
 		return super.canOwnerAccessGUI(source) && !preggoMob.isIncapacitated();
 	}
+	
+	@Override
+	protected boolean canFeedHerself() {
+		return super.canFeedHerself() && !preggoMob.isIncapacitated();
+	}
 }

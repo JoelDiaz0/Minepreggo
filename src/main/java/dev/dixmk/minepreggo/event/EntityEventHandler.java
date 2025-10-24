@@ -41,17 +41,21 @@ public class EntityEventHandler {
         
         if (mob instanceof AbstractTamablePregnantZombieGirl<?,?> zombieGirl && zombieGirl.getSpawnType() != MobSpawnType.CONVERSION) {
         	PreggoMobHelper.startPregnancy(zombieGirl);
+        	zombieGirl.setCanPickUpLoot(mob.getRandom().nextFloat() < 0.55F * event.getDifficulty().getSpecialMultiplier());
         }
         else if (mob instanceof AbstractTamablePregnantCreeperGirl<?,?> creeperGirl && creeperGirl.getSpawnType() != MobSpawnType.CONVERSION) {
         	PreggoMobHelper.startPregnancy(creeperGirl);
+        	creeperGirl.setCanPickUpLoot(mob.getRandom().nextFloat() < 0.35F * event.getDifficulty().getSpecialMultiplier());
         }
         else if (mob.getType() == MinepreggoModEntities.MONSTER_CREEPER_GIRL_P0.get()
         		&& mob.getRandom().nextFloat() < MinepreggoModConfig.getBabyCreeperGirlProbability()) {
         	mob.setBaby(true);
+        	mob.setCanPickUpLoot(mob.getRandom().nextFloat() < 0.55F * event.getDifficulty().getSpecialMultiplier());
         }
         else if (mob.getType() == MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P0.get()
         		&& mob.getRandom().nextFloat() < MinepreggoModConfig.getBabyZombieGirlProbability()) {
         	mob.setBaby(true);
+        	mob.setCanPickUpLoot(mob.getRandom().nextFloat() < 0.35F * event.getDifficulty().getSpecialMultiplier());
         }
     }
 	

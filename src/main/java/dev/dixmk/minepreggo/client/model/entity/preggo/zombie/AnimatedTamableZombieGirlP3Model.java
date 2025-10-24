@@ -5,6 +5,7 @@ import dev.dixmk.minepreggo.client.entity.animation.preggo.zombie.ZombieGirlAnim
 import dev.dixmk.minepreggo.entity.preggo.zombie.TamableZombieGirlP3;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -70,7 +71,9 @@ public class AnimatedTamableZombieGirlP3Model extends AbstractTamablePregnantZom
 					this.animate(zombieGirl.loopAnimationState, ZombieGirlAnimation.IDLE, ageInTicks, 1f);						
 				}	
 				
-			    this.animate(zombieGirl.loopAnimationState, HumanoidGirlAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);	
+			    if (zombieGirl.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {
+			    	this.animate(zombieGirl.loopAnimationState, HumanoidGirlAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);
+			    }
 			}	
 		});
 	}

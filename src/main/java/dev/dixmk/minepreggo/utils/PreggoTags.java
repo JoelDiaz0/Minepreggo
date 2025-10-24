@@ -4,7 +4,6 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Item;
 
 public class PreggoTags {
@@ -19,11 +18,7 @@ public class PreggoTags {
 	        TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_girl_food"));
 	
 	
-	
-	
-	
-	
-	
+
 
 	/*
 	public static final TagKey<MobEffect> PREGNANCY_STAGES_EFFECTS =

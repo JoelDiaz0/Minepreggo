@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractTamableCreeperGirlModel;
+import dev.dixmk.minepreggo.entity.preggo.PreggoMobState;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -24,7 +25,9 @@ public class TamableCreeperGirlExpressionLayer
 	protected static final RenderType SAD2 = RenderType.entityCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/creeper_girl_face_sad2.png"));
 	protected static final RenderType SAD3 = RenderType.entityCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/creeper_girl_face_sad3.png"));
 	protected static final RenderType PAIN4 = RenderType.entityCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/creeper_girl_face_pain4.png"));
+	protected static final RenderType HORNY2 = RenderType.entityCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/creeper_girl_face_horny2.png"));
 
+	
 	public TamableCreeperGirlExpressionLayer(RenderLayerParent<E, M> p_117346_) {
 		super(p_117346_);
 	}
@@ -42,6 +45,9 @@ public class TamableCreeperGirlExpressionLayer
 	public Optional<RenderType> renderType(E creeperGirl) {	
 		if (creeperGirl.hasEffect(MobEffects.CONFUSION)) {
 			return Optional.of(PAIN4);
+		}
+		else if (creeperGirl.getState() == PreggoMobState.BLUSHED) {
+			return Optional.of(HORNY2);
 		}
 		else if (creeperGirl.isWaiting()) {
 			return Optional.of(SAD2);

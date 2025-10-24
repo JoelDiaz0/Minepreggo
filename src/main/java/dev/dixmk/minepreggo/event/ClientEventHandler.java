@@ -3,9 +3,10 @@ package dev.dixmk.minepreggo.event;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.SexCinematicManager;
-import dev.dixmk.minepreggo.client.screen.effect.SexOverlay;
+import dev.dixmk.minepreggo.client.screen.effect.SexOverlayManager;
 import dev.dixmk.minepreggo.network.packet.SexCinematicAbortPacket;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -19,48 +20,32 @@ public class ClientEventHandler {
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
-        	SexOverlay.tick();
+        	SexOverlayManager.tick();
         }
         
-        // Only act at the start of the client tick
         if (event.phase == TickEvent.Phase.START) {
-            Minecraft mc = Minecraft.getInstance();
-            if ((mc.player == null || mc.level == null) && SexCinematicManager.isInCinematic()) {
-                SexCinematicManager.endCinematic();
-                return;
+            Minecraft mc = Minecraft.getInstance();        
+            var player = mc.player;        
+            if (player == null) return;
+                       
+            if (SexCinematicManager.isInCinematic()) {
+                Entity mob = mc.level.getEntity(SexCinematicManager.getActiveMobId());
+                if (mob == null || mob.isRemoved() || player.distanceToSqr(mob) > 25.0) {
+                    SexCinematicManager.endCinematic();
+                    MinepreggoModPacketHandler.INSTANCE.sendToServer(new SexCinematicAbortPacket(-1));
+                    return;
+                }
+                
+                player.input.leftImpulse = 0.0F;
+                player.input.forwardImpulse = 0.0F;
+                player.input.jumping = false;
+                player.input.shiftKeyDown = false;
+
+                player.setYRot(SexCinematicManager.getStoredYaw());
+                player.setXRot(SexCinematicManager.getStoredPitch());
+                player.yRotO = SexCinematicManager.getStoredYaw();
+                player.xRotO = SexCinematicManager.getStoredPitch(); 
             }
-
-            if (!SexCinematicManager.isInCinematic()) {
-                return; // Nothing to do
-            }
-
-            int mobId = SexCinematicManager.getActiveMobId();
-            var mob = mc.level.getEntity(mobId);
-
-            boolean shouldCancel = false;
-
-            // Player is gone (shouldn't happen mid-cinematic, but safe)
-            if (mc.player.isRemoved() 
-            		|| (mob == null || mob.isRemoved())
-            		|| mc.player.distanceToSqr(mob) > 16D) {
-                shouldCancel = true;
-            }
-        
-            if (shouldCancel) {
-                SexCinematicManager.endCinematic();
-                MinepreggoModPacketHandler.INSTANCE.sendToServer(new SexCinematicAbortPacket(mobId));
-                return;
-            }
-
-            mc.player.input.leftImpulse = 0.0F;
-            mc.player.input.forwardImpulse = 0.0F;
-            mc.player.input.jumping = false;
-            mc.player.input.shiftKeyDown = false;
-
-            mc.player.setYRot(SexCinematicManager.getStoredYaw());
-            mc.player.setXRot(SexCinematicManager.getStoredPitch());
-            mc.player.yRotO = SexCinematicManager.getStoredYaw();
-            mc.player.xRotO = SexCinematicManager.getStoredPitch(); 
-        };
+        }
     } 
 }

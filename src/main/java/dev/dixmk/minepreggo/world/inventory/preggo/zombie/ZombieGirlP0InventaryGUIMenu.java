@@ -7,7 +7,7 @@ import net.minecraft.network.FriendlyByteBuf;
 
 public class ZombieGirlP0InventaryGUIMenu extends AbstractZombieGirlInventaryGUIMenu<TamableZombieGirlP0> {
 	public ZombieGirlP0InventaryGUIMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
-		super(MinepreggoModMenus.ZOMBIE_GIRL_P0_INVENTARY_GUI.get(), TamableZombieGirlP0.class, id, inv, extraData);
+		super(MinepreggoModMenus.ZOMBIE_GIRL_P0_INVENTARY_GUI.get(), id, inv, extraData, TamableZombieGirlP0.class);
 	
 	}
 }

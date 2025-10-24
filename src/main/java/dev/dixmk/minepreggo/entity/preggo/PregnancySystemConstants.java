@@ -60,9 +60,5 @@ public class PregnancySystemConstants {
 	public static final int DESACTIVATE_FULL_BELLY_RUBS_STAGE = 4;
 	
 	public static final int ACTIVATE_HORNY_SYMPTOM = 17;
-	
-	
-	
-	
-	
+		
 }

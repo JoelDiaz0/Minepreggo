@@ -34,14 +34,14 @@ public class TamableZombieGirlP7 extends AbstractTamablePregnantZombieGirl<Pregn
 	protected PregnancySystemP7<TamableZombieGirlP7> createPregnancySystem() {
 		return new PregnancySystemP7<>(this) {
 			@Override
-			protected void finishBirth() {
-				TamableZombieGirlP0.applyDefaultPostPartum(preggoMob);
+			protected void postMiscarriage() {
+				TamableZombieGirlP0.onPostMiscarriage(preggoMob);
 			}
-
+			
 			@Override
-			protected void finishMiscarriage() {
-				TamableZombieGirlP0.applyDefaultPostMiscarriage(preggoMob);
-			}
+			protected void postBirth() {
+				TamableZombieGirlP0.onPostPartum(preggoMob);
+			}		
 		};
 	}
 

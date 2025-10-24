@@ -15,6 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
@@ -23,6 +24,7 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -42,9 +44,12 @@ public abstract class PregnancySystemP1<
 	protected Result evaluatePregnancyStageChange() {
 	    if (preggoMob.getDaysPassed() >= preggoMob.getDaysByStage()) {
 	    	this.changePregnancyStage();
-	    	MinepreggoMod.LOGGER.debug("pregnancy stage change={}, preggomob={}, currentPregnancyStage={}",
-	    			true, preggoMob.getClass().getName(), preggoMob.getCurrentPregnancyStage());
-	        return Result.SUCCESS;
+	    	
+	    	MinepreggoMod.LOGGER.debug("PREGNANCY CHANGE STAGE: id={}, class={}, currentPregnancyStage={}",
+	    		 	preggoMob.getId(), preggoMob.getClass().getSimpleName(), preggoMob.getCurrentPregnancyStage());
+	        	    	    	
+	    	this.preggoMob.discard();
+	    	return Result.SUCCESS;
 	    }
 	    return Result.NOTHING;
 	}
@@ -59,15 +64,21 @@ public abstract class PregnancySystemP1<
         }
 	}
 	
-	protected Result evaluateMiscarriage(ServerLevel serverLevel, double x, double y, double z, final int totalTicksOfMiscarriage) {
-   	    
+	protected Result evaluateMiscarriage(ServerLevel serverLevel, double x, double y, double z, final int totalTicksOfMiscarriage) {	    
 	    if (preggoMob.getPregnancyPain() == PregnancyPain.MISCARRIAGE) {
 	        if (preggoMob.getPregnancyPainTimer() < totalTicksOfMiscarriage) {
-	        	preggoMob.setPregnancyPainTimer(preggoMob.getPregnancyPainTimer() + 1);
-	        	
-	        	serverLevel.addParticle(ParticleTypes.FALLING_DRIPSTONE_LAVA, x, (y + preggoMob.getBbHeight() * 0.35), z, 0, 1, 0);	       
+	        	preggoMob.setPregnancyPainTimer(preggoMob.getPregnancyPainTimer() + 1);	        		        	
+	    		for (ServerPlayer player : serverLevel.getServer().getPlayerList().getPlayers()) {
+	    		    if (player.distanceToSqr(preggoMob) <= 512.0) { 
+	    				serverLevel.sendParticles(player, ParticleTypes.FALLING_DRIPSTONE_LAVA, true, x, (y + preggoMob.getBbHeight() * 0.35), z,
+	    						1, 0, 1, 0, 0.02);
+	    		    }
+	    		}
 	        
-	        } else {
+	        } else {        	
+	        	PreggoMobHelper.setItemstackOnOffHand(preggoMob, new ItemStack(BabyType.getDeadBabyItem(preggoMob.getBabyType()), PreggoMobHelper.getNumberOfChildrens(preggoMob.getMaxPregnancyStage())));
+	        	this.postMiscarriage();	 
+	        	this.preggoMob.discard();
 	        	return Result.SUCCESS;
 	        }
 	        return Result.PROCESS; 
@@ -90,10 +101,8 @@ public abstract class PregnancySystemP1<
 	
 	protected void evaluateAngry(Level level, double x, double y, double z, final float angerProbability) {
 
-	    if (!preggoMob.isAngry()) {
-	        if (activateAngry()) {
-	        	preggoMob.setAngry(true);
-	        }
+	    if (!preggoMob.isAngry() && this.canBeAngry()) {
+	    	preggoMob.setAngry(true);
 	    } else {
 	        if (!PreggoMobHelper.hasValidTarget(preggoMob) && randomSource.nextFloat() < angerProbability) {
 	            final Vec3 center = new Vec3(x, y, z);      
@@ -179,7 +188,7 @@ public abstract class PregnancySystemP1<
 			return;
 		}
 		
-		if (evaluatePregnancyStageChange() == Result.SUCCESS) {
+		if (this.evaluatePregnancyStageChange() == Result.SUCCESS) {
 			return;
 		}
 		
@@ -188,7 +197,7 @@ public abstract class PregnancySystemP1<
 		final var z = preggoMob.getZ();
 				
 		if (level instanceof ServerLevel serverLevel
-				&& evaluateMiscarriage(serverLevel, x, y, z, PregnancySystemConstants.TOTAL_TICKS_MISCARRIAGE) == Result.SUCCESS) {
+				&& this.evaluateMiscarriage(serverLevel, x, y, z, PregnancySystemConstants.TOTAL_TICKS_MISCARRIAGE) == Result.SUCCESS) {
 			return; 
 		}
 		
@@ -199,7 +208,7 @@ public abstract class PregnancySystemP1<
 		this.evaluatePregnancyPains();
 	}
 	
-	protected boolean activateAngry() {
+	protected boolean canBeAngry() {
 		return preggoMob.getCraving() >= 20 || preggoMob.getHungry() <= 2;
 	}
 
@@ -257,6 +266,6 @@ public abstract class PregnancySystemP1<
 	
 	protected abstract void changePregnancyStage();
 	
-	protected abstract void finishMiscarriage();
+	protected abstract void postMiscarriage();
 }
 

@@ -139,7 +139,6 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 				this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.WOODEN_AXE));
 			}
 		}
-
 	}
 	
 	public boolean canExplode() {
@@ -244,6 +243,7 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 	
 	@Override
 	public void tick() {	
+		super.tick();
 		if (this.level().isClientSide() && !this.loopAnimationState.isStarted()) {
 			this.loopAnimationState.start(this.tickCount);
 		}
@@ -270,8 +270,6 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 				this.explodeCreeper();
 			}
 		}	
-		
-		super.tick();
 	}
 	
     @Override
@@ -342,6 +340,7 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 	@Override
 	public boolean canHoldItem(ItemStack p_34332_) {
 		return !this.isPassenger() && super.canHoldItem(p_34332_);
+		
 	}
 
 	@Override

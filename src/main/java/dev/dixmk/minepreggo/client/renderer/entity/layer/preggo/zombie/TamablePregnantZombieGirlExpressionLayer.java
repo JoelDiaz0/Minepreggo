@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractTamablePregnantZombieGirlModel;
+import dev.dixmk.minepreggo.entity.preggo.PreggoMobState;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import net.minecraft.client.renderer.RenderType;
@@ -60,6 +61,9 @@ public class TamablePregnantZombieGirlExpressionLayer
 		
 		if (zombieGirl.getPregnancySymptom() != PregnancySymptom.NONE) {
 			return Optional.of(SAD1);
+		}
+		else if (zombieGirl.getState() == PreggoMobState.BLUSHED) {
+			return Optional.of(HORNY2);
 		}
 		else if (zombieGirl.isWaiting()) {
 			return Optional.of(SAD2);

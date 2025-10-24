@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
@@ -27,7 +27,7 @@ import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 
 import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -135,17 +135,56 @@ public class PreggoMobHelper {
 	public static <E extends TamableAnimal & IPreggoMob> void transferPreggoMobInventary(E source, E target) {
 		transferSlots(source, target);
 	
-		AtomicReference<IItemHandler> itemhandlerref = new AtomicReference<>();
-		source.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(itemhandlerref::set);		
-		if (itemhandlerref.get() != null) {	
-			for (int idx = 0; idx < itemhandlerref.get().getSlots(); idx++) {			
-				final int slotid = idx;			
-				target.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> {
-					if (capability instanceof IItemHandlerModifiable modHandlerEntSetSlot)
-						modHandlerEntSetSlot.setStackInSlot(slotid, itemhandlerref.get().getStackInSlot(slotid));
-				});
-			}
-		}	
+	    source.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(sourceHandler -> {
+	        target.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(targetHandler -> {
+	            if (targetHandler instanceof IItemHandlerModifiable modifiableTarget) {
+	                int slots = Math.min(sourceHandler.getSlots(), modifiableTarget.getSlots());
+	                for (int slot = 0; slot < slots; slot++) {
+	                    modifiableTarget.setStackInSlot(slot, sourceHandler.getStackInSlot(slot));
+	                }
+	            }
+	        });
+	    });
+	}
+	
+	public static<E extends TamableAnimal & IPreggoMob> void addItemToInventory(E preggoMob, ItemEntity itemEntity) {		
+		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(sourceHandler -> {		
+			var originalItemStack = itemEntity.getItem();
+			var remainder = ItemHandlerHelper.insertItemStacked(sourceHandler, originalItemStack, false);		
+			
+	        if (remainder.getCount() != originalItemStack.getCount()) {
+	            // Some (or all) was inserted
+	            if (remainder.isEmpty()) {
+	            	itemEntity.discard();
+	            } else {
+	            	itemEntity.setItem(remainder);
+	            }
+	        }		
+		});
+	}
+	
+	public static<E extends TamableAnimal & IPreggoMob> void storeItemInSpecificRange(E preggoMob, ItemEntity itemEntity, int minStorageSlot, int maxStorageSlot) {
+		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(sourceHandler -> {		
+			var originalItemStack = itemEntity.getItem();
+			var originalCount = originalItemStack.getCount();
+			
+		    for (int slot = minStorageSlot; slot <= maxStorageSlot && !originalItemStack.isEmpty(); slot++) {
+		    	originalItemStack = sourceHandler.insertItem(slot, originalItemStack, false);
+		    }		
+				    
+		    if (originalItemStack.getCount() != originalCount) {		    	
+	            
+		    	if (!preggoMob.level().isClientSide()) {
+			    	preggoMob.level().playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.item.pickup")), SoundSource.AMBIENT, 0.75F, 0.75F);	    	
+		    	}
+		    	
+		    	if (originalItemStack.isEmpty()) {
+	            	itemEntity.discard();
+	            } else {
+	            	itemEntity.setItem(originalItemStack);
+	            }
+		    }		  
+		});	
 	}
 	
 	private static <E extends TamableAnimal> void transferSlots(E source, E target) {
@@ -474,20 +513,14 @@ public class PreggoMobHelper {
 	        if (shouldTakeDamage(i, random) && stack.hurt(damageAmount, random, null)) {
                 stack.shrink(1);
                 stack.setDamageValue(0);
-	        }
-	
-	        // Handle sound or update inventory
-	        EquipmentSlot slot = EquipmentSlot.byTypeAndIndex(EquipmentSlot.Type.ARMOR, i);
-	        entity.setItemSlot(slot, stack); // Syncs with entity
-	
-	        if (stack.getDamageValue() >= stack.getMaxDamage()) {
-	            world.playSound(null, entity.blockPosition(), 
-	                ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.item.break")),
-	                SoundSource.NEUTRAL, 1.0F, 1.0F);
-	        } else {
-	            // Update capability if needed (optional, often redundant if setItemSlot is used)
-	            updateItemHandler(entity, i + 1, stack);
-	        }
+                
+    	        if (stack.getDamageValue() >= stack.getMaxDamage()) {
+    	            world.playSound(null, entity.blockPosition(), 
+    	                ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.item.break")),
+    	                SoundSource.NEUTRAL, 1.0F, 1.0F);
+    	        }
+                updateItemHandler(entity, i + 1, stack);
+	        }	
 	    }
 	}
 	
@@ -511,11 +544,59 @@ public class PreggoMobHelper {
 	}
 
 	private static<E extends TamableAnimal & IPreggoMob> void updateItemHandler(E entity, int slotId, ItemStack stack) {
-	    entity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(handler -> {
+		entity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(handler -> {
 	        if (handler instanceof IItemHandlerModifiable modHandler) {
 	            modHandler.setStackInSlot(slotId, stack);
 	        }
 	    });
+	}
+
+	public static<E extends TamableAnimal & IPreggoMob & IPregnancySystem> void setItemstackOnOffHand(E preggoMob, @Nonnull ItemStack itemStack) {			
+		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(handler -> {			    	
+			if (handler instanceof IItemHandlerModifiable modHandler) {
+				
+				var oldItemstack = modHandler.getStackInSlot(IPreggoMob.OFFHAND_INVENTORY_SLOT);
+				
+				if (!oldItemstack.isEmpty()) {
+					removeAndDropItemStackFromEquipmentSlot(preggoMob, EquipmentSlot.OFFHAND);			
+				}
+						
+	            modHandler.setStackInSlot(IPreggoMob.OFFHAND_INVENTORY_SLOT, itemStack);
+	            preggoMob.setItemSlot(EquipmentSlot.OFFHAND, itemStack);
+	        }	
+		});
+	}
+	
+	
+	public static<E extends TamableAnimal & IPreggoMob> void removeAndDropItemStackFromEquipmentSlot(E preggoMob, EquipmentSlot slotId) {			
+		if (dropItemStack(preggoMob, preggoMob.getItemBySlot(slotId))) {		
+			preggoMob.setItemSlot(slotId, ItemStack.EMPTY);
+			preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(handler -> {			    
+		        if (handler instanceof IItemHandlerModifiable modHandler) {
+		            modHandler.setStackInSlot(slotId.getFilterFlag(), ItemStack.EMPTY);
+		        }	
+			});			
+		}	
+	}
+	
+	public static void removeAndDropItemStackFromEquipmentSlot(Player player, EquipmentSlot slotId) {
+		if (dropItemStack(player, player.getItemBySlot(slotId))) {
+			player.setItemSlot(slotId, ItemStack.EMPTY);
+		}
+ 	}
+		
+	private static boolean dropItemStack(LivingEntity entity, ItemStack stack) {
+	    if (!stack.isEmpty()) {
+	        ItemEntity item = new ItemEntity(
+	            entity.level(),
+	            entity.getX(), entity.getY(), entity.getZ(),
+	            stack
+	        );
+	        item.setDefaultPickUpDelay();
+	        entity.level().addFreshEntity(item);
+	        return true;
+	    }
+	    return false;
 	}
 }
 

@@ -64,7 +64,6 @@ public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl<PreggoMobSy
 					PreggoMobHelper.transferPreggoMobBasicData(preggoMob, creeperGirl);			
 					PreggoMobHelper.transferPreggoMobInventary(preggoMob, creeperGirl);
 					PreggoMobHelper.transferAttackTarget(preggoMob, creeperGirl);
-					preggoMob.discard();
 				}			
 			}
 		};
@@ -156,38 +155,36 @@ public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl<PreggoMobSy
 	public static TamableCreeperGirlP0 spawnPostMiscarriage(ServerLevel serverLevel, double x, double y, double z) {
 		var creeperGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P0.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);
 		creeperGirl.getEntityData().set(DATA_POST_PREGNANCY, PostPregnancy.MISCARRIAGE);
-		applyPostPregnancyAttibutes(creeperGirl);
+		addPostPregnancyAttibutes(creeperGirl);
 		return creeperGirl;
 	}
 	
 	public static TamableCreeperGirlP0 spawnPostPartum(ServerLevel serverLevel, double x, double y, double z) {
 		var creeperGirl = MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P0	.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.CONVERSION);	
 		creeperGirl.getEntityData().set(DATA_POST_PREGNANCY, PostPregnancy.PARTUM);
-		applyPostPregnancyAttibutes(creeperGirl);
+		addPostPregnancyAttibutes(creeperGirl);
 		return creeperGirl;
 	}
 	
-	public static<E extends AbstractTamablePregnantCreeperGirl<?,?>> void applyDefaultPostPartum(E source) {
+	public static<E extends AbstractTamablePregnantCreeperGirl<?,?>> void onPostPartum(E source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
 			var creeperGirl = TamableCreeperGirlP0.spawnPostPartum(serverLevel, source.getX(), source.getY(), source.getZ());
 			PreggoMobHelper.transferPreggoMobBasicData(source, creeperGirl);
 			PreggoMobHelper.transferPreggoMobInventary(source, creeperGirl);
 			PreggoMobHelper.transferAttackTarget(source, creeperGirl);
-			source.discard();
 		}
 	}
 	
-	public static<E extends AbstractTamablePregnantCreeperGirl<?,?>> void applyDefaultPostMiscarriage(E source) {
+	public static<E extends AbstractTamablePregnantCreeperGirl<?,?>> void onPostMiscarriage(E source) {
 		if (source.level() instanceof ServerLevel serverLevel) {
 			var creeperGirl = TamableCreeperGirlP0.spawnPostMiscarriage(serverLevel, source.getX(), source.getY(), source.getZ());
 			PreggoMobHelper.transferPreggoMobBasicData(source, creeperGirl);
 			PreggoMobHelper.transferPreggoMobInventary(source, creeperGirl);
 			PreggoMobHelper.transferAttackTarget(source, creeperGirl);
-			source.discard();
 		}
 	}
 	
-	private static void applyPostPregnancyAttibutes(TamableCreeperGirlP0 creeperGirl) {
+	private static void addPostPregnancyAttibutes(TamableCreeperGirlP0 creeperGirl) {
 		AttributeInstance speed = creeperGirl.getAttribute(Attributes.MOVEMENT_SPEED);
 		AttributeInstance maxHealth = creeperGirl.getAttribute(Attributes.MAX_HEALTH);	
 		speed.addTransientModifier(TamableCreeperGirlP0.SPEED_MODIFIER_TIRENESS);	

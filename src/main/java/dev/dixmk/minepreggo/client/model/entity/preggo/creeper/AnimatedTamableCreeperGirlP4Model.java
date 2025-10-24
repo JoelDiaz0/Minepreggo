@@ -6,6 +6,7 @@ import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractTamablePregnantCreeper
 import dev.dixmk.minepreggo.entity.preggo.creeper.TamableCreeperGirlP4;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -86,7 +87,9 @@ public class AnimatedTamableCreeperGirlP4Model extends AbstractTamablePregnantCr
 					this.animate(creeperGirl.loopAnimationState, CreeperGirlAnimation.IDLE, ageInTicks, 1f);						
 				}
 				
-			    this.animate(creeperGirl.loopAnimationState, HumanoidGirlAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);	
+			    if (creeperGirl.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {
+			    	this.animate(creeperGirl.loopAnimationState, HumanoidGirlAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);
+			    }
 			}	
 		};
 	}

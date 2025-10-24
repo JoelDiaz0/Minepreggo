@@ -1,4 +1,4 @@
-package dev.dixmk.minepreggo.network.preggo.creeper;
+package dev.dixmk.minepreggo.network.packet;
 
 import java.util.function.Supplier;
 

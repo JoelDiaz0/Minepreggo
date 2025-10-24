@@ -11,6 +11,7 @@ import dev.dixmk.minepreggo.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
 import dev.dixmk.minepreggo.utils.CreeperGirlGUIMenuFactory;
 import dev.dixmk.minepreggo.utils.PreggoAIHelper;
+import dev.dixmk.minepreggo.utils.PreggoArmorHelper;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
 
 import net.minecraft.core.Direction;
@@ -37,6 +38,7 @@ import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -63,9 +65,12 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	protected static final EntityDataAccessor<PreggoMobState> DATA_STATE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.STATE);
 	protected static final EntityDataAccessor<CombatMode> DATA_COMBAT_MODE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.COMBAT_MODE);
 
-	public static final int INVENTARY_SIZE = 13;
-	protected final ItemStackHandler inventory;
-	protected final CombinedInvWrapper combined;
+	protected static final EntityDataAccessor<Boolean> DATA_BREAK_BLOCKS = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
+	protected static final EntityDataAccessor<Boolean> DATA_PICKUP_ITEMS = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.BOOLEAN);
+	
+	public static final int INVENTORY_SIZE = 13;
+	protected final ItemStackHandler inventory = new ItemStackHandler(INVENTORY_SIZE);; 
+	protected final CombinedInvWrapper combined = new CombinedInvWrapper(inventory, new EntityHandsInvWrapper(this), new EntityArmorInvWrapper(this));
 	
 	private int hungryTimer = 0;
 	private int poweredTimer = 0; 
@@ -74,8 +79,6 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	protected AbstractTamableCreeperGirl(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_) {
 	      super(p_21803_, p_21804_);
 	      this.reassessTameGoals();	   
-	      this.inventory = new ItemStackHandler(INVENTARY_SIZE);
-	      this.combined = new CombinedInvWrapper(inventory, new EntityHandsInvWrapper(this), new EntityArmorInvWrapper(this));
 	      this.preggoMobSystem = createPreggoMobSystem();
 	}
 		 
@@ -91,6 +94,8 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 		this.entityData.define(DATA_ANGRY, false);
 		this.entityData.define(DATA_WAITING, false);
 		this.entityData.define(DATA_PANIC, false);
+		this.entityData.define(DATA_BREAK_BLOCKS, false);
+		this.entityData.define(DATA_PICKUP_ITEMS, this.canPickUpLoot());
 		
 		this.entityData.define(DATA_MAX_PREGNANCY_STAGE, PregnancyStage.P0);
 		this.entityData.define(DATA_PREGNANCY_SYMPTOM, PregnancySymptom.NONE);
@@ -109,6 +114,8 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 		compound.putBoolean("DataWaiting", this.entityData.get(DATA_WAITING));
 		compound.putBoolean("DataAngry", this.entityData.get(DATA_ANGRY));
 		compound.putBoolean("DataPanic", this.entityData.get(DATA_PANIC));
+		compound.putBoolean("DataBreakBlocks", this.entityData.get(DATA_BREAK_BLOCKS));
+		compound.putBoolean("DataPickUpItems", this.entityData.get(DATA_PICKUP_ITEMS));
 		compound.putInt("DataPoweredTimer", this.poweredTimer);
 		compound.putInt("DataMaxPregnancyStage", this.entityData.get(DATA_MAX_PREGNANCY_STAGE).ordinal());
 		compound.putInt("DataPregnancySymptom", this.entityData.get(DATA_PREGNANCY_SYMPTOM).ordinal());	
@@ -127,7 +134,9 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 		this.entityData.set(DATA_SAVAGE, compound.getBoolean("DataSavage"));		
 		this.entityData.set(DATA_WAITING, compound.getBoolean("DataWaiting"));		
 		this.entityData.set(DATA_ANGRY, compound.getBoolean("DataAngry"));	
-		this.entityData.set(DATA_PANIC, compound.getBoolean("DataPanic"));	
+		this.entityData.set(DATA_PANIC, compound.getBoolean("DataPanic"));
+		this.entityData.set(DATA_BREAK_BLOCKS, compound.getBoolean("DataBreakBlocks"));	
+		this.entityData.set(DATA_PICKUP_ITEMS, compound.getBoolean("DataPickUpItems"));	
 		this.poweredTimer = compound.getInt("DataPoweredTimer");
 		this.entityData.set(DATA_PREGNANCY_SYMPTOM, PregnancySymptom.values()[compound.getInt("DataPregnancySymptom")]);
 		this.entityData.set(DATA_MAX_PREGNANCY_STAGE, PregnancyStage.values()[compound.getInt("DataMaxPregnancyStage")]);
@@ -196,7 +205,7 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	@Override
 	protected void dropEquipment() {
 		super.dropEquipment();
-		for (int i = 0; i < inventory.getSlots(); ++i) {
+		for (int i = IPreggoMob.FOOD_INVENTORY_SLOT; i < inventory.getSlots(); ++i) {
 			ItemStack itemstack = inventory.getStackInSlot(i);
 			if (!itemstack.isEmpty() && !EnchantmentHelper.hasVanishingCurse(itemstack)) {
 				this.spawnAtLocation(itemstack);
@@ -243,16 +252,6 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	}
 	
 	@Override
-	public ItemStackHandler getInventary() {
-		return this.inventory;
-	}
-
-	@Override
-	public CombinedInvWrapper getCombined() {
-		return this.combined;
-	}
-	
-	@Override
 	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {				
 		var retval = super.mobInteract(sourceentity, hand);	
 		
@@ -277,6 +276,33 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 		}	
 	}
 
+	@Override
+	protected boolean canReplaceCurrentItem(ItemStack p_21428_, ItemStack p_21429_) {	
+		if ((PreggoArmorHelper.isChest(p_21428_) && !PreggoArmorHelper.canPreggoMobUseChestplate(p_21428_, PregnancyStage.P0))
+					|| (PreggoArmorHelper.isLegging(p_21428_) && !PreggoArmorHelper.canPreggoMobUseLegging(p_21428_, PregnancyStage.P0))) {
+			return false;
+		}	
+		return super.canReplaceCurrentItem(p_21428_, p_21429_);
+	}
+	
+	
+	@Override
+	protected void pickUpItem(ItemEntity p_21471_) {
+		ItemStack itemstack = p_21471_.getItem();
+		ItemStack itemstack1 = this.equipItemIfPossible(itemstack.copy());			
+		if (!itemstack1.isEmpty()) {
+			this.onItemPickup(p_21471_);
+			this.take(p_21471_, itemstack1.getCount());
+			itemstack.shrink(itemstack1.getCount());		
+			if (itemstack.isEmpty()) {
+				p_21471_.discard();
+			}
+		}
+		else {
+			PreggoMobHelper.storeItemInSpecificRange(this, p_21471_, IPreggoMob.FOOD_INVENTORY_SLOT + 1, INVENTORY_SIZE - 1);	
+		}
+	}
+	
 	protected static AttributeSupplier.Builder getBasicAttributes(double movementSpeed) {
 		return Mob.createMobAttributes()
 				.add(Attributes.MAX_HEALTH, 26D)
@@ -293,8 +319,12 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	@Override
 	public void tick() {
 		super.tick();
-		
-		if (this.isPowered() && !this.level().isClientSide()) {		
+			
+		if (this.level().isClientSide()) return;
+				
+		preggoMobSystem.cinematicTick();
+				
+		if (this.isPowered()) {		
 			if (this.poweredTimer > 24000) {
 				this.poweredTimer = 0;
 				this.setPower(false);
@@ -383,6 +413,37 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	@Override
 	public void setPanic(boolean panic) {
 	    this.entityData.set(DATA_PANIC, panic);
+	}
+	
+	@Override
+	public void setCinematicOwner(ServerPlayer player) {
+		preggoMobSystem.setCinematicOwner(player);
+	}
+
+	@Override
+	public void setCinematicEndTime(long time) {
+		preggoMobSystem.setCinematicEndTime(time);
+	}
+	
+	@Override
+	public boolean canPickUpItems() {
+		return this.entityData.get(DATA_PICKUP_ITEMS);
+	}
+
+	@Override
+	public void setPickUpItems(boolean value) {
+		this.entityData.set(DATA_PICKUP_ITEMS, value);	
+		this.setCanPickUpLoot(value);
+	}
+
+	@Override
+	public boolean canBreakBlocks() {
+		return this.entityData.get(DATA_BREAK_BLOCKS);
+	}
+
+	@Override
+	public void setBreakBlocks(boolean value) {
+		this.entityData.set(DATA_BREAK_BLOCKS, value);
 	}
 	
 	@Override

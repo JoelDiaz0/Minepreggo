@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractTamablePregnantCreeperGirlModel;
+import dev.dixmk.minepreggo.entity.preggo.PreggoMobState;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import net.minecraft.client.renderer.RenderType;
@@ -17,7 +18,7 @@ public class TamablePregnantCreeperGirlExpressionLayer
 	<E extends AbstractTamablePregnantCreeperGirl<?,?>, M extends AbstractTamablePregnantCreeperGirlModel<E>> extends TamableCreeperGirlExpressionLayer<E, M> {
 	
 	protected static final RenderType ANGRY1 = RenderType.entityCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/creeper_girl_face_angry1.png"));
-	protected static final RenderType HORNY2 = RenderType.entityCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/creeper_girl_face_horny2.png"));
+	protected static final RenderType HORNY1 = RenderType.entityCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/creeper_girl_face_horny1.png"));
 	protected static final RenderType PAIN1 = RenderType.entityCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/creeper_girl_face_pain1.png"));
 	protected static final RenderType PAIN3 = RenderType.entityCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/creeper_girl_face_pain3.png"));
 	protected static final RenderType PAIN2 = RenderType.entityCutoutNoCull(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/expressions/creeper_girl_face_pain2.png"));
@@ -55,6 +56,9 @@ public class TamablePregnantCreeperGirlExpressionLayer
 		
 		if (creeperGirl.getPregnancySymptom() != PregnancySymptom.NONE) {
 			return Optional.of(SAD1);
+		}
+		else if (creeperGirl.getState() == PreggoMobState.BLUSHED) {
+			return Optional.of(HORNY2);
 		}
 		else if (creeperGirl.isWaiting()) {
 			return Optional.of(SAD2);

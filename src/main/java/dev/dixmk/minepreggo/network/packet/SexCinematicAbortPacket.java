@@ -33,7 +33,7 @@ public class SexCinematicAbortPacket {
             if (context.getDirection().getReceptionSide().isServer()) {
                 var player = context.getSender();
                 if (player != null) {
-                    ServerSexCinematicManager.endCinematic(player);
+                    ServerSexCinematicManager.end(player);
                 }          	          	
             }		
 		});

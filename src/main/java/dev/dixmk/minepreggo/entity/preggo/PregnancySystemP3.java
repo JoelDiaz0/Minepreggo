@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.entity.preggo.PreggoMobSystem.Result;
+import dev.dixmk.minepreggo.utils.PreggoMobHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -13,7 +14,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -70,6 +70,7 @@ public abstract class PregnancySystemP3 <E extends TamableAnimal
 			}
 			else if (randomSource.nextFloat() < PregnancySystemConstants.LOW_PREGNANCY_PAIN_PROBABILITY) {
 				preggoMob.setPregnancyPain(PregnancyPain.KICKING);
+				PreggoMobHelper.removeAndDropItemStackFromEquipmentSlot(preggoMob, EquipmentSlot.CHEST);				
 				flag = true;
 			}	
 			
@@ -93,8 +94,8 @@ public abstract class PregnancySystemP3 <E extends TamableAnimal
 	
 	
 	@Override
-	protected boolean activateAngry() {
-		return super.activateAngry() || preggoMob.getBellyRubs() >= 20;
+	protected boolean canBeAngry() {
+		return super.canBeAngry() || preggoMob.getBellyRubs() >= 20;
 	}
 	
 	@Override
@@ -150,38 +151,29 @@ public abstract class PregnancySystemP3 <E extends TamableAnimal
 	
 	protected Result evaluateBellyRubs(Level level, Player source) {	
 	
-		if (!canOwnerRubBelly(source)) {	
-			return Result.NOTHING;
-		}		
-		
+		if (!canOwnerRubBelly(source)) return Result.NOTHING;
+						
 		level.playSound(null, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "belly_touch")), SoundSource.NEUTRAL, 0.75F, 1);
 		var currentBellyRubs = preggoMob.getBellyRubs();
 	
-		
-		if (preggoMob.getPregnancySymptom() == PregnancySymptom.BELLY_RUBS
-				&& currentBellyRubs > PregnancySystemConstants.DESACTIVATE_FULL_BELLY_RUBS_STAGE) {		
-			
-			currentBellyRubs = Math.max(0, currentBellyRubs - PregnancySystemConstants.BELLY_RUBBING_VALUE);
+		if (currentBellyRubs > 0) {					
+			currentBellyRubs = Math.max(0, currentBellyRubs - PregnancySystemConstants.BELLY_RUBBING_VALUE);			
 			preggoMob.setBellyRubs(currentBellyRubs);
-			
-			if (currentBellyRubs <= PregnancySystemConstants.DESACTIVATE_FULL_BELLY_RUBS_STAGE) {
-				preggoMob.setPregnancySymptom(PregnancySymptom.NONE);
-			}
+						
+			if (preggoMob.getPregnancySymptom() == PregnancySymptom.BELLY_RUBS
+					&& currentBellyRubs <= PregnancySystemConstants.DESACTIVATE_FULL_BELLY_RUBS_STAGE) {									
+				preggoMob.setPregnancySymptom(PregnancySymptom.NONE);							
+			}	
 			
 			return Result.SUCCESS;
-		}
-		else if (currentBellyRubs > 0) {		
-			currentBellyRubs = Math.max(0, currentBellyRubs - PregnancySystemConstants.BELLY_RUBBING_VALUE);
-			preggoMob.setBellyRubs(currentBellyRubs);
-			return Result.NOTHING;
 		}		
 		
 		return Result.ANGRY;
 	}
 	
 	protected boolean canOwnerRubBelly(Player source) {
-		return source.getMainHandItem().getItem() == ItemStack.EMPTY.getItem() 
+		return source.getMainHandItem().isEmpty() 
 				&& source.getDirection() == preggoMob.getDirection().getOpposite()
-				&& preggoMob.getItemBySlot(EquipmentSlot.CHEST).getItem() == ItemStack.EMPTY.getItem();
+				&& preggoMob.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
 	}
 }

@@ -5,6 +5,7 @@ import dev.dixmk.minepreggo.client.entity.animation.preggo.creeper.CreeperGirlAn
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractMonsterPregnantCreeperGirl;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -43,8 +44,10 @@ public abstract class AbstractMonsterPregnantCreeperGirlModel<E extends Abstract
 			public void setupAnim(E creeperGirl, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 				this.root().getAllParts().forEach(ModelPart::resetPose);
 					
-			    this.animate(creeperGirl.loopAnimationState, HumanoidGirlAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);	
-				
+			    if (creeperGirl.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {
+			    	this.animate(creeperGirl.loopAnimationState, HumanoidGirlAnimation.MEDIUM_BELLY_INFLATION, ageInTicks, 1f);
+			    }
+								
 			    if (creeperGirl.isAttacking()) {
 				    this.animate(creeperGirl.attackAnimationState, CreeperGirlAnimation.ATTACK, ageInTicks, 1f);	
 			    }

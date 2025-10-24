@@ -6,12 +6,15 @@ import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractTamableZombieGirl;
-
+import dev.dixmk.minepreggo.world.entity.ai.goal.BreakBlocksToFollowOwnerGoal;
+import dev.dixmk.minepreggo.world.entity.ai.goal.PreggoMobFollowOwnerGoal;
+import dev.dixmk.minepreggo.world.entity.ai.goal.PregnantPreggoMobFollowOwnerGoal;
+import dev.dixmk.minepreggo.world.entity.ai.goal.PregnantPreggoMobOwnerHurtByTargetGoal;
+import dev.dixmk.minepreggo.world.entity.ai.goal.PregnantPreggoMobOwnerHurtTargetGoal;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.FleeSunGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
-import net.minecraft.world.entity.ai.goal.FollowOwnerGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
@@ -211,7 +214,8 @@ public class PreggoAIHelper {
 				&& !zombieGirl.isOnFire();	
 			}
 		});
-		zombieGirl.goalSelector.addGoal(6, new PregnantPreggoMobFollowOwnerGoal<>(zombieGirl, 1.2D, 6F, 2F, false) {
+		
+		zombieGirl.goalSelector.addGoal(6, new PregnantPreggoMobFollowOwnerGoal<>(zombieGirl, 1.2D, 7F, 2F, false) {
 			@Override
 			public boolean canUse() {
 				return super.canUse() 
@@ -298,6 +302,9 @@ public class PreggoAIHelper {
 		
 		preggoMob.targetSelector.addGoal(2, new HurtByTargetGoal(preggoMob));	
 		
+		preggoMob.targetSelector.addGoal(4, new BreakBlocksToFollowOwnerGoal<>(preggoMob, 2, 7));	
+		
+		
 		preggoMob.goalSelector.addGoal(5, new MeleeAttackGoal(preggoMob, 1.2D, false));
 			
 		preggoMob.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(preggoMob, 1.0D) {
@@ -357,6 +364,22 @@ public class PreggoAIHelper {
 				&& !preggoMob.isIncapacitated();
 			}
 		});
+		
+		
+		preggoMob.targetSelector.addGoal(4, new BreakBlocksToFollowOwnerGoal<>(preggoMob, 2, 7) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() 
+				&& !preggoMob.isIncapacitated();
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse()
+				&& !preggoMob.isIncapacitated();
+			}
+		});	
+
 		
 		preggoMob.goalSelector.addGoal(5, new MeleeAttackGoal(preggoMob, 1.2D, false){
 			@Override
@@ -444,119 +467,7 @@ public class PreggoAIHelper {
 			}
 		});
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	private static class PreggoMobFollowOwnerGoal<T extends TamableAnimal & IPreggoMob> extends FollowOwnerGoal {
 
-		public PreggoMobFollowOwnerGoal(T p_25294_, double p_25295_, float p_25296_, float p_25297_,
-				boolean p_25298_) {
-			super(p_25294_, p_25295_, p_25296_, p_25297_, p_25298_);		
-		}
-
-		@Override
-		public void tick() {
-			this.tamable.getLookControl().setLookAt(this.owner, 10.0F, this.tamable.getMaxHeadXRot());
-			if (--this.timeToRecalcPath <= 0) {
-				this.timeToRecalcPath = this.adjustedTickDelay(10);
-				this.navigation.moveTo(this.owner, this.speedModifier);
-			}		
-			
-			if (!this.tamable.level().isClientSide()
-					&& this.tamable.getTarget() != null
-					&& this.tamable.distanceToSqr(this.owner) > 169D) {
-				this.tamable.setTarget(null);
-				this.navigation.stop();
-			}		
-		}
-		
-		@Override
-		public boolean canUse() {
-			return super.canUse() 
-			&& !PreggoMobHelper.hasValidTarget(this.tamable);
-		}
-
-		@Override
-		public boolean canContinueToUse() {
-			return super.canContinueToUse()
-			&& !PreggoMobHelper.isTargetStillValid(this.tamable);
-		}
-	}
-	
-	private static class PregnantPreggoMobOwnerHurtByTargetGoal<T extends TamableAnimal & IPreggoMob & IPregnancySystem> extends OwnerHurtByTargetGoal {
-
-		private final T preggoMob;
-		
-		public PregnantPreggoMobOwnerHurtByTargetGoal(T p_26107_) {
-			super(p_26107_);
-			this.preggoMob = p_26107_;
-		}
-		
-		@Override
-		public boolean canUse() {
-			return super.canUse() 
-			&& !preggoMob.isIncapacitated()
-			&& !preggoMob.isWaiting()
-			&& !preggoMob.isSavage();
-		}
-		@Override
-		public boolean canContinueToUse() {
-			return super.canContinueToUse() 
-			&& !preggoMob.isIncapacitated();
-		}	
-	}
-	
-	private static class PregnantPreggoMobOwnerHurtTargetGoal<T extends TamableAnimal & IPreggoMob & IPregnancySystem> extends OwnerHurtTargetGoal {
-		private final T preggoMob;
-		
-		public PregnantPreggoMobOwnerHurtTargetGoal(T p_26107_) {
-			super(p_26107_);
-			this.preggoMob = p_26107_;
-		}
-
-		@Override
-		public boolean canUse() {
-			return super.canUse() 
-			&& !preggoMob.isIncapacitated()
-			&& !preggoMob.isWaiting()
-			&& !preggoMob.isSavage();
-		}
-
-		@Override
-		public boolean canContinueToUse() {
-			return super.canContinueToUse()
-			&& !preggoMob.isIncapacitated();	
-		}
-	}
-
-	private static class PregnantPreggoMobFollowOwnerGoal<T extends TamableAnimal & IPreggoMob & IPregnancySystem> extends PreggoMobFollowOwnerGoal<T> {
-		private final T preggoMob;
-		
-		public PregnantPreggoMobFollowOwnerGoal(T p_25294_, double p_25295_, float p_25296_, float p_25297_, boolean p_25298_) {
-			super(p_25294_, p_25295_, p_25296_, p_25297_, p_25298_);
-			this.preggoMob = p_25294_;	
-		}
-		
-		@Override
-		public boolean canUse() {
-			return super.canUse() 
-			&& !preggoMob.isIncapacitated()
-			&& !preggoMob.isWaiting()
-			&& !preggoMob.isSavage();
-		}
-
-		@Override
-		public boolean canContinueToUse() {
-			return super.canContinueToUse()
-			&& !preggoMob.isIncapacitated();
-		}	
-	}
 }
 
 

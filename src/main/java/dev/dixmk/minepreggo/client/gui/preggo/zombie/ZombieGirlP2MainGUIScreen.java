@@ -25,17 +25,13 @@ public class ZombieGirlP2MainGUIScreen extends AbstractZombieGirlMainGUIScreen<T
 		RenderSystem.defaultBlendFunc();
 		guiGraphics.blit(PreggoGUIHelper.DEFAULT_P2_MAIN_GUI_TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
 
-		if (this.zombieGirl != null) {
-			PreggoGUIHelper.renderZombieGirlP2MainGUI(guiGraphics, this.leftPos, this.topPos, this.zombieGirl.getHealth(), this.zombieGirl);
-		}
+		this.preggoMob.ifPresent(zombieGirl -> PreggoGUIHelper.renderZombieGirlP2MainGUI(guiGraphics, this.leftPos, this.topPos, zombieGirl.getHealth(), zombieGirl));
 
 		RenderSystem.disableBlend();
 	}
 
 	@Override
-	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		if (this.zombieGirl != null)
-			PreggoGUIHelper.renderP2LabelMainGUI(guiGraphics, this.font, this.zombieGirl);
+	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) { 
+		this.preggoMob.ifPresent(zombieGirl -> PreggoGUIHelper.renderP2LabelMainGUI(guiGraphics, this.font, zombieGirl));	
 	}
-
 }

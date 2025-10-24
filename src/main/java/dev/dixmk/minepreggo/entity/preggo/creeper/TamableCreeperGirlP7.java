@@ -34,13 +34,13 @@ public class TamableCreeperGirlP7 extends AbstractTamablePregnantCreeperGirl<Pre
 	protected PregnancySystemP7<TamableCreeperGirlP7> createPregnancySystem() {
 		return new PregnancySystemP7<>(this) {		
 			@Override
-			protected void finishMiscarriage() {
-				TamableCreeperGirlP0.applyDefaultPostMiscarriage(preggoMob);
+			protected void postMiscarriage() {
+				TamableCreeperGirlP0.onPostMiscarriage(preggoMob);
 			}
 			
 			@Override
-			protected void finishBirth() {
-				TamableCreeperGirlP0.applyDefaultPostPartum(preggoMob);
+			protected void postBirth() {
+				TamableCreeperGirlP0.onPostPartum(preggoMob);
 			}
 		};
 	}

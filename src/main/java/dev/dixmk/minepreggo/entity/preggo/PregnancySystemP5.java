@@ -28,18 +28,18 @@ public abstract class PregnancySystemP5<E extends TamableAnimal
 		final var z = preggoMob.getZ();
 		
 		if (level instanceof ServerLevel serverLevel
-				&& evaluteBirth(serverLevel, x, y, z,
+				&& this.evaluteBirth(serverLevel, x, y, z,
 				PregnancySystemConstants.TOTAL_TICKS_PREBIRTH_P4,
 				PregnancySystemConstants.TOTAL_TICKS_BIRTH_P4) == Result.SUCCESS) {
 			return;
 		}
 		
-		if (evaluatePregnancyStageChange() == Result.SUCCESS) {
+		if (this.evaluatePregnancyStageChange() == Result.SUCCESS) {
 			return;
 		}
 		
 		if (level instanceof ServerLevel serverLevel
-				&& evaluateMiscarriage(serverLevel, x, y, z, PregnancySystemConstants.TOTAL_TICKS_MISCARRIAGE) == Result.SUCCESS) {
+				&& this.evaluateMiscarriage(serverLevel, x, y, z, PregnancySystemConstants.TOTAL_TICKS_MISCARRIAGE) == Result.SUCCESS) {
 			return; 
 		}
 		

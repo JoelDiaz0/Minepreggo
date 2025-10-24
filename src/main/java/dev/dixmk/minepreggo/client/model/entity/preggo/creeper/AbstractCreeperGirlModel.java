@@ -44,8 +44,7 @@ public abstract class AbstractCreeperGirlModel<E extends AbstractCreeperGirl> ex
 		super(root);
 	}
 
-	protected static void createBasicBodyLayer(PartDefinition partdefinition, float extraLeftArmRotationZ, float extraRightArmRotationZ) {
-		
+	protected static void createBasicBodyLayer(PartDefinition partdefinition, float extraLeftArmRotationZ, float extraRightArmRotationZ) {	
 		partdefinition.addOrReplaceChild("head", CubeListBuilder.create()
 		.texOffs(0, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
 			

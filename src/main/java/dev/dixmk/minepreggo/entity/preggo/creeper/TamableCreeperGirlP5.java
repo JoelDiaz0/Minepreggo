@@ -8,6 +8,7 @@ import dev.dixmk.minepreggo.entity.preggo.PregnancySystemP5;
 import dev.dixmk.minepreggo.entity.preggo.PregnantPreggoMobSystem;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantHumanoidCreeperGirl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
@@ -16,7 +17,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PlayMessages;
 
-public class TamableCreeperGirlP5 extends AbstractTamablePregnantCreeperGirl<PregnantPreggoMobSystem<TamableCreeperGirlP5>,PregnancySystemP5<TamableCreeperGirlP5>> implements IPregnancyP5 {
+public class TamableCreeperGirlP5 extends AbstractTamablePregnantHumanoidCreeperGirl<PregnantPreggoMobSystem<TamableCreeperGirlP5>,PregnancySystemP5<TamableCreeperGirlP5>> implements IPregnancyP5 {
 	
 	public TamableCreeperGirlP5(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P5.get(), world);

@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractCreeperGirlModel;
+import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractHumanoidCreeperGirlModel;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractCreeperGirl;
 
 import net.minecraft.client.model.EntityModel;
@@ -20,7 +20,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class CreeperGirlPowerLayer
-	<E extends AbstractCreeperGirl, M extends AbstractCreeperGirlModel<E>> extends EnergySwirlLayer<E, M> {
+	<E extends AbstractCreeperGirl, M extends AbstractHumanoidCreeperGirlModel<E>> extends EnergySwirlLayer<E, M> {
 
 	private static final ResourceLocation POWER_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/creeper_girl_armor.png");
 	private final M model;

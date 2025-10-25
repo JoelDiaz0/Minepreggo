@@ -25,6 +25,9 @@ import dev.dixmk.minepreggo.entity.preggo.zombie.TamableZombieGirlP4;
 import dev.dixmk.minepreggo.entity.preggo.zombie.TamableZombieGirlP5;
 import dev.dixmk.minepreggo.entity.preggo.zombie.TamableZombieGirlP6;
 import dev.dixmk.minepreggo.entity.preggo.zombie.TamableZombieGirlP7;
+import dev.dixmk.minepreggo.world.entity.monster.IllEnderGirl;
+import dev.dixmk.minepreggo.world.entity.monster.IllQuadrupedCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -113,6 +116,20 @@ public class MinepreggoModEntities {
 	
 	public static final RegistryObject<EntityType<TamableCreeperGirlP7>> TAMABLE_CREEPER_GIRL_P7 = register("tamable_creeper_girl_p7",
 			EntityType.Builder.<TamableCreeperGirlP7>of(TamableCreeperGirlP7::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(TamableCreeperGirlP7::new).sized(1.0f, 1.8f));
+	
+
+	
+	/*Illager*/
+	public static final RegistryObject<EntityType<ScientificIllager>> SCIENTIFIC_ILLAGER = register("scientific_illager",
+			EntityType.Builder.<ScientificIllager>of(ScientificIllager::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(ScientificIllager::new).sized(0.6f, 1.95f));
+	
+	public static final RegistryObject<EntityType<IllEnderGirl>> ILL_ENDER_GIRL = register("ill_ender_girl",
+			EntityType.Builder.<IllEnderGirl>of(IllEnderGirl::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(IllEnderGirl::new).sized(0.6f, 2.9f));
+	
+	public static final RegistryObject<EntityType<IllQuadrupedCreeperGirl>> ILL_QUADRUPED_CREEPER_GIRL = register("ill_queadruped_creeper_girl",
+			EntityType.Builder.<IllQuadrupedCreeperGirl>of(IllQuadrupedCreeperGirl::new, MobCategory.MONSTER).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(3).setCustomClientFactory(IllQuadrupedCreeperGirl::new).sized(0.6f, 2.9f));
+	
+	
 	
 	private static <T extends Entity> RegistryObject<EntityType<T>> register(String registryname, EntityType.Builder<T> entityTypeBuilder) {
 		return REGISTRY.register(registryname, () -> entityTypeBuilder.build(registryname));

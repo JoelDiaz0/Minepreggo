@@ -31,8 +31,9 @@ import dev.dixmk.minepreggo.entity.preggo.PreggoMobSystem;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableHumanoidCreeperGirl;
 
-public class TamableCreeperGirlP0 extends AbstractTamableCreeperGirl<PreggoMobSystem<TamableCreeperGirlP0>> implements IBreedable {
+public class TamableCreeperGirlP0 extends AbstractTamableHumanoidCreeperGirl<PreggoMobSystem<TamableCreeperGirlP0>> implements IBreedable {
 	
 	private static final UUID SPEED_MODIFIER_TIRENESS_UUID = UUID.fromString("fa6a4626-c325-4835-8259-69577a99c9c8");
 	private static final AttributeModifier SPEED_MODIFIER_TIRENESS = new AttributeModifier(SPEED_MODIFIER_TIRENESS_UUID, "Tireness speed boost", -0.1D, AttributeModifier.Operation.MULTIPLY_BASE);

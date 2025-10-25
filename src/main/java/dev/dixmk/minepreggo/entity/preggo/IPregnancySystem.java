@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.entity.preggo;
 import net.minecraft.world.item.Item;
 
 public interface IPregnancySystem {
+	
 	int getDaysByStage();
 	void setDaysByStage(int days);
 	

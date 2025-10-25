@@ -27,8 +27,9 @@ import net.minecraft.nbt.CompoundTag;
 import java.util.UUID;
 
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterHumanoidCreeperGirl;
 
-public class MonsterCreeperGirlP0 extends AbstractMonsterCreeperGirl {
+public class MonsterCreeperGirlP0 extends AbstractMonsterHumanoidCreeperGirl {
 
 	private static final UUID SPEED_MODIFIER_BABY_UUID = UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D836");
 	private static final AttributeModifier SPEED_MODIFIER_BABY = new AttributeModifier(SPEED_MODIFIER_BABY_UUID, "Baby speed boost", 0.2D, AttributeModifier.Operation.MULTIPLY_BASE);

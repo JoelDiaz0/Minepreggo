@@ -148,7 +148,7 @@ public abstract class PregnancySystemP1<
 	}
 	
 	public void evaluateOnSuccessfulHurt(DamageSource damagesource) {	
-		if ((preggoMob.hasEffect(MinepreggoModMobEffects.PREGNANCY_RESISTANCE_EFFECT.get()) && randomSource.nextFloat() < 0.9F)
+		if ((preggoMob.hasEffect(MinepreggoModMobEffects.PREGNANCY_RESISTANCE.get()) && randomSource.nextFloat() < 0.9F)
 				|| (!damagesource.is(DamageTypes.FALL) && !preggoMob.getItemBySlot(EquipmentSlot.CHEST).isEmpty() && randomSource.nextFloat() < 0.5)) {
 			return;
 		}

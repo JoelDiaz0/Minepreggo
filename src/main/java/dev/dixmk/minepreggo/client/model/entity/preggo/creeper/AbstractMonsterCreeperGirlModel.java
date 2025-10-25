@@ -2,13 +2,14 @@ package dev.dixmk.minepreggo.client.model.entity.preggo.creeper;
 
 import dev.dixmk.minepreggo.client.entity.animation.preggo.creeper.CreeperGirlAnimation;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractMonsterCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterHumanoidCreeperGirl;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class AbstractMonsterCreeperGirlModel<E extends AbstractMonsterCreeperGirl> extends AbstractCreeperGirlModel<E> {
+public abstract class AbstractMonsterCreeperGirlModel<E extends AbstractMonsterHumanoidCreeperGirl> extends AbstractHumanoidCreeperGirlModel<E> {
 
 	protected final ModelPart root;
 	protected HierarchicalModel<E> animator;

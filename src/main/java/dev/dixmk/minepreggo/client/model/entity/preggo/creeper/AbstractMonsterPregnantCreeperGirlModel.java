@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.client.model.entity.preggo.creeper;
 import dev.dixmk.minepreggo.client.entity.animation.preggo.HumanoidGirlAnimation;
 import dev.dixmk.minepreggo.client.entity.animation.preggo.creeper.CreeperGirlAnimation;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractMonsterPregnantCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterPregnantHumanoidCreeperGirl;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -10,14 +11,19 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class AbstractMonsterPregnantCreeperGirlModel<E extends AbstractMonsterPregnantCreeperGirl> extends AbstractMonsterCreeperGirlModel<E> {
+public abstract class AbstractMonsterPregnantCreeperGirlModel<E extends AbstractMonsterPregnantHumanoidCreeperGirl> extends AbstractHumanoidCreeperGirlModel<E> {
 
+	protected final ModelPart root;
+	protected HierarchicalModel<E> animator;
+	
 	protected AbstractMonsterPregnantCreeperGirlModel(ModelPart root) {
 		this(root, createDefaultHierarchicalModel(root));		
 	}
 
 	protected AbstractMonsterPregnantCreeperGirlModel(ModelPart root, HierarchicalModel<E> animator) {
-		super(root, animator);		
+		super(root);	
+		this.root = root;
+		this.animator = animator;
 		this.belly.visible = true;
 	}
 	

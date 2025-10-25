@@ -11,7 +11,6 @@ import dev.dixmk.minepreggo.entity.preggo.PregnancySymptom;
 import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
 import dev.dixmk.minepreggo.utils.CreeperGirlGUIMenuFactory;
 import dev.dixmk.minepreggo.utils.PreggoAIHelper;
-import dev.dixmk.minepreggo.utils.PreggoArmorHelper;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
 
 import net.minecraft.core.Direction;
@@ -276,33 +275,6 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 		}	
 	}
 
-	@Override
-	protected boolean canReplaceCurrentItem(ItemStack p_21428_, ItemStack p_21429_) {	
-		if ((PreggoArmorHelper.isChest(p_21428_) && !PreggoArmorHelper.canPreggoMobUseChestplate(p_21428_, PregnancyStage.P0))
-					|| (PreggoArmorHelper.isLegging(p_21428_) && !PreggoArmorHelper.canPreggoMobUseLegging(p_21428_, PregnancyStage.P0))) {
-			return false;
-		}	
-		return super.canReplaceCurrentItem(p_21428_, p_21429_);
-	}
-	
-	
-	@Override
-	protected void pickUpItem(ItemEntity p_21471_) {
-		ItemStack itemstack = p_21471_.getItem();
-		ItemStack itemstack1 = this.equipItemIfPossible(itemstack.copy());			
-		if (!itemstack1.isEmpty()) {
-			this.onItemPickup(p_21471_);
-			this.take(p_21471_, itemstack1.getCount());
-			itemstack.shrink(itemstack1.getCount());		
-			if (itemstack.isEmpty()) {
-				p_21471_.discard();
-			}
-		}
-		else {
-			PreggoMobHelper.storeItemInSpecificRange(this, p_21471_, IPreggoMob.FOOD_INVENTORY_SLOT + 1, INVENTORY_SIZE - 1);	
-		}
-	}
-	
 	protected static AttributeSupplier.Builder getBasicAttributes(double movementSpeed) {
 		return Mob.createMobAttributes()
 				.add(Attributes.MAX_HEALTH, 26D)
@@ -449,5 +421,21 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	@Override
 	public AgeableMob getBreedOffspring(ServerLevel p_146743_, AgeableMob p_146744_) {
 		return null;
+	}
+	
+	public static void pickUpItem(AbstractTamableCreeperGirl<?> target, ItemEntity p_21471_) {
+		ItemStack itemstack = p_21471_.getItem();
+		ItemStack itemstack1 = target.equipItemIfPossible(itemstack.copy());			
+		if (!itemstack1.isEmpty()) {
+			target.onItemPickup(p_21471_);
+			target.take(p_21471_, itemstack1.getCount());
+			itemstack.shrink(itemstack1.getCount());		
+			if (itemstack.isEmpty()) {
+				p_21471_.discard();
+			}
+		}
+		else {
+			PreggoMobHelper.storeItemInSpecificRange(target, p_21471_, IPreggoMob.FOOD_INVENTORY_SLOT + 1, INVENTORY_SIZE - 1);	
+		}
 	}
 }

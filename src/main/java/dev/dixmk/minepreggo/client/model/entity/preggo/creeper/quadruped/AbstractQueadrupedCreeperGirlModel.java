@@ -1,5 +1,6 @@
 package dev.dixmk.minepreggo.client.model.entity.preggo.creeper.quadruped;
 
+import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractCreeperGirl;
 import net.minecraft.client.model.CreeperModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -8,12 +9,11 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.world.entity.TamableAnimal;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class AbstractQueadrupedCreeperGirlModel extends CreeperModel<TamableAnimal> {	
+public abstract class AbstractQueadrupedCreeperGirlModel<E extends AbstractCreeperGirl> extends CreeperModel<E> {	
 	protected final ModelPart hat;
 	protected final ModelPart head;
 	protected final ModelPart belly;

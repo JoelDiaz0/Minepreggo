@@ -1,22 +1,22 @@
 package dev.dixmk.minepreggo.client.renderer.preggo.creeper;
 
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractMonsterPregnantCreeperGirlModel;
-import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.creeper.MonsterPregnantCreeperGirlExpressionLayer;
-import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractMonsterPregnantCreeperGirl;
+import dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.creeper.HumanoidMonsterPregnantCreeperGirlExpressionLayer;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterPregnantHumanoidCreeperGirl;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractMonsterPregnantCreeperGirlRenderer 
-	<E extends AbstractMonsterPregnantCreeperGirl, M extends AbstractMonsterPregnantCreeperGirlModel<E>> extends AbstractMonsterCreeperGirlRenderer<E, M> {
+	<E extends AbstractMonsterPregnantHumanoidCreeperGirl, M extends AbstractMonsterPregnantCreeperGirlModel<E>> extends AbstractHumanoidCreeperGirlRenderer<E, M> {
 
 	protected AbstractMonsterPregnantCreeperGirlRenderer(Context context, M main, M inner, M outter, M layer) {
 		super(context, main, inner, outter, layer);
+		this.addFacialExpresions();
 	}
 	
-	@Override
 	protected void addFacialExpresions() {
-		this.addLayer(new MonsterPregnantCreeperGirlExpressionLayer<>(this));
+		this.addLayer(new HumanoidMonsterPregnantCreeperGirlExpressionLayer<>(this));
 	}
 }

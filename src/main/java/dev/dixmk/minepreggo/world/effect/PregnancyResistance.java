@@ -1,4 +1,4 @@
-package dev.dixmk.minepreggo.potion;
+package dev.dixmk.minepreggo.world.effect;
 
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;

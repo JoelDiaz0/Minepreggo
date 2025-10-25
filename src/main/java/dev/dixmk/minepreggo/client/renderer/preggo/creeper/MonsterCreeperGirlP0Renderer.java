@@ -2,7 +2,7 @@ package dev.dixmk.minepreggo.client.renderer.preggo.creeper;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractCreeperGirlModel;
+import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractHumanoidCreeperGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AnimatedMonsterCreeperGirlP0Model;
 import dev.dixmk.minepreggo.entity.preggo.creeper.MonsterCreeperGirlP0;
 
@@ -17,7 +17,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class MonsterCreeperGirlP0Renderer extends AbstractMonsterCreeperGirlRenderer<MonsterCreeperGirlP0, AnimatedMonsterCreeperGirlP0Model> {
 	
 	public MonsterCreeperGirlP0Renderer(EntityRendererProvider.Context context) {
-		this(context, AbstractCreeperGirlModel.LAYER_LOCATION_P1, AbstractCreeperGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractCreeperGirlModel.LAYER_ENERGY_ARMOR_P0_LOCATION);
+		this(context, AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P1, AbstractHumanoidCreeperGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_P0_LOCATION);
 	}
 	
 	public MonsterCreeperGirlP0Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter, ModelLayerLocation armor) {

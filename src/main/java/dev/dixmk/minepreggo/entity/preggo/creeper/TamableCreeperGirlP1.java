@@ -15,9 +15,10 @@ import dev.dixmk.minepreggo.entity.preggo.PregnancySystemP1;
 import dev.dixmk.minepreggo.entity.preggo.PregnantPreggoMobSystem;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantHumanoidCreeperGirl;
 
 
-public class TamableCreeperGirlP1 extends AbstractTamablePregnantCreeperGirl<PregnantPreggoMobSystem<TamableCreeperGirlP1>, PregnancySystemP1<TamableCreeperGirlP1>> implements IPregnancyP1 {
+public class TamableCreeperGirlP1 extends AbstractTamablePregnantHumanoidCreeperGirl<PregnantPreggoMobSystem<TamableCreeperGirlP1>, PregnancySystemP1<TamableCreeperGirlP1>> implements IPregnancyP1 {
 	
 	public TamableCreeperGirlP1(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P1.get(), world);

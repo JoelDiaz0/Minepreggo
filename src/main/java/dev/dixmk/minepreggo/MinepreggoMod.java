@@ -43,7 +43,7 @@ import dev.dixmk.minepreggo.client.model.armor.FemaleChestPlateP1Model;
 import dev.dixmk.minepreggo.client.model.armor.FemaleChestPlateP2Model;
 import dev.dixmk.minepreggo.client.model.armor.FemaleChestPlateP3Model;
 import dev.dixmk.minepreggo.client.model.armor.KneeBraceModel;
-import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractCreeperGirlModel;
+import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractHumanoidCreeperGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractZombieGirlModel;
 import dev.dixmk.minepreggo.client.renderer.preggo.creeper.MonsterCreeperGirlP0Renderer;
 import dev.dixmk.minepreggo.client.renderer.preggo.creeper.MonsterCreeperGirlP3Renderer;
@@ -101,6 +101,7 @@ import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.init.MinepreggoModMenus;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
+import dev.dixmk.minepreggo.init.MinepreggoModPotions;
 import dev.dixmk.minepreggo.init.MinepreggoModSounds;
 import dev.dixmk.minepreggo.init.MinepreggoModTabs;
 
@@ -137,6 +138,7 @@ public class MinepreggoMod {
 		MinepreggoModTabs.REGISTRY.register(modEventBus);
 		MinepreggoModMenus.REGISTRY.register(modEventBus);
 		MinepreggoModMobEffects.REGISTRY.register(modEventBus);
+		MinepreggoModPotions.REGISTRY.register(modEventBus);
 		MinepreggoModEntityDataSerializers.register();
        	
 		modEventBus.addListener(this::registerLayerDefinitions);	
@@ -245,24 +247,24 @@ public class MinepreggoMod {
 		event.registerLayerDefinition(AbstractZombieGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractZombieGirlModel::createOuterLayer);
 		
 		/*Creeper Girl*/
-		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_LOCATION_P0, AbstractCreeperGirlModel::createP0BodyLayer);
-		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_LOCATION_P1, AbstractCreeperGirlModel::createP1BodyLayer);
-		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_LOCATION_P2, AbstractCreeperGirlModel::createP2BodyLayer);
-		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_LOCATION_P3, AbstractCreeperGirlModel::createP3BodyLayer);
-		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_LOCATION_P4, AbstractCreeperGirlModel::createP4BodyLayer);
-		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_LOCATION_P5, AbstractCreeperGirlModel::createP5BodyLayer);
-		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_LOCATION_P6, AbstractCreeperGirlModel::createP6BodyLayer);
-		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_LOCATION_P7, AbstractCreeperGirlModel::createP7BodyLayer);
-		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractCreeperGirlModel::createInnerLayer);
-		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractCreeperGirlModel::createOuterLayer);
-		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_ENERGY_ARMOR_P0_LOCATION, AbstractCreeperGirlModel::createP0BodyLayer);
-		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_ENERGY_ARMOR_P1_LOCATION, AbstractCreeperGirlModel::createP1BodyLayer);
-		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_ENERGY_ARMOR_P2_LOCATION, AbstractCreeperGirlModel::createP2BodyLayer);
-		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_ENERGY_ARMOR_P3_LOCATION, AbstractCreeperGirlModel::createP3BodyLayer);
-		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_ENERGY_ARMOR_P4_LOCATION, AbstractCreeperGirlModel::createP4BodyLayer);
-		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_ENERGY_ARMOR_P5_LOCATION, AbstractCreeperGirlModel::createP5BodyLayer);
-		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_ENERGY_ARMOR_P6_LOCATION, AbstractCreeperGirlModel::createP6BodyLayer);
-		event.registerLayerDefinition(AbstractCreeperGirlModel.LAYER_ENERGY_ARMOR_P7_LOCATION, AbstractCreeperGirlModel::createP7BodyLayer);
+		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P0, AbstractHumanoidCreeperGirlModel::createP0BodyLayer);
+		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P1, AbstractHumanoidCreeperGirlModel::createP1BodyLayer);
+		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P2, AbstractHumanoidCreeperGirlModel::createP2BodyLayer);
+		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P3, AbstractHumanoidCreeperGirlModel::createP3BodyLayer);
+		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P4, AbstractHumanoidCreeperGirlModel::createP4BodyLayer);
+		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P5, AbstractHumanoidCreeperGirlModel::createP5BodyLayer);
+		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P6, AbstractHumanoidCreeperGirlModel::createP6BodyLayer);
+		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P7, AbstractHumanoidCreeperGirlModel::createP7BodyLayer);
+		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel::createInnerLayer);
+		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel::createOuterLayer);
+		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_P0_LOCATION, AbstractHumanoidCreeperGirlModel::createP0BodyLayer);
+		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_P1_LOCATION, AbstractHumanoidCreeperGirlModel::createP1BodyLayer);
+		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_P2_LOCATION, AbstractHumanoidCreeperGirlModel::createP2BodyLayer);
+		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_P3_LOCATION, AbstractHumanoidCreeperGirlModel::createP3BodyLayer);
+		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_P4_LOCATION, AbstractHumanoidCreeperGirlModel::createP4BodyLayer);
+		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_P5_LOCATION, AbstractHumanoidCreeperGirlModel::createP5BodyLayer);
+		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_P6_LOCATION, AbstractHumanoidCreeperGirlModel::createP6BodyLayer);
+		event.registerLayerDefinition(AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_P7_LOCATION, AbstractHumanoidCreeperGirlModel::createP7BodyLayer);
 
 		
 		/*Maternal Armors*/

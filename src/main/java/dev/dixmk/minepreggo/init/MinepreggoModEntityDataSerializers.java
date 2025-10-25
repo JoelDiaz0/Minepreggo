@@ -22,8 +22,8 @@ public class MinepreggoModEntityDataSerializers {
 	public static final EntityDataSerializer<PreggoMobState> STATE = EntityDataSerializer.simpleEnum(PreggoMobState.class);
 	public static final EntityDataSerializer<Craving> CRAVING = EntityDataSerializer.simpleEnum(Craving.class);
 	
-	public static final EntityDataSerializer<PostPregnancy> POST_PREGNANCY = EntityDataSerializer.simpleEnum(PostPregnancy.class);
-
+	public static final EntityDataSerializer<PostPregnancy> POST_PREGNANCY = EntityDataSerializer.simpleEnum(PostPregnancy.class);	
+	
     public static void register() {
         EntityDataSerializers.registerSerializer(PREGNANCY_SYMPTOM);
         EntityDataSerializers.registerSerializer(PREGNANCY_STAGE);

@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.client.renderer.preggo.creeper;
 
-import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractCreeperGirlModel;
+import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractHumanoidCreeperGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AnimatedMonsterCreeperGirlP5Model;
 import dev.dixmk.minepreggo.entity.preggo.creeper.MonsterCreeperGirlP5;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -13,7 +13,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class MonsterCreeperGirlP5Renderer extends AbstractMonsterPregnantCreeperGirlRenderer<MonsterCreeperGirlP5, AnimatedMonsterCreeperGirlP5Model> {
 	
 	public MonsterCreeperGirlP5Renderer(EntityRendererProvider.Context context) {
-		this(context, AbstractCreeperGirlModel.LAYER_LOCATION_P5, AbstractCreeperGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractCreeperGirlModel.LAYER_ENERGY_ARMOR_P5_LOCATION);
+		this(context, AbstractHumanoidCreeperGirlModel.LAYER_LOCATION_P5, AbstractHumanoidCreeperGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_OUTER_ARMOR_LOCATION, AbstractHumanoidCreeperGirlModel.LAYER_ENERGY_ARMOR_P5_LOCATION);
 	}
 	
 	public MonsterCreeperGirlP5Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter, ModelLayerLocation armor) {
@@ -22,6 +22,6 @@ public class MonsterCreeperGirlP5Renderer extends AbstractMonsterPregnantCreeper
 
 	@Override
 	public ResourceLocation getTextureLocation(MonsterCreeperGirlP5 p_115812_) {
-		return AbstractCreeperGirlRenderer.CREEPER_GIRL_P5_LOCATION;
+		return AbstractHumanoidCreeperGirlRenderer.CREEPER_GIRL_P5_LOCATION;
 	}
 }

@@ -17,7 +17,9 @@ import java.util.EnumSet;
 import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
+import dev.dixmk.minepreggo.utils.PreggoArmorHelper;
 import dev.dixmk.minepreggo.utils.PreggoTags;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -115,9 +117,9 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 	@Override
 	public void addAdditionalSaveData(CompoundTag compoundTag) {
 		super.addAdditionalSaveData(compoundTag);
-		compoundTag.putInt("DataSwell", this.getEntityData().get(DATA_SWELL_DIR));
-		compoundTag.putBoolean("DataIsPowered", this.getEntityData().get(DATA_IS_POWERED));
-		compoundTag.putBoolean("DataIsIgnited", this.getEntityData().get(DATA_IS_IGNITED));
+		compoundTag.putInt("DataSwell", this.entityData.get(DATA_SWELL_DIR));
+		compoundTag.putBoolean("DataIsPowered", this.entityData.get(DATA_IS_POWERED));
+		compoundTag.putBoolean("DataIsIgnited", this.entityData.get(DATA_IS_IGNITED));
 	}
 	
 	@Override
@@ -126,19 +128,6 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 		this.entityData.set(DATA_SWELL_DIR, compoundTag.getInt("DataSwell"));
 		this.entityData.set(DATA_IS_POWERED, compoundTag.getBoolean("DataIsPowered"));
 		this.entityData.set(DATA_IS_IGNITED, compoundTag.getBoolean("DataIsIgnited"));	
-	}
-	
-	@Override
-	protected void populateDefaultEquipmentSlots(RandomSource p_219165_, DifficultyInstance p_219166_) {
-		super.populateDefaultEquipmentSlots(p_219165_, p_219166_);
-		if (p_219165_.nextFloat() < (this.level().getDifficulty() == Difficulty.HARD ? 0.075F : 0.025F)) {
-			int i = p_219165_.nextInt(3);
-			if (i == 0) {
-				this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.WOODEN_SWORD));
-			} else {
-				this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.WOODEN_AXE));
-			}
-		}
 	}
 	
 	public boolean canExplode() {
@@ -417,4 +406,27 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 		FIGHT_AND_EXPLODE;    
 	}
 	
+	
+	
+	public static boolean canReplaceCurrentItem(AbstractCreeperGirl target, ItemStack p_21428_, ItemStack p_21429_, PregnancyStage currentPregnancyStage) {
+		if ((PreggoArmorHelper.isChest(p_21428_) && !PreggoArmorHelper.canPreggoMobUseChestplate(p_21428_, currentPregnancyStage))
+				|| (PreggoArmorHelper.isLegging(p_21428_) && !PreggoArmorHelper.canPreggoMobUseLegging(p_21428_, currentPregnancyStage))) {
+			return false;
+		}	
+		return target.canReplaceCurrentItem(p_21428_, p_21429_);
+	}
+	
+	public static void populateDefaultEquipmentSlots(AbstractCreeperGirl target, RandomSource p_219165_, DifficultyInstance p_219166_) {			
+		target.populateDefaultEquipmentSlots(p_219165_, p_219166_);
+		if (p_219165_.nextFloat() < (target.level().getDifficulty() == Difficulty.HARD ? 0.075F : 0.025F)) {
+			int i = p_219165_.nextInt(3);
+			if (i == 0) {
+				target.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.WOODEN_SWORD));
+			} else {
+				target.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.WOODEN_AXE));
+			}
+		}
+	}
 }
+
+

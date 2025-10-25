@@ -17,7 +17,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class AbstractCreeperGirlModel<E extends AbstractCreeperGirl> extends PregnantFemaleHumanoidModel<E> {
+public abstract class AbstractHumanoidCreeperGirlModel<E extends AbstractCreeperGirl> extends PregnantFemaleHumanoidModel<E> {
 
 	public static final ModelLayerLocation LAYER_INNER_ARMOR_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_girl_inner_model"), "inner");
 	public static final ModelLayerLocation LAYER_OUTER_ARMOR_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_girl_outer_model"), "outer");
@@ -40,7 +40,7 @@ public abstract class AbstractCreeperGirlModel<E extends AbstractCreeperGirl> ex
 	public static final ModelLayerLocation LAYER_LOCATION_P6 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_girl_p6_model"), "main");
 	public static final ModelLayerLocation LAYER_LOCATION_P7 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_girl_p7_model"), "main");
 
-	protected AbstractCreeperGirlModel(ModelPart root) {
+	protected AbstractHumanoidCreeperGirlModel(ModelPart root) {
 		super(root);
 	}
 

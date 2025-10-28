@@ -37,37 +37,44 @@ import dev.dixmk.minepreggo.item.SpecimenTubeItem;
 import dev.dixmk.minepreggo.item.VillagerBrainItem;
 import dev.dixmk.minepreggo.item.WitchBrainItem;
 import dev.dixmk.minepreggo.item.ZombieLifeSubstanceItem;
-import dev.dixmk.minepreggo.item.armor.BellyShieldP4Item;
 import dev.dixmk.minepreggo.item.armor.BellyShieldP5Item;
 import dev.dixmk.minepreggo.item.armor.BellyShieldP6Item;
 import dev.dixmk.minepreggo.item.armor.BellyShieldP7Item;
+import dev.dixmk.minepreggo.item.armor.BellyShieldP8Item;
 import dev.dixmk.minepreggo.item.armor.DiamondKneeBraceItem;
 import dev.dixmk.minepreggo.item.armor.FemaleChainmailChestPlateItem;
 import dev.dixmk.minepreggo.item.armor.FemaleChainmailChestPlateP1Item;
 import dev.dixmk.minepreggo.item.armor.FemaleChainmailChestPlateP2Item;
 import dev.dixmk.minepreggo.item.armor.FemaleChainmailChestPlateP3Item;
+import dev.dixmk.minepreggo.item.armor.FemaleChainmailChestPlateP4Item;
 import dev.dixmk.minepreggo.item.armor.FemaleDiamondChestPlateItem;
 import dev.dixmk.minepreggo.item.armor.FemaleDiamondChestPlateP1Item;
 import dev.dixmk.minepreggo.item.armor.FemaleDiamondChestPlateP2Item;
 import dev.dixmk.minepreggo.item.armor.FemaleDiamondChestPlateP3Item;
+import dev.dixmk.minepreggo.item.armor.FemaleDiamondChestPlateP4Item;
 import dev.dixmk.minepreggo.item.armor.FemaleGoldenChestPlateItem;
 import dev.dixmk.minepreggo.item.armor.FemaleGoldenChestPlateP1Item;
 import dev.dixmk.minepreggo.item.armor.FemaleGoldenChestPlateP2Item;
 import dev.dixmk.minepreggo.item.armor.FemaleGoldenChestPlateP3Item;
+import dev.dixmk.minepreggo.item.armor.FemaleGoldenChestPlateP4Item;
 import dev.dixmk.minepreggo.item.armor.FemaleIronChestPlateItem;
 import dev.dixmk.minepreggo.item.armor.FemaleIronChestplateP1Item;
 import dev.dixmk.minepreggo.item.armor.FemaleIronChestplateP2Item;
 import dev.dixmk.minepreggo.item.armor.FemaleIronChestplateP3Item;
+import dev.dixmk.minepreggo.item.armor.FemaleIronChestplateP4Item;
 import dev.dixmk.minepreggo.item.armor.FemaleNetheriteChestPlateItem;
 import dev.dixmk.minepreggo.item.armor.FemaleNetheriteChestPlateP1Item;
 import dev.dixmk.minepreggo.item.armor.FemaleNetheriteChestPlateP2Item;
 import dev.dixmk.minepreggo.item.armor.FemaleNetheriteChestPlateP3Item;
+import dev.dixmk.minepreggo.item.armor.FemaleNetheriteChestPlateP4Item;
 import dev.dixmk.minepreggo.item.armor.GoldKneeBraceItem;
 import dev.dixmk.minepreggo.item.armor.IronKneeBraceItem;
 import dev.dixmk.minepreggo.item.armor.NetheriteKneeBraceItem;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemNameBlockItem;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -78,6 +85,11 @@ public class MinepreggoModItems {
 	private MinepreggoModItems() {}
 	
 	public static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, MinepreggoMod.MODID);
+	
+	public static final RegistryObject<Item> MONSTER_QUADRUPED_CREEPER_GIRL_P0_SPAWN_EGG = REGISTRY.register("monster_quadruped_creeper_girl_p0_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_QUADRUPED_CREEPER_GIRL_P0, -16724839, -16738048, new Item.Properties()));
+	public static final RegistryObject<Item> MONSTER_ENDER_GIRL_P0_SPAWN_EGG = REGISTRY.register("monster_ender_girl_p0_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_ENDER_GIRL_P0, -16724839, -16738048, new Item.Properties()));
+	public static final RegistryObject<Item> SCIENTIFIC_ILLAGER_SPAWN_EGG = REGISTRY.register("scientific_illager_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.SCIENTIFIC_ILLAGER, -16724839, -16738048, new Item.Properties()));
+
 	
 	public static final RegistryObject<Item> MONSTER_ZOMBIE_GIRL_P0_SPAWN_EGG = REGISTRY.register("monster_zombie_girl_p0_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P0, -16724839, -16738048, new Item.Properties()));
 	public static final RegistryObject<Item> MONSTER_ZOMBIE_GIRL_P3_SPAWN_EGG = REGISTRY.register("monster_zombie_girl_p3_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P3, -16724839, -16738048, new Item.Properties()));
@@ -92,6 +104,7 @@ public class MinepreggoModItems {
 	public static final RegistryObject<Item> TAMABLE_ZOMBIE_GIRL_P5_SPAWN_EGG = REGISTRY.register("tamable_zombie_girl_p5_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P5, -16724839, -16738048, new Item.Properties()));
 	public static final RegistryObject<Item> TAMABLE_ZOMBIE_GIRL_P6_SPAWN_EGG = REGISTRY.register("tamable_zombie_girl_p6_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P6, -16724839, -16738048, new Item.Properties()));
 	public static final RegistryObject<Item> TAMABLE_ZOMBIE_GIRL_P7_SPAWN_EGG = REGISTRY.register("tamable_zombie_girl_p7_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P7, -16724839, -16738048, new Item.Properties()));
+	public static final RegistryObject<Item> TAMABLE_ZOMBIE_GIRL_P8_SPAWN_EGG = REGISTRY.register("tamable_zombie_girl_p8_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P8, -16724839, -16738048, new Item.Properties()));
 
 	public static final RegistryObject<Item> MONSTER_CREEPER_GIRL_P0_SPAWN_EGG = REGISTRY.register("monster_creeper_girl_p0_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_CREEPER_GIRL_P0, -16738048, -26368, new Item.Properties()));
 	public static final RegistryObject<Item> MONSTER_CREEPER_GIRL_P3_SPAWN_EGG = REGISTRY.register("monster_creeper_girl_p3_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.MONSTER_CREEPER_GIRL_P3, -16738048, -26368, new Item.Properties()));
@@ -106,21 +119,7 @@ public class MinepreggoModItems {
 	public static final RegistryObject<Item> TAMABLE_CREEPER_GIRL_P5_SPAWN_EGG = REGISTRY.register("tamable_creeper_girl_p5_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P5, -16738048, -26368, new Item.Properties()));
 	public static final RegistryObject<Item> TAMABLE_CREEPER_GIRL_P6_SPAWN_EGG = REGISTRY.register("tamable_creeper_girl_p6_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P6, -16738048, -26368, new Item.Properties()));
 	public static final RegistryObject<Item> TAMABLE_CREEPER_GIRL_P7_SPAWN_EGG = REGISTRY.register("tamable_creeper_girl_p7_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P7, -16738048, -26368, new Item.Properties()));
-
-	
-	
-	/*
-	public static final RegistryObject<Item> FERTILITY_WITCH_SPAWN_EGG = REGISTRY.register("fertility_witch_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.FERTILITY_WITCH, -26113, -3407668, new Item.Properties()));
-
-	public static final RegistryObject<Item> HUMANOID_CREEPER_LIFE_SUBSTANCE = REGISTRY.register("humanoid_creeper_life_substance", () -> new HumanoidCreeperLifeSubstanceItem());
-	
-	public static final RegistryObject<Item> ILLAGER_SCIENTIFIC_SPAWN_EGG = REGISTRY.register("illager_scientific_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.ILLAGER_SCIENTIFIC, -10066330, -13421773, new Item.Properties()));
-	public static final RegistryObject<Item> ILL_ENDER_GIRL_SPAWN_EGG = REGISTRY.register("ill_ender_girl_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.ILL_ENDER_GIRL, -1, -1, new Item.Properties()));
-	public static final RegistryObject<Item> ILL_QUADRUPED_CREEPER_GIRL_SPAWN_EGG = REGISTRY.register("ill_quadruped_creeper_girl_spawn_egg",
-			() -> new ForgeSpawnEggItem(MinepreggoModEntities.ILL_QUADRUPED_CREEPER_GIRL, -1, -1, new Item.Properties()));	
-	*/
-	
-	
+	public static final RegistryObject<Item> TAMABLE_CREEPER_GIRL_P8_SPAWN_EGG = REGISTRY.register("tamable_creeper_girl_p8_spawn_egg", () -> new ForgeSpawnEggItem(MinepreggoModEntities.TAMABLE_CREEPER_GIRL_P8, -16738048, -26368, new Item.Properties()));
 	
 	public static final RegistryObject<Item> LEMON = REGISTRY.register("lemon", LemonItem::new);
 	public static final RegistryObject<Item> LEMON_ICE_CREAM = REGISTRY.register("lemon_ice_cream", LemonIceCreamItem::new);
@@ -153,36 +152,42 @@ public class MinepreggoModItems {
 	public static final RegistryObject<Item> ACTIVATED_GUNPOWDER_WITH_HOT_SAUCE = REGISTRY.register("activated_gunpowder_with_hot_sauce", ActivatedGunpowderWithHotSauceItem::new);
 	public static final RegistryObject<Item> SOUR_ACTIVATED_GUNPOWDER = REGISTRY.register("sour_activated_gunpowder", SourActivatedGunpowderItem::new);
 
-	public static final RegistryObject<Item> FEMALE_CHAINMAIL_CHEST_PLATE_CHESTPLATE = REGISTRY.register("female_chainmail_chest_plate_chestplate", FemaleChainmailChestPlateItem.Chestplate::new);
-	public static final RegistryObject<Item> FEMALE_IRON_CHEST_PLATE_CHESTPLATE = REGISTRY.register("female_iron_chest_plate_chestplate", FemaleIronChestPlateItem.Chestplate::new);
-	public static final RegistryObject<Item> FEMALE_GOLDEN_CHEST_PLATE_CHESTPLATE = REGISTRY.register("female_golden_chest_plate_chestplate", FemaleGoldenChestPlateItem.Chestplate::new);
-	public static final RegistryObject<Item> FEMALE_DIAMOND_CHEST_PLATE_CHESTPLATE = REGISTRY.register("female_diamond_chest_plate_chestplate", FemaleDiamondChestPlateItem.Chestplate::new);
-	public static final RegistryObject<Item> FEMALE_NETHERITE_CHEST_PLATE_CHESTPLATE = REGISTRY.register("female_netherite_chest_plate_chestplate", FemaleNetheriteChestPlateItem.Chestplate::new);
-	public static final RegistryObject<Item> FEMALE_CHAINMAIL_CHEST_PLATE_P_1_CHESTPLATE = REGISTRY.register("female_chainmail_chest_plate_p1_chestplate", FemaleChainmailChestPlateP1Item.Chestplate::new);
-	public static final RegistryObject<Item> FEMALE_IRON_CHESTPLATE_P_1_CHESTPLATE = REGISTRY.register("female_iron_chestplate_p1_chestplate", FemaleIronChestplateP1Item.Chestplate::new);
-	public static final RegistryObject<Item> FEMALE_GOLDEN_CHEST_PLATE_P_1_CHESTPLATE = REGISTRY.register("female_golden_chest_plate_p1_chestplate", FemaleGoldenChestPlateP1Item.Chestplate::new);
-	public static final RegistryObject<Item> FEMALE_DIAMOND_CHEST_PLATE_P_1_CHESTPLATE = REGISTRY.register("female_diamond_chest_plate_p1_chestplate", FemaleDiamondChestPlateP1Item.Chestplate::new);
-	public static final RegistryObject<Item> FEMALE_NETHERITE_CHEST_PLATE_P_1_CHESTPLATE = REGISTRY.register("female_netherite_chest_plate_p1_chestplate", FemaleNetheriteChestPlateP1Item.Chestplate::new);
-	public static final RegistryObject<Item> FEMALE_CHAINMAIL_CHEST_PLATE_P_2_CHESTPLATE = REGISTRY.register("female_chainmail_chest_plate_p2_chestplate", FemaleChainmailChestPlateP2Item.Chestplate::new);
-	public static final RegistryObject<Item> FEMALE_IRON_CHESTPLATE_P_2_CHESTPLATE = REGISTRY.register("female_iron_chestplate_p2_chestplate", FemaleIronChestplateP2Item.Chestplate::new);
-	public static final RegistryObject<Item> FEMALE_GOLDEN_CHEST_PLATE_P_2_CHESTPLATE = REGISTRY.register("female_golden_chest_plate_p2_chestplate", FemaleGoldenChestPlateP2Item.Chestplate::new);
-	public static final RegistryObject<Item> FEMALE_DIAMOND_CHEST_PLATE_P_2_CHESTPLATE = REGISTRY.register("female_diamond_chest_plate_p2_chestplate", FemaleDiamondChestPlateP2Item.Chestplate::new);
-	public static final RegistryObject<Item> FEMALE_NETHERITE_CHEST_PLATE_P_2_CHESTPLATE = REGISTRY.register("female_netherite_chest_plate_p2_chestplate", FemaleNetheriteChestPlateP2Item.Chestplate::new);
-	public static final RegistryObject<Item> FEMALE_CHAINMAIL_CHEST_PLATE_P_3_CHESTPLATE = REGISTRY.register("female_chainmail_chest_plate_p3_chestplate", FemaleChainmailChestPlateP3Item.Chestplate::new);
-	public static final RegistryObject<Item> FEMALE_IRON_CHESTPLATE_P_3_CHESTPLATE = REGISTRY.register("female_iron_chestplate_p3_chestplate", FemaleIronChestplateP3Item.Chestplate::new);
-	public static final RegistryObject<Item> FEMALE_GOLDEN_CHEST_PLATE_P_3_CHESTPLATE = REGISTRY.register("female_golden_chest_plate_p3_chestplate", FemaleGoldenChestPlateP3Item.Chestplate::new);
-	public static final RegistryObject<Item> FEMALE_DIAMOND_CHEST_PLATE_P_3_CHESTPLATE = REGISTRY.register("female_diamond_chest_plate_p3_chestplate", FemaleDiamondChestPlateP3Item.Chestplate::new);
-	public static final RegistryObject<Item> FEMALE_NETHERITE_CHEST_PLATE_P_3_CHESTPLATE = REGISTRY.register("female_netherite_chest_plate_p3_chestplate", FemaleNetheriteChestPlateP3Item.Chestplate::new);
+	public static final RegistryObject<Item> FEMALE_CHAINMAIL_CHEST_PLATE_P0_CHESTPLATE = REGISTRY.register("female_chainmail_chest_plate_p0_chestplate", FemaleChainmailChestPlateItem.Chestplate::new);
+	public static final RegistryObject<Item> FEMALE_IRON_CHEST_PLATE_P0_CHESTPLATE = REGISTRY.register("female_iron_chest_plate_p0_chestplate", FemaleIronChestPlateItem.Chestplate::new);
+	public static final RegistryObject<Item> FEMALE_GOLDEN_CHEST_PLATE_P0_CHESTPLATE = REGISTRY.register("female_golden_chest_plate_p0_chestplate", FemaleGoldenChestPlateItem.Chestplate::new);
+	public static final RegistryObject<Item> FEMALE_DIAMOND_CHEST_PLATE_P0_CHESTPLATE = REGISTRY.register("female_diamond_chest_plate_p0_chestplate", FemaleDiamondChestPlateItem.Chestplate::new);
+	public static final RegistryObject<Item> FEMALE_NETHERITE_CHEST_PLATE_P0_CHESTPLATE = REGISTRY.register("female_netherite_chest_plate_p0_chestplate", FemaleNetheriteChestPlateItem.Chestplate::new);
+	public static final RegistryObject<Item> FEMALE_CHAINMAIL_CHEST_PLATE_P1_CHESTPLATE = REGISTRY.register("female_chainmail_chest_plate_p1_chestplate", FemaleChainmailChestPlateP1Item.Chestplate::new);
+	public static final RegistryObject<Item> FEMALE_IRON_CHESTPLATE_P1_CHESTPLATE = REGISTRY.register("female_iron_chestplate_p1_chestplate", FemaleIronChestplateP1Item.Chestplate::new);
+	public static final RegistryObject<Item> FEMALE_GOLDEN_CHEST_PLATE_P1_CHESTPLATE = REGISTRY.register("female_golden_chest_plate_p1_chestplate", FemaleGoldenChestPlateP1Item.Chestplate::new);
+	public static final RegistryObject<Item> FEMALE_DIAMOND_CHEST_PLATE_P1_CHESTPLATE = REGISTRY.register("female_diamond_chest_plate_p1_chestplate", FemaleDiamondChestPlateP1Item.Chestplate::new);
+	public static final RegistryObject<Item> FEMALE_NETHERITE_CHEST_PLATE_P1_CHESTPLATE = REGISTRY.register("female_netherite_chest_plate_p1_chestplate", FemaleNetheriteChestPlateP1Item.Chestplate::new);
+	public static final RegistryObject<Item> FEMALE_CHAINMAIL_CHEST_PLATE_P2_CHESTPLATE = REGISTRY.register("female_chainmail_chest_plate_p2_chestplate", FemaleChainmailChestPlateP2Item.Chestplate::new);
+	public static final RegistryObject<Item> FEMALE_IRON_CHESTPLATE_P2_CHESTPLATE = REGISTRY.register("female_iron_chestplate_p2_chestplate", FemaleIronChestplateP2Item.Chestplate::new);
+	public static final RegistryObject<Item> FEMALE_GOLDEN_CHEST_PLATE_P2_CHESTPLATE = REGISTRY.register("female_golden_chest_plate_p2_chestplate", FemaleGoldenChestPlateP2Item.Chestplate::new);
+	public static final RegistryObject<Item> FEMALE_DIAMOND_CHEST_PLATE_P2_CHESTPLATE = REGISTRY.register("female_diamond_chest_plate_p2_chestplate", FemaleDiamondChestPlateP2Item.Chestplate::new);
+	public static final RegistryObject<Item> FEMALE_NETHERITE_CHEST_PLATE_P2_CHESTPLATE = REGISTRY.register("female_netherite_chest_plate_p2_chestplate", FemaleNetheriteChestPlateP2Item.Chestplate::new);
+	public static final RegistryObject<Item> FEMALE_CHAINMAIL_CHEST_PLATE_P3_CHESTPLATE = REGISTRY.register("female_chainmail_chest_plate_p3_chestplate", FemaleChainmailChestPlateP3Item.Chestplate::new);
+	public static final RegistryObject<Item> FEMALE_IRON_CHESTPLATE_P3_CHESTPLATE = REGISTRY.register("female_iron_chestplate_p3_chestplate", FemaleIronChestplateP3Item.Chestplate::new);
+	public static final RegistryObject<Item> FEMALE_GOLDEN_CHEST_PLATE_P3_CHESTPLATE = REGISTRY.register("female_golden_chest_plate_p3_chestplate", FemaleGoldenChestPlateP3Item.Chestplate::new);
+	public static final RegistryObject<Item> FEMALE_DIAMOND_CHEST_PLATE_P3_CHESTPLATE = REGISTRY.register("female_diamond_chest_plate_p3_chestplate", FemaleDiamondChestPlateP3Item.Chestplate::new);
+	public static final RegistryObject<Item> FEMALE_NETHERITE_CHEST_PLATE_P3_CHESTPLATE = REGISTRY.register("female_netherite_chest_plate_p3_chestplate", FemaleNetheriteChestPlateP3Item.Chestplate::new);
+	public static final RegistryObject<Item> FEMALE_CHAINMAIL_CHEST_PLATE_P4_CHESTPLATE = REGISTRY.register("female_chainmail_chest_plate_p4_chestplate", FemaleChainmailChestPlateP4Item.Chestplate::new);
+	public static final RegistryObject<Item> FEMALE_IRON_CHESTPLATE_P4_CHESTPLATE = REGISTRY.register("female_iron_chestplate_p4_chestplate", FemaleIronChestplateP4Item.Chestplate::new);
+	public static final RegistryObject<Item> FEMALE_GOLDEN_CHEST_PLATE_P4_CHESTPLATE = REGISTRY.register("female_golden_chest_plate_p4_chestplate", FemaleGoldenChestPlateP4Item.Chestplate::new);
+	public static final RegistryObject<Item> FEMALE_DIAMOND_CHEST_PLATE_P4_CHESTPLATE = REGISTRY.register("female_diamond_chest_plate_p4_chestplate", FemaleDiamondChestPlateP4Item.Chestplate::new);
+	public static final RegistryObject<Item> FEMALE_NETHERITE_CHEST_PLATE_P4_CHESTPLATE = REGISTRY.register("female_netherite_chest_plate_p4_chestplate", FemaleNetheriteChestPlateP4Item.Chestplate::new);
+
 	public static final RegistryObject<Item> IRON_KNEE_BRACE_LEGGINGS = REGISTRY.register("iron_knee_brace_leggings", IronKneeBraceItem.Leggings::new);
 	public static final RegistryObject<Item> GOLD_KNEE_BRACE_LEGGINGS = REGISTRY.register("gold_knee_brace_leggings", GoldKneeBraceItem.Leggings::new);
 	public static final RegistryObject<Item> DIAMOND_KNEE_BRACE_LEGGINGS = REGISTRY.register("diamond_knee_brace_leggings", DiamondKneeBraceItem.Leggings::new);
 	public static final RegistryObject<Item> NETHERITE_KNEE_BRACE_LEGGINGS = REGISTRY.register("netherite_knee_brace_leggings", NetheriteKneeBraceItem.Leggings::new);
 	
-	public static final RegistryObject<Item> BELLY_SHIELD_P_4_CHESTPLATE = REGISTRY.register("belly_shield_p4_chestplate", BellyShieldP4Item.Chestplate::new);
-	public static final RegistryObject<Item> BELLY_SHIELD_P_5_CHESTPLATE = REGISTRY.register("belly_shield_p5_chestplate", BellyShieldP5Item.Chestplate::new);
-	public static final RegistryObject<Item> BELLY_SHIELD_P_6_CHESTPLATE = REGISTRY.register("belly_shield_p6_chestplate", BellyShieldP6Item.Chestplate::new);
-	public static final RegistryObject<Item> BELLY_SHIELD_P_7_CHESTPLATE = REGISTRY.register("belly_shield_p7_chestplate", BellyShieldP7Item.Chestplate::new);
-
+	public static final RegistryObject<Item> BELLY_SHIELD_P5_CHESTPLATE = REGISTRY.register("belly_shield_p5_chestplate", BellyShieldP5Item.Chestplate::new);
+	public static final RegistryObject<Item> BELLY_SHIELD_P6_CHESTPLATE = REGISTRY.register("belly_shield_p6_chestplate", BellyShieldP6Item.Chestplate::new);
+	public static final RegistryObject<Item> BELLY_SHIELD_P7_CHESTPLATE = REGISTRY.register("belly_shield_p7_chestplate", BellyShieldP7Item.Chestplate::new);
+	public static final RegistryObject<Item> BELLY_SHIELD_P8_CHESTPLATE = REGISTRY.register("belly_shield_p8_chestplate", BellyShieldP8Item.Chestplate::new);
+	
 	public static final RegistryObject<Item> BABY_HUMAN = REGISTRY.register("baby_human", BabyHumanItem::new);
 	public static final RegistryObject<Item> BABY_ZOMBIE = REGISTRY.register("baby_zombie", BabyZombieItem::new);
 	public static final RegistryObject<Item> BABY_HUMANOID_CREEPER = REGISTRY.register("baby_humanoid_creeper", BabyHumanoidCreeperItem::new);
@@ -196,4 +201,10 @@ public class MinepreggoModItems {
 	public static final RegistryObject<Item> HUMANOID_CREEPER_LIFE_SUBSTANCE = REGISTRY.register("humanoid_creeper_life_substance", HumanoidCreeperLifeSubstanceItem::new);
 	public static final RegistryObject<Item> SPECIMEN_TUBE = REGISTRY.register("specimen_tube", SpecimenTubeItem::new);
 	public static final RegistryObject<Item> CUM_SPECIMEN_TUBE = REGISTRY.register("cum_specimen_tube", CumSpecimenTubeItem::new);
+
+	public static final RegistryObject<Item> MEDICAL_TABLE = block(MinepreggoModBlocks.MEDICAL_TABLE);
+	
+	private static RegistryObject<Item> block(RegistryObject<Block> block) {
+		return REGISTRY.register(block.getId().getPath(), () -> new BlockItem(block.get(), new Item.Properties()));
+	}
 }

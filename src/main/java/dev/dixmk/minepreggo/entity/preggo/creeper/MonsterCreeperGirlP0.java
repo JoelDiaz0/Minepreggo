@@ -128,6 +128,6 @@ public class MonsterCreeperGirlP0 extends AbstractMonsterHumanoidCreeperGirl {
 	}
 	
 	public static AttributeSupplier.Builder createAttributes() {
-		return getBasicAttributes(0.24);
+		return AbstractMonsterHumanoidCreeperGirl.getBasicAttributes(0.24);
 	}
 }

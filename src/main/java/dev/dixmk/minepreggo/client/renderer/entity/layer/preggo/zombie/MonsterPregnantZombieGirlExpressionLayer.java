@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.client.renderer.entity.layer.preggo.zombie;
 
-import javax.annotation.Nonnull;
+import java.util.Optional;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AbstractMonsterPregnantZombieGirlModel;
@@ -21,11 +21,10 @@ public class MonsterPregnantZombieGirlExpressionLayer
 		super(p_117346_);
 	}
 
-	@Nonnull
 	@Override
-	public RenderType renderType(E zombieGirl) {		
+	public Optional<RenderType> renderType(E zombieGirl) {		
 		if (zombieGirl.hasPregnancyPain()) {
-			return HOSTIL_PAIN;
+			return Optional.of(HOSTIL_PAIN);
 		}	
 		return super.renderType(zombieGirl);
 	}

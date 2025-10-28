@@ -152,7 +152,7 @@ public abstract class AbstractMonsterPregnantZombieGirl extends AbstractMonsterZ
 				return super.canContinueToUse() && !hasPregnancyPain();			   
 			}
 		});			
-	    this.goalSelector.addGoal(6, new MoveThroughVillageGoal(this, 1.0D, true, 4, this::canBreakDoors) {
+	    this.goalSelector.addGoal(6, new MoveThroughVillageGoal(this, 1.0D, true, 4, () -> false) {
 			@Override
 			public boolean canUse() {
 				return super.canUse() && !hasPregnancyPain();		

@@ -13,10 +13,7 @@ public abstract class PregnancySystemP7<E extends TamableAnimal
 	protected PregnancySystemP7(@Nonnull E preggoMob) {
 		super(preggoMob);
 	}
-	
-	@Override
-	protected final void changePregnancyStage() {}
-	
+		
 	@Override
 	public void evaluateOnTick() {
 		
@@ -32,8 +29,8 @@ public abstract class PregnancySystemP7<E extends TamableAnimal
 		
 		if (level instanceof ServerLevel serverLevel
 				&& this.evaluteBirth(serverLevel, x, y, z,
-				PregnancySystemConstants.TOTAL_TICKS_PREBIRTH_P4,
-				PregnancySystemConstants.TOTAL_TICKS_BIRTH_P4) == Result.SUCCESS) {
+				PregnancySystemConstants.TOTAL_TICKS_PREBIRTH_P7,
+				PregnancySystemConstants.TOTAL_TICKS_BIRTH_P7) == Result.SUCCESS) {
 			return;
 		}
 		

@@ -32,10 +32,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.TamableAnimal;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Ghast;
@@ -154,6 +151,12 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 		PreggoAIHelper.setTamableCreeperGirlGoals(this);
 	}
 	
+
+	@Override
+	public boolean canBeTamedByPlayer() {
+		return true;
+	}
+	
 	public void setcombatMode(CombatMode value) {
 		this.entityData.set(DATA_COMBAT_MODE, value);
 		if (value == CombatMode.EXPLODE)
@@ -186,12 +189,6 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
       if (this.isAlive()) {
           this.preggoMobSystem.evaluateOnTick();
       }
-	}
-	
-	@Override
-	public void baseTick() {
-		super.baseTick();
-		this.refreshDimensions();
 	}
 
 	@Override
@@ -273,14 +270,6 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 		else {			
 			return preggoMobSystem.evaluateRightClick(sourceentity);
 		}	
-	}
-
-	protected static AttributeSupplier.Builder getBasicAttributes(double movementSpeed) {
-		return Mob.createMobAttributes()
-				.add(Attributes.MAX_HEALTH, 26D)
-				.add(Attributes.ATTACK_DAMAGE, 2D)
-				.add(Attributes.FOLLOW_RANGE, 35D)
-				.add(Attributes.MOVEMENT_SPEED, movementSpeed);
 	}
 	
 	@Override

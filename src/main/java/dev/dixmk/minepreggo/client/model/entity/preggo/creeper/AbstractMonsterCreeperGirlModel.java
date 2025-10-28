@@ -11,13 +11,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractMonsterCreeperGirlModel<E extends AbstractMonsterHumanoidCreeperGirl> extends AbstractHumanoidCreeperGirlModel<E> {
 
-	protected final ModelPart root;
-	protected HierarchicalModel<E> animator;
-	
 	protected AbstractMonsterCreeperGirlModel(ModelPart root, HierarchicalModel<E> animator) {
-		super(root);
-		this.root = root;
-		this.animator = animator;
+		super(root, animator);
 		this.belly.visible = false;
 	}
 
@@ -28,7 +23,7 @@ public abstract class AbstractMonsterCreeperGirlModel<E extends AbstractMonsterH
 	@Override
 	public void setupAnim(E entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);			
-		this.moveHead(entity, netHeadYaw, headPitch);
+		this.moveHeadWithHat(entity, netHeadYaw, headPitch);
 	}
 	
 	private static<E extends AbstractMonsterCreeperGirl> HierarchicalModel<E> createDefaultHierarchicalModel(ModelPart root) {

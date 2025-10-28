@@ -25,7 +25,7 @@ public abstract class AbstractMonsterPregnantZombieGirlModel<E extends AbstractM
 			this.hat.copyFrom(this.head);
 		}
 		else {
-			this.moveHead(entity, netHeadYaw, headPitch);
+			this.moveHeadWithHat(entity, netHeadYaw, headPitch);
 		}
 	}
 	

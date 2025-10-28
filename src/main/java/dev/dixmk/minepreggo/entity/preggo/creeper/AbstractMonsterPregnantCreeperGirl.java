@@ -129,8 +129,9 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 	}
 	
 	@Override
-	protected void registerGoals() {	
-		this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.2, false) {
+	protected void registerGoals() {
+		this.addBehaviourGoals();
+		this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.2, false) {
 			@Override
 			public boolean canUse() {
 				return super.canUse() && !hasPregnancyPain();		
@@ -140,7 +141,7 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 				return super.canContinueToUse() && !hasPregnancyPain();			   
 			}
 		});
-		this.targetSelector.addGoal(1, new HurtByTargetGoal(this) {
+		this.targetSelector.addGoal(2, new HurtByTargetGoal(this) {
 			@Override
 			public boolean canUse() {
 				return super.canUse() && !hasPregnancyPain();		
@@ -150,14 +151,7 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 				return super.canContinueToUse() && !hasPregnancyPain();			   
 			}
 		});
-		this.goalSelector.addGoal(2, new AbstractCreeperGirl.SwellGoal<>(this) {		
-			@Override
-			public boolean canUse() {												
-				return super.canUse() 
-					&& canExplode()
-					&& !hasPregnancyPain();
-			}
-		});
+
 		this.goalSelector.addGoal(3, new FloatGoal(this) {
 			@Override
 			public boolean canUse() {
@@ -165,26 +159,6 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 					&& !hasPregnancyPain();		
 			}
 		});
-		this.goalSelector.addGoal(2, new AvoidEntityGoal<>(this, Ocelot.class, 6F, 1, 1.2) {
-			@Override
-			public boolean canUse() {
-				return super.canUse() && !hasPregnancyPain();		
-			}
-			@Override
-			public boolean canContinueToUse() {
-				return super.canContinueToUse() && !hasPregnancyPain();			   
-			}
-		});
-		this.goalSelector.addGoal(2, new AvoidEntityGoal<>(this, Cat.class, 6F, 1, 1.2) {
-			@Override
-			public boolean canUse() {
-				return super.canUse() && !hasPregnancyPain();		
-			}
-			@Override
-			public boolean canContinueToUse() {
-				return super.canContinueToUse() && !hasPregnancyPain();			   
-			}
-		});	
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0) {
 			@Override
 			public boolean canUse() {
@@ -207,7 +181,19 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 				return super.canUse() && !hasPregnancyPain();		
 			}
 		});
-		this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true) {
+	}
+	
+	@Override
+	protected void addBehaviourGoals() {
+		this.goalSelector.addGoal(1, new AbstractCreeperGirl.SwellGoal<>(this) {		
+			@Override
+			public boolean canUse() {												
+				return super.canUse() 
+					&& canExplode()
+					&& !hasPregnancyPain();
+			}
+		});
+		this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Player.class, true) {
 			@Override
 			public boolean canUse() {
 				return super.canUse() && !hasPregnancyPain();		
@@ -217,8 +203,27 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 				return super.canContinueToUse() && !hasPregnancyPain();			   
 			}
 		});
+		this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, Ocelot.class, 6F, 1, 1.2) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() && !hasPregnancyPain();		
+			}
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() && !hasPregnancyPain();			   
+			}
+		});
+		this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, Cat.class, 6F, 1, 1.2) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() && !hasPregnancyPain();		
+			}
+			@Override
+			public boolean canContinueToUse() {
+				return super.canContinueToUse() && !hasPregnancyPain();			   
+			}
+		});	
 	}
-	
 	
 	@Override
 	public boolean hasPregnancyPain() {

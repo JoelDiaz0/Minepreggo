@@ -16,22 +16,26 @@ public class PregnancySystemConstants {
 	public static final int TOTAL_TICKS_PREBIRTH_P5 = 400;
 	public static final int TOTAL_TICKS_PREBIRTH_P6 = 500;
 	public static final int TOTAL_TICKS_PREBIRTH_P7 = 600;
+	public static final int TOTAL_TICKS_PREBIRTH_P8 = 700;
 	
 	public static final int TOTAL_TICKS_BIRTH_P4 = 900;
 	public static final int TOTAL_TICKS_BIRTH_P5 = 1000;
 	public static final int TOTAL_TICKS_BIRTH_P6 = 1100;
 	public static final int TOTAL_TICKS_BIRTH_P7 = 1200;
+	public static final int TOTAL_TICKS_BIRTH_P8 = 1300;
 	
 	public static final int TOTAL_TICKS_KICKING_P3 = 400;
 	public static final int TOTAL_TICKS_KICKING_P4 = 500;
 	public static final int TOTAL_TICKS_KICKING_P5 = 600;
 	public static final int TOTAL_TICKS_KICKING_P6 = 700;
 	public static final int TOTAL_TICKS_KICKING_P7 = 800;
+	public static final int TOTAL_TICKS_KICKING_P8 = 900;
 	
 	public static final int TOTAL_TICKS_CONTRACTION_P4 = 600;
 	public static final int TOTAL_TICKS_CONTRACTION_P5 = 700;
 	public static final int TOTAL_TICKS_CONTRACTION_P6 = 800;
 	public static final int TOTAL_TICKS_CONTRACTION_P7 = 900;
+	public static final int TOTAL_TICKS_CONTRACTION_P8 = 1000;
 	
 	/*Probabilities*/
 	public static final float LOW_PREGNANCY_PAIN_PROBABILITY = 0.000075F;

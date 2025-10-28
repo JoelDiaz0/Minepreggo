@@ -13,7 +13,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class HumanoidTamableCreeperGirlExpressionLayer
-	<E extends AbstractTamableHumanoidCreeperGirl<?>, M extends AbstractTamableCreeperGirlModel<E>> extends AbstractHumanoidCreeperGirlExpressionLayer<E, M> {
+	<E extends AbstractTamableHumanoidCreeperGirl<?>, M extends AbstractTamableCreeperGirlModel<E>> extends AbstractHumanoidCreeperGirlExpressionFacialLayer<E, M> {
 	
 	
 	public HumanoidTamableCreeperGirlExpressionLayer(RenderLayerParent<E, M> p_117346_) {

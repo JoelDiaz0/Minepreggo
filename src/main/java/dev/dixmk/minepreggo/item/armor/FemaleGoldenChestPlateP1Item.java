@@ -49,7 +49,7 @@ public abstract class FemaleGoldenChestPlateP1Item extends ArmorItem {
 
 			@Override
 			public Ingredient getRepairIngredient() {
-				return Ingredient.of(new ItemStack(Items.GOLD_INGOT), new ItemStack(Items.GOLDEN_CHESTPLATE), new ItemStack(MinepreggoModItems.FEMALE_GOLDEN_CHEST_PLATE_CHESTPLATE.get()));
+				return Ingredient.of(new ItemStack(Items.GOLD_INGOT), new ItemStack(Items.GOLDEN_CHESTPLATE), new ItemStack(MinepreggoModItems.FEMALE_GOLDEN_CHEST_PLATE_P0_CHESTPLATE.get()));
 			}
 
 			@Override
@@ -80,7 +80,7 @@ public abstract class FemaleGoldenChestPlateP1Item extends ArmorItem {
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return PreggoModelHelper.getMaternalP1HumanoidArmorModel(living, stack, slot, defaultModel);
+					return PreggoModelHelper.createMaternalP1HumanoidArmorModel(living, stack, slot, defaultModel);
 				}
 			});
 		}

@@ -25,7 +25,9 @@ public abstract class AbstractHumanoidCreeperGirlRenderer<E extends AbstractCree
 	protected static final ResourceLocation  CREEPER_GIRL_P5_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/creeper_girl_p5.png");
 	protected static final ResourceLocation  CREEPER_GIRL_P6_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/creeper_girl_p6.png");
 	protected static final ResourceLocation  CREEPER_GIRL_P7_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/creeper_girl_p7.png");
+	protected static final ResourceLocation  CREEPER_GIRL_P8_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/creeper/creeper_girl_p8.png");
 
+	
 	protected AbstractHumanoidCreeperGirlRenderer(EntityRendererProvider.Context context, M main, M inner, M outter, M armor) {
 		super(context, main, 0.5F);
 		this.addLayer(new HumanoidArmorLayer<>(this, inner, outter, context.getModelManager()));

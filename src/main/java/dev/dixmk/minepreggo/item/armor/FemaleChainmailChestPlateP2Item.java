@@ -49,12 +49,12 @@ public abstract class FemaleChainmailChestPlateP2Item extends ArmorItem {
 
 			@Override
 			public Ingredient getRepairIngredient() {
-				return Ingredient.of(new ItemStack(Items.CHAINMAIL_CHESTPLATE), new ItemStack(MinepreggoModItems.FEMALE_CHAINMAIL_CHEST_PLATE_CHESTPLATE.get()), new ItemStack(MinepreggoModItems.FEMALE_CHAINMAIL_CHEST_PLATE_P_1_CHESTPLATE.get()));
+				return Ingredient.of(new ItemStack(Items.CHAINMAIL_CHESTPLATE), new ItemStack(MinepreggoModItems.FEMALE_CHAINMAIL_CHEST_PLATE_P0_CHESTPLATE.get()), new ItemStack(MinepreggoModItems.FEMALE_CHAINMAIL_CHEST_PLATE_P1_CHESTPLATE.get()));
 			}
 
 			@Override
 			public String getName() {
-				return "female_chainmail_chest_plate_p_2";
+				return "female_chainmail_chest_plate_p2";
 			}
 
 			@Override
@@ -80,7 +80,7 @@ public abstract class FemaleChainmailChestPlateP2Item extends ArmorItem {
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return PreggoModelHelper.getMaternalP2HumanoidArmorModel(living, stack, slot, defaultModel);
+					return PreggoModelHelper.createMaternalP3HumanoidArmorModel(living, stack, slot, defaultModel);
 				}
 			});
 		}

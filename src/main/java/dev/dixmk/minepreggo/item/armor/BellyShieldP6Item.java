@@ -52,7 +52,7 @@ public abstract class BellyShieldP6Item extends ArmorItem {
 
 			@Override
 			public String getName() {
-				return "belly_shield_p_6";
+				return "belly_shield_p6";
 			}
 
 			@Override
@@ -78,8 +78,7 @@ public abstract class BellyShieldP6Item extends ArmorItem {
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return PreggoModelHelper.getMaternalP6HumanoidArmorModel(living, stack, slot, defaultModel);
-
+					return PreggoModelHelper.createMaternalP6HumanoidArmorModel(living, stack, slot, defaultModel);
 				}
 			});
 		}

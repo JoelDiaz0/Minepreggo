@@ -32,6 +32,7 @@ public class MinepreggoModConfig {
     private static int totalTicksOfHungryP5;
     private static int totalTicksOfHungryP6;
     private static int totalTicksOfHungryP7;
+    private static int totalTicksOfHungryP8;
 
     private static int totalTicksOfCravingP1;
     private static int totalTicksOfCravingP2;
@@ -40,6 +41,7 @@ public class MinepreggoModConfig {
     private static int totalTicksOfCravingP5;
     private static int totalTicksOfCravingP6;
     private static int totalTicksOfCravingP7;
+    private static int totalTicksOfCravingP8;
     
     private static int totalTicksOfMilkingP2;
     private static int totalTicksOfMilkingP3;
@@ -47,17 +49,20 @@ public class MinepreggoModConfig {
     private static int totalTicksOfMilkingP5;
     private static int totalTicksOfMilkingP6;
     private static int totalTicksOfMilkingP7;
+    private static int totalTicksOfMilkingP8;
     
     private static int totalTicksOfBellyRubsP3;
     private static int totalTicksOfBellyRubsP4;
     private static int totalTicksOfBellyRubsP5;
     private static int totalTicksOfBellyRubsP6;
     private static int totalTicksOfBellyRubsP7;
+    private static int totalTicksOfBellyRubsP8;
     
     private static int totalTicksOfHornyP4;
     private static int totalTicksOfHornyP5;
     private static int totalTicksOfHornyP6;
     private static int totalTicksOfHornyP7;
+    private static int totalTicksOfHornyP8;
     
     private static float babyCreeperGirlProbability;
     private static float babyZombieGirlProbability;
@@ -105,6 +110,10 @@ public class MinepreggoModConfig {
     	return totalTicksOfHungryP7;
     }
     
+    public static int getTotalTicksOfHungryP8() {
+    	return totalTicksOfHungryP8;
+    }
+    
     public static int getTotalTicksOfMilkingP2() {
     	return totalTicksOfMilkingP2;
     }
@@ -129,6 +138,10 @@ public class MinepreggoModConfig {
     	return totalTicksOfMilkingP7;
     }
     
+    public static int getTotalTicksOfMilkingP8() {
+    	return totalTicksOfMilkingP8;
+    }
+    
     public static int getTotalTicksOfBellyRubsP3() {
     	return totalTicksOfBellyRubsP3;
     }
@@ -147,6 +160,10 @@ public class MinepreggoModConfig {
     
     public static int getTotalTicksOfBellyRubsP7() {
     	return totalTicksOfBellyRubsP7;
+    }
+    
+    public static int getTotalTicksOfBellyRubsP8() {
+    	return totalTicksOfBellyRubsP8;
     }
     
     public static int getTotalTicksOfCravingP1() {
@@ -177,6 +194,10 @@ public class MinepreggoModConfig {
     	return totalTicksOfCravingP7;
     }
     
+    public static int getTotalTicksOfCravingP8() {
+    	return totalTicksOfCravingP8;
+    }
+    
     public static int getTotalTicksOfHornyP4() {
     	return totalTicksOfHornyP4;
     }
@@ -191,6 +212,10 @@ public class MinepreggoModConfig {
     
     public static int getTotalTicksOfHornyP7() {
     	return totalTicksOfHornyP7;
+    }
+    
+    public static int getTotalTicksOfHornyP8() {
+    	return totalTicksOfHornyP8;
     }
     
     public static float getBabyCreeperGirlProbability() {
@@ -351,43 +376,47 @@ public class MinepreggoModConfig {
     }
     
     private static void calculateHungryValues() { 	
-    	totalTicksOfHungryP1 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0 * 0.05F);
-    	totalTicksOfHungryP2 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0 * 0.1F);
-    	totalTicksOfHungryP3 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0 * 0.15F);
-    	totalTicksOfHungryP4 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0 * 0.2F);
-    	totalTicksOfHungryP5 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0 * 0.25F);
-    	totalTicksOfHungryP6 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0  * 0.3F);
-    	totalTicksOfHungryP7 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0 * 0.35F);
+    	totalTicksOfHungryP1 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0 * 0.1F);
+    	totalTicksOfHungryP2 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0 * 0.15F);
+    	totalTicksOfHungryP3 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0 * 0.2F);
+    	totalTicksOfHungryP4 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0 * 0.25F);
+    	totalTicksOfHungryP5 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0 * 0.3F);
+    	totalTicksOfHungryP6 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0  * 0.35F);
+    	totalTicksOfHungryP7 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0 * 0.45F);
+    	totalTicksOfHungryP8 = (int) Math.ceil(totalTicksOfHungryP0 - totalTicksOfHungryP0 * 0.5F);
     }
     
     private static void calculateCravingValues() { 	
-    	totalTicksOfCravingP2 = (int) Math.ceil(totalTicksOfCravingP1 - totalTicksOfCravingP1 * 0.06F);
-    	totalTicksOfCravingP3 = (int) Math.ceil(totalTicksOfCravingP1 - totalTicksOfCravingP1 * 0.12F);
-    	totalTicksOfCravingP4 = (int) Math.ceil(totalTicksOfCravingP1 - totalTicksOfCravingP1 * 0.18F);
-    	totalTicksOfCravingP5 = (int) Math.ceil(totalTicksOfCravingP1 - totalTicksOfCravingP1 * 0.24F);
-    	totalTicksOfCravingP6 = (int) Math.ceil(totalTicksOfCravingP1 - totalTicksOfCravingP1 * 0.30F);
-    	totalTicksOfCravingP7 = (int) Math.ceil(totalTicksOfCravingP1 - totalTicksOfCravingP1 * 0.36F);
+    	totalTicksOfCravingP2 = (int) Math.ceil(totalTicksOfCravingP1 - totalTicksOfCravingP1 * 0.2F);
+    	totalTicksOfCravingP3 = (int) Math.ceil(totalTicksOfCravingP1 - totalTicksOfCravingP1 * 0.25F);
+    	totalTicksOfCravingP4 = (int) Math.ceil(totalTicksOfCravingP1 - totalTicksOfCravingP1 * 0.3F);
+    	totalTicksOfCravingP5 = (int) Math.ceil(totalTicksOfCravingP1 - totalTicksOfCravingP1 * 0.35F);
+    	totalTicksOfCravingP6 = (int) Math.ceil(totalTicksOfCravingP1 - totalTicksOfCravingP1 * 0.4F);
+    	totalTicksOfCravingP7 = (int) Math.ceil(totalTicksOfCravingP1 - totalTicksOfCravingP1 * 0.45F);
+    	totalTicksOfCravingP8 = (int) Math.ceil(totalTicksOfCravingP1 - totalTicksOfCravingP1 * 0.5F);
     }
     
     private static void calculateMilkingValues() { 	
-    	totalTicksOfMilkingP3 = (int) Math.ceil(totalTicksOfMilkingP2 - totalTicksOfMilkingP2 * 0.07F);
-    	totalTicksOfMilkingP4 = (int) Math.ceil(totalTicksOfMilkingP2 - totalTicksOfMilkingP2 * 0.14F);
-    	totalTicksOfMilkingP5 = (int) Math.ceil(totalTicksOfMilkingP2 - totalTicksOfMilkingP2 * 0.21F);
-    	totalTicksOfMilkingP6 = (int) Math.ceil(totalTicksOfMilkingP2 - totalTicksOfMilkingP2 * 0.28F);
-    	totalTicksOfMilkingP7 = (int) Math.ceil(totalTicksOfMilkingP2 - totalTicksOfMilkingP2 * 0.35F);
+    	totalTicksOfMilkingP3 = (int) Math.ceil(totalTicksOfMilkingP2 - totalTicksOfMilkingP2 * 0.1F);
+    	totalTicksOfMilkingP4 = (int) Math.ceil(totalTicksOfMilkingP2 - totalTicksOfMilkingP2 * 0.15F);
+    	totalTicksOfMilkingP5 = (int) Math.ceil(totalTicksOfMilkingP2 - totalTicksOfMilkingP2 * 0.2F);
+    	totalTicksOfMilkingP6 = (int) Math.ceil(totalTicksOfMilkingP2 - totalTicksOfMilkingP2 * 0.3F);
+    	totalTicksOfMilkingP7 = (int) Math.ceil(totalTicksOfMilkingP2 - totalTicksOfMilkingP2 * 0.4F);
+    	totalTicksOfMilkingP8 = (int) Math.ceil(totalTicksOfMilkingP2 - totalTicksOfMilkingP2 * 0.5F);
     }
     
     private static void calculateBellyRubsValues() { 	
-    	totalTicksOfBellyRubsP4 = (int) Math.ceil(totalTicksOfBellyRubsP3 - totalTicksOfBellyRubsP3 * 0.09F);
-    	totalTicksOfBellyRubsP5 = (int) Math.ceil(totalTicksOfBellyRubsP3 - totalTicksOfBellyRubsP3 * 0.18F);
-    	totalTicksOfBellyRubsP6 = (int) Math.ceil(totalTicksOfBellyRubsP3 - totalTicksOfBellyRubsP3 * 0.27F);
-    	totalTicksOfBellyRubsP7 = (int) Math.ceil(totalTicksOfBellyRubsP3 - totalTicksOfBellyRubsP3 * 0.35F);
-
+    	totalTicksOfBellyRubsP4 = (int) Math.ceil(totalTicksOfBellyRubsP3 - totalTicksOfBellyRubsP3 * 0.1F);
+    	totalTicksOfBellyRubsP5 = (int) Math.ceil(totalTicksOfBellyRubsP3 - totalTicksOfBellyRubsP3 * 0.2F);
+    	totalTicksOfBellyRubsP6 = (int) Math.ceil(totalTicksOfBellyRubsP3 - totalTicksOfBellyRubsP3 * 0.3F);
+    	totalTicksOfBellyRubsP7 = (int) Math.ceil(totalTicksOfBellyRubsP3 - totalTicksOfBellyRubsP3 * 0.4F);
+    	totalTicksOfBellyRubsP8 = (int) Math.ceil(totalTicksOfBellyRubsP3 - totalTicksOfBellyRubsP3 * 0.5F);
     }
    
     private static void calculateHornyValues() { 	
-    	totalTicksOfHornyP5 = (int) Math.ceil(totalTicksOfHornyP4 - totalTicksOfHornyP4 * 0.12F);
-    	totalTicksOfHornyP6 = (int) Math.ceil(totalTicksOfHornyP4 - totalTicksOfHornyP4 * 0.24F);
-    	totalTicksOfHornyP7 = (int) Math.ceil(totalTicksOfHornyP4 - totalTicksOfHornyP4 * 0.36F);
+    	totalTicksOfHornyP5 = (int) Math.ceil(totalTicksOfHornyP4 - totalTicksOfHornyP4 * 0.2F);
+    	totalTicksOfHornyP6 = (int) Math.ceil(totalTicksOfHornyP4 - totalTicksOfHornyP4 * 0.3F);
+    	totalTicksOfHornyP7 = (int) Math.ceil(totalTicksOfHornyP4 - totalTicksOfHornyP4 * 0.4F);
+    	totalTicksOfHornyP8 = (int) Math.ceil(totalTicksOfHornyP4 - totalTicksOfHornyP4 * 0.5F);
     }    
 }

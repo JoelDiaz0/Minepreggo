@@ -6,11 +6,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.TamableAnimal;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -76,31 +73,26 @@ public abstract class AbstractMonsterCreeperGirl extends AbstractCreeperGirl {
 	}
 	
 	@Override
-	protected void registerGoals() {
-		super.registerGoals();		
-		this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.2, false));
-		this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
-		this.goalSelector.addGoal(2, new AbstractCreeperGirl.SwellGoal<>(this) {		
+	protected void registerGoals() {	
+		this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.2, false));
+		this.targetSelector.addGoal(2, new HurtByTargetGoal(this));
+		this.goalSelector.addGoal(3, new FloatGoal(this));
+		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0));
+		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8F));
+		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+		this.addBehaviourGoals();
+	}
+	
+	protected void addBehaviourGoals() {	
+		this.goalSelector.addGoal(1, new AbstractCreeperGirl.SwellGoal<>(this) {		
 			@Override
 			public boolean canUse() {												
 				return super.canUse() && canExplode();
 			}
 		});
-		this.goalSelector.addGoal(3, new FloatGoal(this));
 		this.goalSelector.addGoal(2, new AvoidEntityGoal<>(this, Ocelot.class, 6F, 1, 1.2));
 		this.goalSelector.addGoal(2, new AvoidEntityGoal<>(this, Cat.class, 6F, 1, 1.2));	
-		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0));
-		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8F));
-		this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
-		this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true));
-	}
-	
-	protected static AttributeSupplier.Builder getBasicAttributes(double movementSpeed) {
-		return Mob.createMobAttributes()
-		.add(Attributes.MAX_HEALTH, 20)
-		.add(Attributes.ATTACK_DAMAGE, 2)
-		.add(Attributes.FOLLOW_RANGE, 35)
-		.add(Attributes.MOVEMENT_SPEED, movementSpeed);
+		this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Player.class, true));	
 	}
 
 	@Override

@@ -46,17 +46,24 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.Nullable;
 
 import com.google.common.collect.Maps;
 
+import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.world.entity.ScientificIllagerTrades;
-
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllQuadrupedCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.zombie.IllZombieGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.ender.IllEnderGirl;
 
 public class ScientificIllager extends AbstractIllager implements Merchant {
     private MerchantOffers offers;
@@ -65,6 +72,8 @@ public class ScientificIllager extends AbstractIllager implements Merchant {
     private boolean spawnIllZombieGirl = true;
     private boolean spawnIllQuadrupedCreeperGirl = true;
     private boolean spawnIllCreeperGirl = true;
+  
+    private final Map<String, UUID> petsId = new HashMap<>();
     
 	public ScientificIllager(PlayMessages.SpawnEntity packet, Level world) {
 		this(MinepreggoModEntities.SCIENTIFIC_ILLAGER.get(), world);
@@ -184,6 +193,10 @@ public class ScientificIllager extends AbstractIllager implements Merchant {
 	    compound.putBoolean("SpawnIllZombieGirl", spawnIllZombieGirl);
 	    compound.putBoolean("SpawnIllCreeperGirl", spawnIllCreeperGirl);
 	    compound.putBoolean("SpawnIllQuadrupedCreeperGirl", spawnIllQuadrupedCreeperGirl);
+	    
+	    for (final var entry : this.petsId.entrySet()) {  	
+	    	compound.putUUID(entry.getKey(), entry.getValue());
+	    }
 	}
 		
 	@Override
@@ -194,6 +207,10 @@ public class ScientificIllager extends AbstractIllager implements Merchant {
 		this.spawnIllZombieGirl = compound.getBoolean("SpawnIllZombieGirl");
 		this.spawnIllCreeperGirl = compound.getBoolean("SpawnIllCreeperGirl");
 		this.spawnIllQuadrupedCreeperGirl = compound.getBoolean("SpawnIllQuadrupedCreeperGirl");
+		this.tryReadPetId("DataIllZombieId", compound);
+		this.tryReadPetId("DataIllCreeperId", compound);
+		this.tryReadPetId("DataIllQuadrupedCreeperId", compound);
+		this.tryReadPetId("DataIllEnderId", compound);	
 	}
 	
 	@Override
@@ -208,9 +225,15 @@ public class ScientificIllager extends AbstractIllager implements Merchant {
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
 		this.goalSelector.addGoal(8, new RandomStrollGoal(this, 0.6D));
 		this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
-		this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 8.0F));
+		this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 8.0F));		
 	}
 
+	private void tryReadPetId(String key, CompoundTag compound) {
+		if (compound.hasUUID(key)) {
+			this.petsId.put(key, compound.getUUID(key));
+		}
+	}
+	
 	public boolean canIllZombieGirlSpawn() {
 		return spawnIllZombieGirl;
 	}
@@ -227,35 +250,62 @@ public class ScientificIllager extends AbstractIllager implements Merchant {
 		return spawnIllQuadrupedCreeperGirl;
 	}
 	
-	public boolean spawnIllZombieGirlIfCan() {	
+	protected boolean spawnIllZombieGirlIfCan(double x, double y, double z) {	
 		if (!this.spawnIllZombieGirl) return false;
 		this.spawnIllZombieGirl = false;
-		
-		
+		if (this.level() instanceof ServerLevel serverLevel && !serverLevel.isClientSide()) {	
+			IllZombieGirl mob = MinepreggoModEntities.ILL_ZOMBIE_GIRL.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.MOB_SUMMONED);
+			mob.setYRot(this.random.nextFloat() * 360F);
+			mob.tameByIllager(this);			
+			this.petsId.put("DataIllZombieId", mob.getUUID());	
+		}			
 		return true;
 	}
 	
-	public boolean spawnIllCreeperGirlIfCan() {
+	protected boolean spawnIllCreeperGirlIfCan(double x, double y, double z) {
 		if (!this.spawnIllCreeperGirl) return false;
 		this.spawnIllCreeperGirl = false;
-		
+		if (this.level() instanceof ServerLevel serverLevel && !serverLevel.isClientSide()) {	
+			IllCreeperGirl mob = MinepreggoModEntities.ILL_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.MOB_SUMMONED);
+			mob.setYRot(this.random.nextFloat() * 360F);
+			mob.tameByIllager(this);
+			this.petsId.put("DataIllCreeperId", mob.getUUID());
+		}		
 		return true;
 	}
 	
-	public boolean spawnIllQuadrupedCreeperGirlIfCan() {
+	protected boolean spawnIllQuadrupedCreeperGirlIfCan(double x, double y, double z) {
 		if (!this.spawnIllQuadrupedCreeperGirl) return false;
 		this.spawnIllQuadrupedCreeperGirl = false;
-		
-		
+		if (this.level() instanceof ServerLevel serverLevel && !serverLevel.isClientSide()) {	
+			IllQuadrupedCreeperGirl mob = MinepreggoModEntities.ILL_QUADRUPED_CREEPER_GIRL.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.MOB_SUMMONED);
+			mob.setYRot(this.random.nextFloat() * 360F);
+			mob.tameByIllager(this);
+			this.petsId.put("DataIllQuadrupedCreeperId", mob.getUUID());
+		}	
 		return true;
 	}
 	
-	public boolean spawnIllEnderGirlIfCan() {
+	protected boolean spawnIllEnderGirlIfCan(double x, double y, double z) {
 		if (!this.spawnIllEnderGirl) return false;
 		this.spawnIllEnderGirl = false;
-		
-		
+		if (this.level() instanceof ServerLevel serverLevel && !serverLevel.isClientSide()) {	
+			IllEnderGirl mob = MinepreggoModEntities.ILL_ENDER_GIRL.get().spawn(serverLevel, BlockPos.containing(x, y, z), MobSpawnType.MOB_SUMMONED);
+			mob.setYRot(this.random.nextFloat() * 360F);
+			mob.tameByIllager(this);
+			this.petsId.put("DataIllEnderId", mob.getUUID());
+		}		
 		return true;
+	}
+	
+	public void trySpawnIllPets() {	
+		final var x = this.getX();
+		final var y = this.getY();
+		final var z = this.getZ();
+		this.spawnIllZombieGirlIfCan(x + 1.25, y, z);
+		this.spawnIllCreeperGirlIfCan(x - 1.25, y, z);
+		this.spawnIllQuadrupedCreeperGirlIfCan(x, y, z + 1.25);
+		this.spawnIllEnderGirlIfCan(x, y, z - 1.25);
 	}
 	
 	@Override
@@ -300,13 +350,12 @@ public class ScientificIllager extends AbstractIllager implements Merchant {
 	    this.populateDefaultEquipmentEnchantments(randomsource, p_34089_);
 	    return spawngroupdata;
 	}
-
+	
 	@Override
 	protected void populateDefaultEquipmentSlots(RandomSource p_219149_, DifficultyInstance p_219150_) {
 	    if (this.getCurrentRaid() == null) {
 	        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_AXE));
 	    }
-
 	}
 
 	@Override
@@ -322,6 +371,23 @@ public class ScientificIllager extends AbstractIllager implements Merchant {
 	    }
 	}
 
+	@Override
+	public void die(DamageSource source) {
+		super.die(source);
+		
+		if (!(this.level() instanceof ServerLevel serverLevel)) return;
+
+		MinepreggoMod.LOGGER.debug("ILLAGER SCIENTIFIC DIED, DETACHING PETS");
+		
+		for (final var uuid : this.petsId.values()) {
+			var entity = serverLevel.getEntity(uuid);
+			if (entity != null && entity instanceof Ill ill) {
+				ill.removeIllagerOwner();
+				MinepreggoMod.LOGGER.debug("PET FOUND, id={}, class={}", entity.getId(), entity.getClass().getSimpleName());
+			}
+		}	
+	}
+	
 	@Override
 	protected SoundEvent getAmbientSound() {
 	    return SoundEvents.VINDICATOR_AMBIENT;

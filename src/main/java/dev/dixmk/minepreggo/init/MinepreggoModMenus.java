@@ -17,6 +17,8 @@ import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP6Inventar
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP6MainGUIMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP7InventaryGUIMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP7MainGUIMenu;
+import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP8InventaryGUIMenu;
+import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP8MainGUIMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlP0InventaryGUIMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlP0MainGUIMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlP1InventaryGUIMenu;
@@ -33,6 +35,8 @@ import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlP6InventaryG
 import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlP6MainGUIMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlP7InventaryGUIMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlP7MainGUIMenu;
+import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlP8InventaryGUIMenu;
+import dev.dixmk.minepreggo.world.inventory.preggo.zombie.ZombieGirlP8MainGUIMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.DeferredRegister;
@@ -62,7 +66,8 @@ public class MinepreggoModMenus {
 	public static final RegistryObject<MenuType<ZombieGirlP6InventaryGUIMenu>> ZOMBIE_GIRL_P6_INVENTARY_GUI = REGISTRY.register("zombie_girl_p6_inventary_gui", () -> IForgeMenuType.create(ZombieGirlP6InventaryGUIMenu::new));
 	public static final RegistryObject<MenuType<ZombieGirlP7MainGUIMenu>> ZOMBIE_GIRL_P7_MAIN_GUI = REGISTRY.register("zombie_girl_p7_main_gui", () -> IForgeMenuType.create(ZombieGirlP7MainGUIMenu::new));
 	public static final RegistryObject<MenuType<ZombieGirlP7InventaryGUIMenu>> ZOMBIE_GIRL_P7_INVENTARY_GUI = REGISTRY.register("zombie_girl_p7_inventary_gui", () -> IForgeMenuType.create(ZombieGirlP7InventaryGUIMenu::new));
-	
+	public static final RegistryObject<MenuType<ZombieGirlP8MainGUIMenu>> ZOMBIE_GIRL_P8_MAIN_GUI = REGISTRY.register("zombie_girl_p8_main_gui", () -> IForgeMenuType.create(ZombieGirlP8MainGUIMenu::new));
+	public static final RegistryObject<MenuType<ZombieGirlP8InventaryGUIMenu>> ZOMBIE_GIRL_P8_INVENTARY_GUI = REGISTRY.register("zombie_girl_p8_inventary_gui", () -> IForgeMenuType.create(ZombieGirlP8InventaryGUIMenu::new));
 	
 	public static final RegistryObject<MenuType<CreeperGirlP0MainGUIMenu>> CREEPER_GIRL_P0_MAIN_GUI = REGISTRY.register("creeper_girl_p0_main_gui", () -> IForgeMenuType.create(CreeperGirlP0MainGUIMenu::new));
 	public static final RegistryObject<MenuType<CreeperGirlP0InventaryGUIMenu>> CREEPER_GIRL_P0_INVENTARY_GUI = REGISTRY.register("creeper_girl_p0_inventary_gui", () -> IForgeMenuType.create(CreeperGirlP0InventaryGUIMenu::new));
@@ -80,4 +85,6 @@ public class MinepreggoModMenus {
 	public static final RegistryObject<MenuType<CreeperGirlP6InventaryGUIMenu>> CREEPER_GIRL_P6_INVENTARY_GUI = REGISTRY.register("creeper_girl_p6_inventary_gui", () -> IForgeMenuType.create(CreeperGirlP6InventaryGUIMenu::new));
 	public static final RegistryObject<MenuType<CreeperGirlP7MainGUIMenu>> CREEPER_GIRL_P7_MAIN_GUI = REGISTRY.register("creeper_girl_p7_main_gui", () -> IForgeMenuType.create(CreeperGirlP7MainGUIMenu::new));
 	public static final RegistryObject<MenuType<CreeperGirlP7InventaryGUIMenu>> CREEPER_GIRL_P7_INVENTARY_GUI = REGISTRY.register("creeper_girl_p7_inventary_gui", () -> IForgeMenuType.create(CreeperGirlP7InventaryGUIMenu::new));
+	public static final RegistryObject<MenuType<CreeperGirlP8MainGUIMenu>> CREEPER_GIRL_P8_MAIN_GUI = REGISTRY.register("creeper_girl_p8_main_gui", () -> IForgeMenuType.create(CreeperGirlP8MainGUIMenu::new));
+	public static final RegistryObject<MenuType<CreeperGirlP8InventaryGUIMenu>> CREEPER_GIRL_P8_INVENTARY_GUI = REGISTRY.register("creeper_girl_p8_inventary_gui", () -> IForgeMenuType.create(CreeperGirlP8InventaryGUIMenu::new));
 }

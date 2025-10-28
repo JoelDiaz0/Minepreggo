@@ -5,7 +5,10 @@ import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractMonsterCreeperGirl;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
 public abstract class AbstractMonsterHumanoidCreeperGirl extends AbstractMonsterCreeperGirl {
@@ -19,5 +22,11 @@ public abstract class AbstractMonsterHumanoidCreeperGirl extends AbstractMonster
 		AbstractCreeperGirl.populateDefaultEquipmentSlots(this, p_219165_, p_219166_);
 	}	
 	
-	
+	public static AttributeSupplier.Builder getBasicAttributes(double movementSpeed) {
+		return Mob.createMobAttributes()
+		.add(Attributes.MAX_HEALTH, 20)
+		.add(Attributes.ATTACK_DAMAGE, 2)
+		.add(Attributes.FOLLOW_RANGE, 35)
+		.add(Attributes.MOVEMENT_SPEED, movementSpeed);
+	}
 }

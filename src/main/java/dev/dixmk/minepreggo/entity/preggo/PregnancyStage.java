@@ -10,7 +10,8 @@ public enum PregnancyStage {
     P4,
     P5,
     P6,
-    P7;
+    P7,
+	P8;
 
 	protected static final Random RANDOM =  new Random();
     
@@ -23,6 +24,7 @@ public enum PregnancyStage {
 		if (c < 4) {
 			c = 4;
 		}	
-		return PregnancyStage.values()[RANDOM.nextInt(c, 8)];	
+
+		return PregnancyStage.values()[RANDOM.nextInt(c, PregnancyStage.values().length)];	
     }
 }

@@ -21,7 +21,8 @@ public abstract class AbstractZombieGirlRenderer<E extends AbstractZombieGirl, M
 	protected static final ResourceLocation  ZOMBIE_GIRL_P5_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p5.png");
 	protected static final ResourceLocation  ZOMBIE_GIRL_P6_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p6.png");
 	protected static final ResourceLocation  ZOMBIE_GIRL_P7_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p7.png");
-
+	protected static final ResourceLocation  ZOMBIE_GIRL_P8_LOCATION = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/entity/preggo/zombie/zombie_girl_p8.png");
+	
 	protected AbstractZombieGirlRenderer(EntityRendererProvider.Context context, M main, M inner, M outter) {
 		super(context, main, 0.5F);
 		this.addLayer(new HumanoidArmorLayer<>(this, inner, outter, context.getModelManager()));

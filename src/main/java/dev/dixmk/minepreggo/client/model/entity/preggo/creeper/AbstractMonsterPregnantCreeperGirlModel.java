@@ -13,17 +13,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractMonsterPregnantCreeperGirlModel<E extends AbstractMonsterPregnantHumanoidCreeperGirl> extends AbstractHumanoidCreeperGirlModel<E> {
 
-	protected final ModelPart root;
-	protected HierarchicalModel<E> animator;
-	
 	protected AbstractMonsterPregnantCreeperGirlModel(ModelPart root) {
 		this(root, createDefaultHierarchicalModel(root));		
 	}
 
 	protected AbstractMonsterPregnantCreeperGirlModel(ModelPart root, HierarchicalModel<E> animator) {
-		super(root);	
-		this.root = root;
-		this.animator = animator;
+		super(root, animator);	
 		this.belly.visible = true;
 	}
 	
@@ -34,7 +29,7 @@ public abstract class AbstractMonsterPregnantCreeperGirlModel<E extends Abstract
 			this.hat.copyFrom(this.head);
 		}
 		else {
-			this.moveHead(entity, netHeadYaw, headPitch);
+			this.moveHeadWithHat(entity, netHeadYaw, headPitch);
 		}
 	}
 	

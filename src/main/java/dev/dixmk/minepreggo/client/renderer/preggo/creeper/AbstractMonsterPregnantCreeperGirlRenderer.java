@@ -11,9 +11,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public abstract class AbstractMonsterPregnantCreeperGirlRenderer 
 	<E extends AbstractMonsterPregnantHumanoidCreeperGirl, M extends AbstractMonsterPregnantCreeperGirlModel<E>> extends AbstractHumanoidCreeperGirlRenderer<E, M> {
 
-	protected AbstractMonsterPregnantCreeperGirlRenderer(Context context, M main, M inner, M outter, M layer) {
+	protected AbstractMonsterPregnantCreeperGirlRenderer(Context context, M main, M inner, M outter, M layer, boolean facialExpresion) {
 		super(context, main, inner, outter, layer);
-		this.addFacialExpresions();
+		if (facialExpresion) this.addFacialExpresions();
+	}
+	
+	protected AbstractMonsterPregnantCreeperGirlRenderer(Context context, M main, M inner, M outter, M layer) {
+		this(context, main, inner, outter, layer, true);
 	}
 	
 	protected void addFacialExpresions() {

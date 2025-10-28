@@ -49,12 +49,12 @@ public abstract class FemaleDiamondChestPlateP1Item extends ArmorItem {
 
 			@Override
 			public Ingredient getRepairIngredient() {
-				return Ingredient.of(new ItemStack(Items.DIAMOND), new ItemStack(Items.DIAMOND_CHESTPLATE), new ItemStack(MinepreggoModItems.FEMALE_DIAMOND_CHEST_PLATE_CHESTPLATE.get()));
+				return Ingredient.of(new ItemStack(Items.DIAMOND), new ItemStack(Items.DIAMOND_CHESTPLATE), new ItemStack(MinepreggoModItems.FEMALE_DIAMOND_CHEST_PLATE_P0_CHESTPLATE.get()));
 			}
 
 			@Override
 			public String getName() {
-				return "female_diamond_chest_plate_p_1";
+				return "female_diamond_chest_plate_p1";
 			}
 
 			@Override
@@ -80,7 +80,7 @@ public abstract class FemaleDiamondChestPlateP1Item extends ArmorItem {
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return PreggoModelHelper.getMaternalP1HumanoidArmorModel(living, stack, slot, defaultModel);
+					return PreggoModelHelper.createMaternalP1HumanoidArmorModel(living, stack, slot, defaultModel);
 				}
 			});
 		}

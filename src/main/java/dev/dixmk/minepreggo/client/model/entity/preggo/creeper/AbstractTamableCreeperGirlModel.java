@@ -8,13 +8,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractTamableCreeperGirlModel <E extends AbstractTamableHumanoidCreeperGirl<?>> extends AbstractHumanoidCreeperGirlModel<E> {
-	protected final ModelPart root;
-	protected HierarchicalModel<E> animator;
 	
 	protected AbstractTamableCreeperGirlModel(ModelPart root, HierarchicalModel<E> animator) {
-		super(root);
-		this.root = root;
-		this.animator = animator;
+		super(root, animator);
 		this.belly.visible = false;
 	}
 	
@@ -25,7 +21,7 @@ public abstract class AbstractTamableCreeperGirlModel <E extends AbstractTamable
 			this.hat.copyFrom(this.head);
 		}
 		else {
-			this.moveHead(entity, netHeadYaw, headPitch);
+			this.moveHeadWithHat(entity, netHeadYaw, headPitch);
 		}	
 	}
 }

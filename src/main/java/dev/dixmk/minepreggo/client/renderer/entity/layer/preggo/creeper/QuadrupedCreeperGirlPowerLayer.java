@@ -30,7 +30,7 @@ public class QuadrupedCreeperGirlPowerLayer
 		super(p_174471_);
 		this.model = main;
 	}
-
+	
 	@Override
 	public void render(PoseStack p_116970_, MultiBufferSource p_116971_, int p_116972_, E p_116973_, float p_116974_, float p_116975_, float p_116976_, float p_116977_, float p_116978_, float p_116979_) {
 		if (p_116973_.isPowered()) {

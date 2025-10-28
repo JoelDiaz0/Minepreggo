@@ -79,7 +79,7 @@ public abstract class FemaleChainmailChestPlateItem extends ArmorItem {
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return PreggoModelHelper.getMaternalP0HumanoidArmorModel(living, stack, slot, defaultModel);
+					return PreggoModelHelper.createFemaleP0HumanoidArmorModel(living, stack, slot, defaultModel);
 				}
 			});
 		}

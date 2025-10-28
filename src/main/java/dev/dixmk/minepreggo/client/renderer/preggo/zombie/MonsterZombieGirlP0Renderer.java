@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.client.renderer.preggo.zombie;
 
-import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.AnimatedMonsterZombieGirlP0Model;
+import dev.dixmk.minepreggo.client.model.entity.preggo.zombie.MonsterZombieGirlP0Model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -14,14 +14,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class MonsterZombieGirlP0Renderer extends AbstractMonsterZombieGirlRenderer<MonsterZombieGirlP0, AnimatedMonsterZombieGirlP0Model> {
+public class MonsterZombieGirlP0Renderer extends AbstractMonsterZombieGirlRenderer<MonsterZombieGirlP0, MonsterZombieGirlP0Model> {
 
 	public MonsterZombieGirlP0Renderer(EntityRendererProvider.Context context) {
 		this(context, AbstractZombieGirlModel.LAYER_LOCATION_P0, AbstractZombieGirlModel.LAYER_INNER_ARMOR_LOCATION, AbstractZombieGirlModel.LAYER_OUTER_ARMOR_LOCATION);
 	}
 	
 	public MonsterZombieGirlP0Renderer(EntityRendererProvider.Context context, ModelLayerLocation main, ModelLayerLocation inner, ModelLayerLocation outter) {
-		super(context, new AnimatedMonsterZombieGirlP0Model(context.bakeLayer(main)), new AnimatedMonsterZombieGirlP0Model(context.bakeLayer(inner)), new AnimatedMonsterZombieGirlP0Model(context.bakeLayer(outter)));
+		super(context, new MonsterZombieGirlP0Model(context.bakeLayer(main)), new MonsterZombieGirlP0Model(context.bakeLayer(inner)), new MonsterZombieGirlP0Model(context.bakeLayer(outter)));
 	}
 	
 	@Override

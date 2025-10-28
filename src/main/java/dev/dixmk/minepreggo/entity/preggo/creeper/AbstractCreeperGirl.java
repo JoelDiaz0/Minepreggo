@@ -43,6 +43,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.AreaEffectCloud;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -88,9 +89,7 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 		return !this.isTame();
 	}
 	
-	public boolean canBeTamedByPlayer() {
-		return true;
-	}
+	public abstract boolean canBeTamedByPlayer();
 	
 	@Override
 	public SoundSource getSoundSource() {
@@ -232,11 +231,6 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 	
 	@Override
 	public void tick() {	
-		super.tick();
-		if (this.level().isClientSide() && !this.loopAnimationState.isStarted()) {
-			this.loopAnimationState.start(this.tickCount);
-		}
-		
 		if (this.isAlive()) {
 			this.oldSwell = this.swell;
 			if (this.isIgnited()) {
@@ -259,6 +253,12 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 				this.explodeCreeper();
 			}
 		}	
+		
+		super.tick();
+		
+		if (this.level().isClientSide() && !this.loopAnimationState.isStarted()) {
+			this.loopAnimationState.start(this.tickCount);
+		}
 	}
 	
     @Override
@@ -271,6 +271,14 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
         }
     }
 	
+    @Override
+    public boolean doHurtTarget(Entity target) {
+        boolean result = super.doHurtTarget(target);
+        if (result) 
+            this.level().broadcastEntityEvent(this, (byte)4); // triggers handleEntityEvent client-side     
+        return result;
+    }
+    
 	@Override
 	public Packet<ClientGamePacketListener> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
@@ -309,7 +317,10 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 			}
 			retval = InteractionResult.sidedSuccess(this.level().isClientSide());
 		}	
-		else if (!this.isBaby() && this.canBeTamedByPlayer() && !this.isTame() && this.isFoodToTame(itemstack)) {
+		else if (this.isBaby() || !this.canBeTamedByPlayer() ) {
+			retval = InteractionResult.FAIL;	
+		}
+		else if (!this.isTame() && this.isFoodToTame(itemstack)) {
 			this.usePlayerItem(sourceentity, hand, itemstack);
 			if (this.random.nextInt(3) == 0 && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(this, sourceentity)) {
 				this.tame(sourceentity);

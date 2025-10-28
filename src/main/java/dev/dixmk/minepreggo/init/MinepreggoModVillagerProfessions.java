@@ -5,7 +5,7 @@ import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-
+import net.minecraftforge.fml.common.Mod;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.ai.village.poi.PoiTypes;
@@ -24,18 +24,19 @@ import com.google.common.collect.ImmutableSet;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MinepreggoModVillagerProfessions {
 	
 	private MinepreggoModVillagerProfessions() {}
 
 	private static final Map<String, ProfessionPoiType> POI_TYPES = new HashMap<>();
-	public static final DeferredRegister<VillagerProfession> PROFESSIONS = DeferredRegister.create(ForgeRegistries.VILLAGER_PROFESSIONS, MinepreggoMod.MODID);
+	public static final DeferredRegister<VillagerProfession> REGISTRY = DeferredRegister.create(ForgeRegistries.VILLAGER_PROFESSIONS, MinepreggoMod.MODID);
 	public static final RegistryObject<VillagerProfession> VILLAGER_DOCTOR = registerProfession("doctor_villager", () -> MinepreggoModBlocks.MEDICAL_TABLE.get(),
 			() -> ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.villager.work_cleric")));
 
 	private static RegistryObject<VillagerProfession> registerProfession(String name, Supplier<Block> block, Supplier<SoundEvent> soundEvent) {
 		POI_TYPES.put(name, new ProfessionPoiType(block, null));
-		return PROFESSIONS.register(name, () -> {
+		return REGISTRY.register(name, () -> {
 			Predicate<Holder<PoiType>> poiPredicate = poiTypeHolder -> (POI_TYPES.get(name).poiType != null) && (poiTypeHolder.get() == POI_TYPES.get(name).poiType.get());
 			return new VillagerProfession(MinepreggoMod.MODID + ":" + name, poiPredicate, poiPredicate, ImmutableSet.of(), ImmutableSet.of(), soundEvent.get());
 		});

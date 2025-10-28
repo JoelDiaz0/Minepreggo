@@ -8,6 +8,7 @@ import dev.dixmk.minepreggo.entity.preggo.PregnancySystemP2;
 import dev.dixmk.minepreggo.entity.preggo.PregnantPreggoMobSystem;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantHumanoidCreeperGirl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -56,7 +57,7 @@ public class TamableCreeperGirlP2 extends AbstractTamablePregnantHumanoidCreeper
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return getBasicAttributes(0.235);
+		return AbstractTamableHumanoidCreeperGirl.getBasicAttributes(0.235);
 	}
 	
 	@Override

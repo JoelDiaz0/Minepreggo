@@ -50,34 +50,40 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.ACTIVATED_GUNPOWDER_WITH_HOT_SAUCE.get());
                 output.accept(MinepreggoModItems.SOUR_ACTIVATED_GUNPOWDER.get());
                
-                output.accept(MinepreggoModItems.FEMALE_CHAINMAIL_CHEST_PLATE_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_IRON_CHEST_PLATE_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_IRON_CHEST_PLATE_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_DIAMOND_CHEST_PLATE_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_NETHERITE_CHEST_PLATE_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_CHAINMAIL_CHEST_PLATE_P_1_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_IRON_CHESTPLATE_P_1_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_GOLDEN_CHEST_PLATE_P_1_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_DIAMOND_CHEST_PLATE_P_1_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_NETHERITE_CHEST_PLATE_P_1_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_CHAINMAIL_CHEST_PLATE_P_2_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_IRON_CHESTPLATE_P_2_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_GOLDEN_CHEST_PLATE_P_2_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_DIAMOND_CHEST_PLATE_P_2_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_NETHERITE_CHEST_PLATE_P_2_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_CHAINMAIL_CHEST_PLATE_P_3_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_IRON_CHESTPLATE_P_3_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_GOLDEN_CHEST_PLATE_P_3_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_DIAMOND_CHEST_PLATE_P_3_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_NETHERITE_CHEST_PLATE_P_3_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_CHAINMAIL_CHEST_PLATE_P0_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_IRON_CHEST_PLATE_P0_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_IRON_CHEST_PLATE_P0_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_DIAMOND_CHEST_PLATE_P0_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_NETHERITE_CHEST_PLATE_P0_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_CHAINMAIL_CHEST_PLATE_P1_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_IRON_CHESTPLATE_P1_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_GOLDEN_CHEST_PLATE_P1_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_DIAMOND_CHEST_PLATE_P1_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_NETHERITE_CHEST_PLATE_P1_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_CHAINMAIL_CHEST_PLATE_P2_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_IRON_CHESTPLATE_P2_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_GOLDEN_CHEST_PLATE_P2_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_DIAMOND_CHEST_PLATE_P2_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_NETHERITE_CHEST_PLATE_P2_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_CHAINMAIL_CHEST_PLATE_P3_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_IRON_CHESTPLATE_P3_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_GOLDEN_CHEST_PLATE_P3_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_DIAMOND_CHEST_PLATE_P3_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_NETHERITE_CHEST_PLATE_P3_CHESTPLATE.get());               
+                output.accept(MinepreggoModItems.FEMALE_CHAINMAIL_CHEST_PLATE_P4_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_IRON_CHESTPLATE_P4_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_GOLDEN_CHEST_PLATE_P4_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_DIAMOND_CHEST_PLATE_P4_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_NETHERITE_CHEST_PLATE_P4_CHESTPLATE.get());
+
                 output.accept(MinepreggoModItems.IRON_KNEE_BRACE_LEGGINGS.get());
                 output.accept(MinepreggoModItems.GOLD_KNEE_BRACE_LEGGINGS.get());
                 output.accept(MinepreggoModItems.DIAMOND_KNEE_BRACE_LEGGINGS.get());
                 output.accept(MinepreggoModItems.NETHERITE_KNEE_BRACE_LEGGINGS.get());
-                output.accept(MinepreggoModItems.BELLY_SHIELD_P_4_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.BELLY_SHIELD_P_5_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.BELLY_SHIELD_P_6_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.BELLY_SHIELD_P_7_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.BELLY_SHIELD_P5_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.BELLY_SHIELD_P6_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.BELLY_SHIELD_P7_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.BELLY_SHIELD_P8_CHESTPLATE.get());
                 
                 output.accept(MinepreggoModItems.ZOMBIE_LIFE_SUBSTANCE.get());
                 output.accept(MinepreggoModItems.SPECIMEN_TUBE.get());
@@ -104,12 +110,12 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.TAMABLE_ZOMBIE_GIRL_P5_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.TAMABLE_ZOMBIE_GIRL_P6_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.TAMABLE_ZOMBIE_GIRL_P7_SPAWN_EGG.get());
-                 
+                output.accept(MinepreggoModItems.TAMABLE_ZOMBIE_GIRL_P8_SPAWN_EGG.get());
+
                 output.accept(MinepreggoModItems.MONSTER_CREEPER_GIRL_P0_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.MONSTER_CREEPER_GIRL_P3_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.MONSTER_CREEPER_GIRL_P5_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.MONSTER_CREEPER_GIRL_P7_SPAWN_EGG.get());
-
                 output.accept(MinepreggoModItems.TAMABLE_CREEPER_GIRL_P0_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.TAMABLE_CREEPER_GIRL_P1_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.TAMABLE_CREEPER_GIRL_P2_SPAWN_EGG.get());
@@ -118,6 +124,13 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.TAMABLE_CREEPER_GIRL_P5_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.TAMABLE_CREEPER_GIRL_P6_SPAWN_EGG.get());
                 output.accept(MinepreggoModItems.TAMABLE_CREEPER_GIRL_P7_SPAWN_EGG.get());
-
+                output.accept(MinepreggoModItems.TAMABLE_CREEPER_GIRL_P8_SPAWN_EGG.get());
+     
+                output.accept(MinepreggoModItems.MONSTER_QUADRUPED_CREEPER_GIRL_P0_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.MONSTER_ENDER_GIRL_P0_SPAWN_EGG.get());
+                output.accept(MinepreggoModItems.SCIENTIFIC_ILLAGER_SPAWN_EGG.get());
+                
+                
+                
             }).build());
 }

@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.client.model.entity.preggo.zombie;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.PregnantFemaleHumanoidModel;
 import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractZombieGirl;
+import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -30,10 +31,15 @@ public abstract class AbstractZombieGirlModel<E extends AbstractZombieGirl> exte
 	public static final ModelLayerLocation LAYER_LOCATION_P5 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "zombie_girl_p5_model"), "main");
 	public static final ModelLayerLocation LAYER_LOCATION_P6 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "zombie_girl_p6_model"), "main");
 	public static final ModelLayerLocation LAYER_LOCATION_P7 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "zombie_girl_p7_model"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION_P8 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "zombie_girl_p8_model"), "main");
 
+	protected final ModelPart root;
+	protected final HierarchicalModel<E> animator;
 	
-	protected AbstractZombieGirlModel(ModelPart root) {
+	protected AbstractZombieGirlModel(ModelPart root, HierarchicalModel<E> animator) {
 		super(root);
+		this.root = root;
+		this.animator = animator;
 	}
 
 	protected static void createBasicBodyLayer(PartDefinition partdefinition, float extraLeftArmRotationY, float extraRightArmRotationY) {
@@ -74,92 +80,84 @@ public abstract class AbstractZombieGirlModel<E extends AbstractZombieGirl> exte
 
 		PartDefinition leftBoob = boobs.addOrReplaceChild("left_boob", CubeListBuilder.create(), PartPose.offset(2.0F, 1.0F, 2.0F));
 
-		leftBoob.addOrReplaceChild("left_boob_aux", CubeListBuilder.create().texOffs(18, 66).mirror().addBox(-0.9F, -0.2717F, -3.266F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.1F)).mirror(false), PartPose.offsetAndRotation(-1.0F, 0.0F, -2.0F, 0.3491F, -0.1309F, -0.0436F));	
-		
-        partdefinition.getChild("body").addOrReplaceChild("belly", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-		
+		leftBoob.addOrReplaceChild("left_boob_aux", CubeListBuilder.create().texOffs(18, 66).mirror().addBox(-0.9F, -0.2717F, -3.266F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.1F)).mirror(false), PartPose.offsetAndRotation(-1.0F, 0.0F, -2.0F, 0.3491F, -0.1309F, -0.0436F));		
+        partdefinition.getChild("body").addOrReplaceChild("belly", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));		
 		return LayerDefinition.create(meshdefinition, 64, 96);
 	}
 	
 	public static LayerDefinition createP1BodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
-
-		createBasicBodyLayer(partdefinition, 0, 0);
-	
+		createBasicBodyLayer(partdefinition, 0, 0);	
 		PartDefinition body = partdefinition.getChild("body");
-			
 		body.addOrReplaceChild("belly", CubeListBuilder.create().texOffs(20, 24).addBox(-3.0F, -0.25F, -3.0F, 6.0F, 6.0F, 1.0F, new CubeDeformation(0.1F)), PartPose.offset(0.0F, 6.0F, 0.0F));
-
 		PartDefinition boobs = body.addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 1.5F, -1.9F, 0.1134F, 0.0F, 0.0F));
-
 		PartDefinition rightBoob = boobs.addOrReplaceChild("right_boob", CubeListBuilder.create(), PartPose.offset(-2.0F, 0.2F, 2.0F));
-
 		rightBoob.addOrReplaceChild("right_boob_aux", CubeListBuilder.create().texOffs(18, 66).addBox(-2.0F, -0.2717F, -3.266F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.1F)), PartPose.offsetAndRotation(1.0F, 0.0F, -2.0F, 0.3491F, 0.1309F, 0.0436F));
-
 		PartDefinition leftBoob = boobs.addOrReplaceChild("left_boob", CubeListBuilder.create(), PartPose.offset(2.0F, 0.2F, 2.0F));
-
 		leftBoob.addOrReplaceChild("left_boob_aux", CubeListBuilder.create().texOffs(18, 66).mirror().addBox(-0.9F, -0.2717F, -3.266F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.1F)).mirror(false), PartPose.offsetAndRotation(-1.0F, 0.0F, -2.0F, 0.3491F, -0.1309F, -0.0436F));
-		
 		return LayerDefinition.create(meshdefinition, 64, 96);
 	}
 	
 	public static LayerDefinition createP2BodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
-
 		createBasicBodyLayer(partdefinition, -0.0523599F, 0.0523599F);
-	
 		PartDefinition body = partdefinition.getChild("body");
-		
 		body.addOrReplaceChild("belly", CubeListBuilder.create().texOffs(18, 82).addBox(-3.0F, -3.0F, -2.0F, 6.0F, 6.0F, 3.0F, new CubeDeformation(0.3F)), PartPose.offset(0.0F, 8.5F, -3.0F));
-
 		PartDefinition boobs = body.addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 1.9F, -2.25F, -0.3491F, 0.0F, 0.0F));
-
 		PartDefinition rightBoob = boobs.addOrReplaceChild("right_boob", CubeListBuilder.create(), PartPose.offset(-2.0F, 0.2F, 2.35F));
-
 		rightBoob.addOrReplaceChild("right_boob_aux", CubeListBuilder.create().texOffs(18, 66).addBox(-2.0F, -0.2717F, -3.266F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.2F)), PartPose.offsetAndRotation(0.9F, 0.0F, -2.0F, 0.3491F, 0.1309F, 0.0436F));
-
 		PartDefinition leftBoob = boobs.addOrReplaceChild("left_boob", CubeListBuilder.create(), PartPose.offset(2.0F, 0.2F, 2.35F));
-
-		leftBoob.addOrReplaceChild("left_boob_aux", CubeListBuilder.create().texOffs(18, 66).mirror().addBox(-0.9F, -0.2717F, -3.266F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.2F)).mirror(false), PartPose.offsetAndRotation(-0.9F, 0.0F, -2.0F, 0.3491F, -0.1309F, -0.0436F));
-		
+		leftBoob.addOrReplaceChild("left_boob_aux", CubeListBuilder.create().texOffs(18, 66).mirror().addBox(-0.9F, -0.2717F, -3.266F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.2F)).mirror(false), PartPose.offsetAndRotation(-0.9F, 0.0F, -2.0F, 0.3491F, -0.1309F, -0.0436F));	
 		return LayerDefinition.create(meshdefinition, 64, 96);
 	}
 	
 	public static LayerDefinition createP3BodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
-
-		createBasicBodyLayer(partdefinition, -0.0872665F, 0.0872665F);
-	
+		createBasicBodyLayer(partdefinition, -0.0772665F, 0.0772665F);
 		PartDefinition body = partdefinition.getChild("body");
-		
-		PartDefinition boobs = body.addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 1.5F, -2.55F, -0.3491F, 0.0F, 0.0F));
-
+		PartDefinition boobs = body.addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 1.5F, -2.55F, -0.3142F, 0.0F, 0.0F));
 		PartDefinition rightBoob = boobs.addOrReplaceChild("right_boob", CubeListBuilder.create(), PartPose.offset(-2.0F, 0.6F, 2.35F));
-
-		rightBoob.addOrReplaceChild("right_boob_aux", CubeListBuilder.create().texOffs(18, 66).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.4F)), PartPose.offsetAndRotation(-0.0336F, 1.7279F, -3.1635F, 0.3491F, 0.1745F, 0.0436F));
-
+		rightBoob.addOrReplaceChild("rightBoobCube_r1", CubeListBuilder.create().texOffs(18, 66).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.4F)), PartPose.offsetAndRotation(-0.0336F, 1.7279F, -3.1635F, 0.3491F, 0.1745F, 0.0436F));
 		PartDefinition leftBoob = boobs.addOrReplaceChild("left_boob", CubeListBuilder.create(), PartPose.offset(2.0F, 0.6F, 2.35F));
-
-		leftBoob.addOrReplaceChild("left_boob_aux", CubeListBuilder.create().texOffs(18, 66).mirror().addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.4F)).mirror(false), PartPose.offsetAndRotation(0.1326F, 1.7235F, -3.1505F, 0.3491F, -0.1745F, -0.0436F));
-
-		body.addOrReplaceChild("belly", CubeListBuilder.create().texOffs(15, 80).addBox(-4.0F, -3.0F, -9.0F, 8.0F, 6.0F, 7.0F, new CubeDeformation(0.3F))
-		.texOffs(24, 91).addBox(-0.5F, 1.1993F, -9.7305F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 8.5F, 1.0F, 0.0436F, 0.0F, 0.0F));
-			
+		leftBoob.addOrReplaceChild("letfBoobCube_r1", CubeListBuilder.create().texOffs(18, 66).mirror().addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.4F)).mirror(false), PartPose.offsetAndRotation(0.1326F, 1.7235F, -3.1505F, 0.3491F, -0.1745F, -0.0436F));
+		body.addOrReplaceChild("belly", CubeListBuilder.create().texOffs(17, 82).addBox(-4.0F, -3.0F, -7.0F, 8.0F, 6.0F, 5.0F, new CubeDeformation(0.3F))
+		.texOffs(24, 91).addBox(-0.6F, 0.6993F, -7.7305F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 8.5F, 1.0F, 0.0436F, 0.0F, 0.0F));
 		partdefinition.addOrReplaceChild("right_leg", CubeListBuilder.create().texOffs(0, 16).addBox(-2.1F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F))
 		.texOffs(0, 32).addBox(-2.1F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.25F))
-		.texOffs(32, 66).addBox(-1.85F, -0.25F, 1.25F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.3F)), PartPose.offset(-1.9F, 12.0F, 0.0F));
-
+		.texOffs(32, 66).addBox(-1.85F, -0.35F, 0.75F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.3F)), PartPose.offset(-1.9F, 12.0F, 0.0F));
 		partdefinition.addOrReplaceChild("left_leg", CubeListBuilder.create().texOffs(16, 48).addBox(-1.9F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F))
 		.texOffs(0, 48).addBox(-1.9F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.25F))
-		.texOffs(32, 66).mirror().addBox(-2.15F, -0.25F, 1.25F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.3F)).mirror(false), PartPose.offset(1.9F, 12.0F, 0.0F));
-
+		.texOffs(32, 66).mirror().addBox(-2.15F, -0.35F, 0.75F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.3F)).mirror(false), PartPose.offset(1.9F, 12.0F, 0.0F));	
 		return LayerDefinition.create(meshdefinition, 64, 96);
 	}
 	
+	
 	public static LayerDefinition createP4BodyLayer() {
+		MeshDefinition meshdefinition = new MeshDefinition();
+		PartDefinition partdefinition = meshdefinition.getRoot();
+		createBasicBodyLayer(partdefinition, -0.0872665F, 0.0872665F);
+		PartDefinition body = partdefinition.getChild("body");
+		PartDefinition boobs = body.addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 1.5F, -2.55F, -0.2967F, 0.0F, 0.0F));
+		PartDefinition rightBoob = boobs.addOrReplaceChild("right_boob", CubeListBuilder.create(), PartPose.offset(-2.0F, 0.6F, 2.35F));
+		rightBoob.addOrReplaceChild("rightBoobCube_r1", CubeListBuilder.create().texOffs(18, 66).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.4F)), PartPose.offsetAndRotation(-0.0336F, 1.7279F, -3.1635F, 0.3491F, 0.1745F, 0.0436F));
+		PartDefinition leftBoob = boobs.addOrReplaceChild("left_boob", CubeListBuilder.create(), PartPose.offset(2.0F, 0.6F, 2.35F));
+		leftBoob.addOrReplaceChild("letfBoobCube_r1", CubeListBuilder.create().texOffs(18, 66).mirror().addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.4F)).mirror(false), PartPose.offsetAndRotation(0.1326F, 1.7235F, -3.1505F, 0.3491F, -0.1745F, -0.0436F));
+		body.addOrReplaceChild("belly", CubeListBuilder.create().texOffs(15, 80).addBox(-4.0F, -3.5F, -9.0F, 8.0F, 7.0F, 7.0F, new CubeDeformation(0.35F))
+		.texOffs(20, 85).addBox(-4.0F, -3.5F, -9.9F, 8.0F, 7.0F, 2.0F, new CubeDeformation(-0.1F))
+		.texOffs(24, 91).addBox(-0.5F, 0.6993F, -10.1305F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 8.5F, 1.0F, 0.0524F, 0.0F, 0.0F));
+		partdefinition.addOrReplaceChild("right_leg", CubeListBuilder.create().texOffs(0, 16).addBox(-2.1F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F))
+		.texOffs(0, 32).addBox(-2.1F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.25F))
+		.texOffs(32, 66).addBox(-1.85F, -0.25F, 1.25F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.3F)), PartPose.offset(-1.9F, 12.0F, 0.0F));
+		partdefinition.addOrReplaceChild("left_leg", CubeListBuilder.create().texOffs(16, 48).addBox(-1.9F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F))
+		.texOffs(0, 48).addBox(-1.9F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.25F))
+		.texOffs(32, 66).mirror().addBox(-2.15F, -0.25F, 1.25F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.3F)).mirror(false), PartPose.offset(1.9F, 12.0F, 0.0F));
+		return LayerDefinition.create(meshdefinition, 64, 96);
+	}
+	
+	public static LayerDefinition createP5BodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
@@ -192,7 +190,7 @@ public abstract class AbstractZombieGirlModel<E extends AbstractZombieGirl> exte
 		return LayerDefinition.create(meshdefinition, 64, 96);
 	}
 	
-	public static LayerDefinition createP5BodyLayer() {
+	public static LayerDefinition createP6BodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
@@ -232,7 +230,7 @@ public abstract class AbstractZombieGirlModel<E extends AbstractZombieGirl> exte
 		return LayerDefinition.create(meshdefinition, 64, 96);
 	}
 	
-	public static LayerDefinition createP6BodyLayer() {
+	public static LayerDefinition createP7BodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
@@ -279,7 +277,7 @@ public abstract class AbstractZombieGirlModel<E extends AbstractZombieGirl> exte
 		return LayerDefinition.create(meshdefinition, 64, 96);
 	}
 	
-	public static LayerDefinition createP7BodyLayer() {
+	public static LayerDefinition createP8BodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
@@ -328,6 +326,9 @@ public abstract class AbstractZombieGirlModel<E extends AbstractZombieGirl> exte
 		
 		return LayerDefinition.create(meshdefinition, 64, 96);
 	}
+	
+	
+	
 	
     // Inner armor (leggings layer)
     public static LayerDefinition createInnerLayer() {

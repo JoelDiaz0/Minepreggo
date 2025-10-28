@@ -3,10 +3,13 @@ package dev.dixmk.minepreggo.event;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
+import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractMonsterZombieGirl;
 import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractZombieGirl;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
+import dev.dixmk.minepreggo.world.entity.monster.ScientificIllager;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterHumanoidCreeperGirl;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
@@ -41,23 +44,26 @@ public class EntityEventHandler {
         
         if (mob instanceof AbstractTamablePregnantZombieGirl<?,?> zombieGirl && zombieGirl.getSpawnType() != MobSpawnType.CONVERSION) {
         	PreggoMobHelper.startPregnancy(zombieGirl);
-        	zombieGirl.setCanPickUpLoot(mob.getRandom().nextFloat() < 0.55F * event.getDifficulty().getSpecialMultiplier());
         }
         else if (mob instanceof AbstractTamablePregnantCreeperGirl<?,?> creeperGirl && creeperGirl.getSpawnType() != MobSpawnType.CONVERSION) {
         	PreggoMobHelper.startPregnancy(creeperGirl);
-        	creeperGirl.setCanPickUpLoot(mob.getRandom().nextFloat() < 0.35F * event.getDifficulty().getSpecialMultiplier());
+        }        
+        else if (mob instanceof AbstractMonsterHumanoidCreeperGirl) {  	
+        	mob.setCanPickUpLoot(mob.getRandom().nextFloat() < 0.35F * event.getDifficulty().getSpecialMultiplier());    
+        	if (mob.getType() == MinepreggoModEntities.MONSTER_CREEPER_GIRL_P0.get()
+        			&& mob.getRandom().nextFloat() < MinepreggoModConfig.getBabyCreeperGirlProbability()) {
+            	mob.setBaby(true);
+        	}       	      
         }
-        else if (mob.getType() == MinepreggoModEntities.MONSTER_CREEPER_GIRL_P0.get()
-        		&& mob.getRandom().nextFloat() < MinepreggoModConfig.getBabyCreeperGirlProbability()) {
-        	mob.setBaby(true);
-        	mob.setCanPickUpLoot(mob.getRandom().nextFloat() < 0.55F * event.getDifficulty().getSpecialMultiplier());
-        }
-        else if (mob.getType() == MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P0.get()
-        		&& mob.getRandom().nextFloat() < MinepreggoModConfig.getBabyZombieGirlProbability()) {
-        	mob.setBaby(true);
-        	mob.setCanPickUpLoot(mob.getRandom().nextFloat() < 0.35F * event.getDifficulty().getSpecialMultiplier());
+        else if (mob instanceof AbstractMonsterZombieGirl) {     	
+        	mob.setCanPickUpLoot(mob.getRandom().nextFloat() < 0.55F * event.getDifficulty().getSpecialMultiplier());     
+        	if (mob.getType() == MinepreggoModEntities.MONSTER_ZOMBIE_GIRL_P0.get()
+            		&& mob.getRandom().nextFloat() < MinepreggoModConfig.getBabyCreeperGirlProbability()) {
+                mob.setBaby(true);    	
+        	}   
+        }   
+        else if (mob instanceof ScientificIllager scientificIllager) {
+        	scientificIllager.trySpawnIllPets();     
         }
     }
-	
-	
 }

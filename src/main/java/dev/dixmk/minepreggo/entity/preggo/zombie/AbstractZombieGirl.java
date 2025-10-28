@@ -79,9 +79,7 @@ public abstract class AbstractZombieGirl extends TamableAnimal implements Enemy 
 		return !this.isTame();
 	}
 	
-	public boolean canBeTamedByPlayer() {
-		return true;
-	}
+	public abstract boolean canBeTamedByPlayer();
 	
 	@Override
 	public SoundSource getSoundSource() {
@@ -194,8 +192,11 @@ public abstract class AbstractZombieGirl extends TamableAnimal implements Enemy 
 	@Override
 	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {	
 		ItemStack itemstack = sourceentity.getItemInHand(hand);
-		
-		if (!this.isBaby() && this.canBeTamedByPlayer() && !this.isTame() && this.isFoodToTame(itemstack)) {
+
+		if (this.isBaby() || !this.canBeTamedByPlayer() ) {
+			return InteractionResult.FAIL;	
+		}
+		else if (!this.isTame() && this.isFoodToTame(itemstack)) {
 			this.usePlayerItem(sourceentity, hand, itemstack);
 			if (this.random.nextInt(3) == 0 && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(this, sourceentity)) {
 				this.tame(sourceentity);

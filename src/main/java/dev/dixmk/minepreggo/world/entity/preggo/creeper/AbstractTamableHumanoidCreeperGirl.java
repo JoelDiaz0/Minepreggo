@@ -5,7 +5,10 @@ import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractCreeperGirl;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -26,5 +29,11 @@ public abstract class AbstractTamableHumanoidCreeperGirl<S extends PreggoMobSyst
 		AbstractTamableCreeperGirl.pickUpItem(this, p_21471_);
 	}
 	
-
+	public static AttributeSupplier.Builder getBasicAttributes(double movementSpeed) {
+		return Mob.createMobAttributes()
+				.add(Attributes.MAX_HEALTH, 22D)
+				.add(Attributes.ATTACK_DAMAGE, 2D)
+				.add(Attributes.FOLLOW_RANGE, 35D)
+				.add(Attributes.MOVEMENT_SPEED, movementSpeed);
+	}
 }

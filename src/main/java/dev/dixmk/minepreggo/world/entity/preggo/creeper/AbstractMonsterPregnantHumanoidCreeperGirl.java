@@ -20,4 +20,5 @@ public abstract class AbstractMonsterPregnantHumanoidCreeperGirl extends Abstrac
 	protected void populateDefaultEquipmentSlots(RandomSource p_219165_, DifficultyInstance p_219166_) {			
 		AbstractCreeperGirl.populateDefaultEquipmentSlots(this, p_219165_, p_219166_);
 	}	
+	
 }

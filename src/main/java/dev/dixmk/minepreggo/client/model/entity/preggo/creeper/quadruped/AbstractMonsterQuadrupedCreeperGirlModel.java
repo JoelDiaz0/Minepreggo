@@ -14,7 +14,9 @@ public abstract class AbstractMonsterQuadrupedCreeperGirlModel<E extends Abstrac
 	@Override
 	public void setupAnim(E entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		this.root().getAllParts().forEach(ModelPart::resetPose);
-				
+		
+		this.moveHead(entity, netHeadYaw, headPitch);
+		
 		if (entity.isAttacking()) {
 		    this.animate(entity.attackAnimationState, QuadrupedCreeperGirlAnimation.ATTACK, ageInTicks, 1f);
 		}

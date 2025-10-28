@@ -29,8 +29,8 @@ public abstract class PregnancySystemP5<E extends TamableAnimal
 		
 		if (level instanceof ServerLevel serverLevel
 				&& this.evaluteBirth(serverLevel, x, y, z,
-				PregnancySystemConstants.TOTAL_TICKS_PREBIRTH_P4,
-				PregnancySystemConstants.TOTAL_TICKS_BIRTH_P4) == Result.SUCCESS) {
+				PregnancySystemConstants.TOTAL_TICKS_PREBIRTH_P5,
+				PregnancySystemConstants.TOTAL_TICKS_BIRTH_P5) == Result.SUCCESS) {
 			return;
 		}
 		

@@ -5,13 +5,9 @@ import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 
 public abstract class AbstractTamableZombieGirlModel<E extends AbstractTamableZombieGirl<?>> extends AbstractZombieGirlModel<E> {
-	protected final ModelPart root;
-	protected HierarchicalModel<E> animator;
-	
+
 	protected AbstractTamableZombieGirlModel(ModelPart root, HierarchicalModel<E> animator) {
-		super(root);
-		this.root = root;
-		this.animator = animator;
+		super(root, animator);
 		this.belly.visible = false;
 	}
 	
@@ -22,7 +18,7 @@ public abstract class AbstractTamableZombieGirlModel<E extends AbstractTamableZo
 			this.hat.copyFrom(this.head);
 		}
 		else {
-			this.moveHead(entity, netHeadYaw, headPitch);
+			this.moveHeadWithHat(entity, netHeadYaw, headPitch);
 		}	
 	}
 }

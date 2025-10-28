@@ -8,14 +8,20 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractTamablePregnantCreeperGirlModel<E extends AbstractTamablePregnantHumanoidCreeperGirl<?,?>> extends AbstractHumanoidCreeperGirlModel<E> {
-	
-	protected final ModelPart root;
-	protected HierarchicalModel<E> animator;
-	
+
 	protected AbstractTamablePregnantCreeperGirlModel(ModelPart root, HierarchicalModel<E> animator) {
-		super(root);
-		this.root = root;
-		this.animator = animator;
+		super(root, animator);
 		this.belly.visible = true;
+	}
+	
+	@Override
+	public void setupAnim(E entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);			
+		if (entity.hasCustomHeadAnimation()) {
+			this.hat.copyFrom(this.head);
+		}
+		else {
+			this.moveHeadWithHat(entity, netHeadYaw, headPitch);
+		}	
 	}
 }

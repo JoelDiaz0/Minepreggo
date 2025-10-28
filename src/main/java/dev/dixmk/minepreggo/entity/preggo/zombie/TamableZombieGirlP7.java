@@ -7,7 +7,11 @@ import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySystemP7;
 import dev.dixmk.minepreggo.entity.preggo.PregnantPreggoMobSystem;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.utils.PreggoMobHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PlayMessages;
@@ -33,6 +37,16 @@ public class TamableZombieGirlP7 extends AbstractTamablePregnantZombieGirl<Pregn
 	@Override
 	protected PregnancySystemP7<TamableZombieGirlP7> createPregnancySystem() {
 		return new PregnancySystemP7<>(this) {
+			@Override
+			protected void changePregnancyStage() {
+				if (preggoMob.level() instanceof ServerLevel serverLevel) {
+					var zombieGirl = MinepreggoModEntities.TAMABLE_ZOMBIE_GIRL_P8.get().spawn(serverLevel, BlockPos.containing(preggoMob.getX(), preggoMob.getY(), preggoMob.getZ()), MobSpawnType.CONVERSION);		
+					PreggoMobHelper.transferPregnancyP4Data(preggoMob, zombieGirl);			
+					PreggoMobHelper.transferPreggoMobInventary(preggoMob, zombieGirl);
+					PreggoMobHelper.transferAttackTarget(preggoMob, zombieGirl);
+				}
+			}
+				
 			@Override
 			protected void postMiscarriage() {
 				TamableZombieGirlP0.onPostMiscarriage(preggoMob);

@@ -47,7 +47,10 @@ public class PregnantFemaleHumanoidModel<E extends LivingEntity> extends Humanoi
 		} else {
 			this.head.xRot = headPitch * ((float)Math.PI / 180F);
 		}
-		
+	}
+	
+	protected void moveHeadWithHat(E entity, float netHeadYaw, float headPitch) {
+		this.moveHead(entity, netHeadYaw, headPitch);
 		this.hat.copyFrom(this.head);
 	}
 }

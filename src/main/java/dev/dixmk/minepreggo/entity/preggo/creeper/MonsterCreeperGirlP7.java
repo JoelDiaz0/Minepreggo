@@ -2,6 +2,7 @@ package dev.dixmk.minepreggo.entity.preggo.creeper;
 
 import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractMonsterPregnantHumanoidCreeperGirl;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -22,7 +23,7 @@ public class MonsterCreeperGirlP7 extends AbstractMonsterPregnantHumanoidCreeper
 	}
 	
 	public static AttributeSupplier.Builder createAttributes() {
-		return getBasicAttributes(0.19);
+		return AbstractMonsterHumanoidCreeperGirl.getBasicAttributes(0.19);
 	}
 	
 

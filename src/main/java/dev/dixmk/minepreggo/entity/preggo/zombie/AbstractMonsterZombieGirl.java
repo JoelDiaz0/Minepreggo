@@ -38,20 +38,6 @@ public abstract class AbstractMonsterZombieGirl extends AbstractZombieGirl {
 	public boolean canBeTamedByPlayer() {
 		return false;
 	}
-		
-	public boolean canBreakDoors() {
-		return false;
-	}
-
-    @Override
-    public void handleEntityEvent(byte id) {
-        if (id == 4) { // vanilla "swing/attack" animation event
-            this.attackAnimationState.start(this.tickCount); 
-        }
-        else {
-            super.handleEntityEvent(id);
-        }
-    }
 	
 	@Override
 	protected void registerGoals() {
@@ -59,7 +45,7 @@ public abstract class AbstractMonsterZombieGirl extends AbstractZombieGirl {
 		this.targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers(AbstractMonsterZombieGirl.class));	
 		this.goalSelector.addGoal(2, new RestrictSunGoal(this));
 		this.goalSelector.addGoal(2, new FleeSunGoal(this, 1.1D));	
-	    this.goalSelector.addGoal(6, new MoveThroughVillageGoal(this, 1.0D, true, 4, this::canBreakDoors));
+	    this.goalSelector.addGoal(6, new MoveThroughVillageGoal(this, 1.0D, true, 4, () -> false));
 		this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, false, false));
 		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false, false));
 		this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, IronGolem.class, false, false));

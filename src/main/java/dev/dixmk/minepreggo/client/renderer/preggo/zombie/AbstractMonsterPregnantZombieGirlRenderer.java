@@ -15,6 +15,10 @@ public abstract class AbstractMonsterPregnantZombieGirlRenderer
 		super(context, main, inner, outter);
 	}
 
+	protected AbstractMonsterPregnantZombieGirlRenderer(Context context, M main, M inner, M outter, boolean facialExpresion) {
+		super(context, main, inner, outter, true);
+	}
+	
 	@Override
 	protected void addFacialExpresions() {
 		this.addLayer(new MonsterPregnantZombieGirlExpressionLayer<>(this));

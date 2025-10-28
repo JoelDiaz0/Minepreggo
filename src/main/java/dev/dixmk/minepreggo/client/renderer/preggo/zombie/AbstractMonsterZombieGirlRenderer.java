@@ -12,11 +12,15 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public abstract class AbstractMonsterZombieGirlRenderer
 	<E extends AbstractMonsterZombieGirl, M extends AbstractMonsterZombieGirlModel<E>> extends AbstractZombieGirlRenderer<E, M> {
 
-	protected AbstractMonsterZombieGirlRenderer(Context context, M main, M inner, M outter) {
+	protected AbstractMonsterZombieGirlRenderer(Context context, M main, M inner, M outter, boolean facialExpression) {
 		super(context, main, inner, outter);
-		this.addFacialExpresions();
+		if (facialExpression) this.addFacialExpresions();
 	}
-
+	
+	protected AbstractMonsterZombieGirlRenderer(Context context, M main, M inner, M outter) {
+		this(context, main, inner, outter, true);
+	}
+	
 	protected void addFacialExpresions() {
 		this.addLayer(new MonsterZombieGirlExpressionLayer<>(this));
 	}

@@ -23,6 +23,7 @@ import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.AbstractIllager;
 import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameRules;
 
 public interface Ill {
@@ -46,13 +47,34 @@ public interface Ill {
 				return super.canContinueToUse()
 				&& !PreggoMobHelper.isTargetStillValid(this.tamable);
 			}		
+			
+			@Override
+			public void tick() {
+				this.tamable.getLookControl().setLookAt(this.owner, 10.0F, this.tamable.getMaxHeadXRot());
+				if (--this.timeToRecalcPath <= 0) {
+					this.timeToRecalcPath = this.adjustedTickDelay(10);
+					this.navigation.moveTo(this.owner, this.speedModifier);
+				}		
+				
+				if (this.tamable.getTarget() != null
+						&& this.tamable.distanceToSqr(this.owner) > 169D) {
+					this.tamable.setTarget(null);
+					this.navigation.stop();
+				}		
+			}
 		});	
 		ill.targetSelector.addGoal(3, new Ill.IllMobHurtByTargetGoal(ill, 12D));
 		ill.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(ill, 1.0D, 0.0F) {
 			@Override
 			public boolean canUse() {
-				return super.canUse() 
-				&& ill.getOwner() == null || !ill.isTame();
+				return super.canUse() && (ill.getOwner() == null || !ill.isTame());
+			}
+		});
+		
+		ill.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(ill, Player.class, false, false) {
+			@Override
+			public boolean canUse() {
+				return super.canUse() && (ill.getOwner() == null || !ill.isTame());
 			}
 		});
 		

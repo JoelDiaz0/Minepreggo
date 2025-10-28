@@ -22,7 +22,6 @@ import java.util.function.Consumer;
 
 import dev.dixmk.minepreggo.utils.PreggoModelHelper;
 
-
 public abstract class BellyShieldP7Item extends ArmorItem {
 	protected BellyShieldP7Item(ArmorItem.Type type, Item.Properties properties) {
 		super(new ArmorMaterial() {
@@ -53,7 +52,7 @@ public abstract class BellyShieldP7Item extends ArmorItem {
 
 			@Override
 			public String getName() {
-				return "belly_shield_p_7";
+				return "belly_shield_p7";
 			}
 
 			@Override
@@ -79,7 +78,7 @@ public abstract class BellyShieldP7Item extends ArmorItem {
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return PreggoModelHelper.getMaternalP7HumanoidArmorModel(living, stack, slot, defaultModel);
+					return PreggoModelHelper.createMaternalP7HumanoidArmorModel(living, stack, slot, defaultModel);
 
 				}
 			});

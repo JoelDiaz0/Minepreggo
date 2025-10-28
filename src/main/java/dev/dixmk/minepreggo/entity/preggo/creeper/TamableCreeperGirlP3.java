@@ -8,6 +8,7 @@ import dev.dixmk.minepreggo.entity.preggo.PregnancySystemP3;
 import dev.dixmk.minepreggo.entity.preggo.PregnantPreggoMobSystem;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamableHumanoidCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.AbstractTamablePregnantHumanoidCreeperGirl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -32,7 +33,7 @@ public class TamableCreeperGirlP3 extends AbstractTamablePregnantHumanoidCreeper
 	
 	@Override
 	protected PregnantPreggoMobSystem<TamableCreeperGirlP3> createPreggoMobSystem() {
-		return new PregnantPreggoMobSystem<>(this, MinepreggoModConfig.getTotalTicksOfHungryP2());
+		return new PregnantPreggoMobSystem<>(this, MinepreggoModConfig.getTotalTicksOfHungryP3());
 	}
 	
 	@Override
@@ -56,7 +57,7 @@ public class TamableCreeperGirlP3 extends AbstractTamablePregnantHumanoidCreeper
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return getBasicAttributes(0.23);
+		return AbstractTamableHumanoidCreeperGirl.getBasicAttributes(0.23);
 	}
 	
 	@Override

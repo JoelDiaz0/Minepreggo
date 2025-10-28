@@ -78,7 +78,7 @@ public abstract class IronKneeBraceItem extends ArmorItem {
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
-					return PreggoModelHelper.getHumanoidKneeBraceArmorModel(living, stack, slot, defaultModel);
+					return PreggoModelHelper.createHumanoidKneeBraceArmorModel(living, stack, slot, defaultModel);
 				}
 			});
 		}

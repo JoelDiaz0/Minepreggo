@@ -3,6 +3,7 @@ package dev.dixmk.minepreggo.client.model.entity.preggo.creeper;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.client.model.entity.preggo.PregnantFemaleHumanoidModel;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractCreeperGirl;
+import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -30,6 +31,7 @@ public abstract class AbstractHumanoidCreeperGirlModel<E extends AbstractCreeper
 	public static final ModelLayerLocation LAYER_ENERGY_ARMOR_P5_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_girl_energy_armor_p5_model"), "armor");
 	public static final ModelLayerLocation LAYER_ENERGY_ARMOR_P6_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_girl_energy_armor_p6_model"), "armor");
 	public static final ModelLayerLocation LAYER_ENERGY_ARMOR_P7_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_girl_energy_armor_p7_model"), "armor");
+	public static final ModelLayerLocation LAYER_ENERGY_ARMOR_P8_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_girl_energy_armor_p8_model"), "armor");
 
 	public static final ModelLayerLocation LAYER_LOCATION_P0 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_girl_p0_model"), "main");
 	public static final ModelLayerLocation LAYER_LOCATION_P1 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_girl_p1_model"), "main");
@@ -39,9 +41,15 @@ public abstract class AbstractHumanoidCreeperGirlModel<E extends AbstractCreeper
 	public static final ModelLayerLocation LAYER_LOCATION_P5 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_girl_p5_model"), "main");
 	public static final ModelLayerLocation LAYER_LOCATION_P6 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_girl_p6_model"), "main");
 	public static final ModelLayerLocation LAYER_LOCATION_P7 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_girl_p7_model"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION_P8 = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "creeper_girl_p8_model"), "main");
 
-	protected AbstractHumanoidCreeperGirlModel(ModelPart root) {
+	protected final ModelPart root;
+	protected final HierarchicalModel<E> animator;
+	
+	protected AbstractHumanoidCreeperGirlModel(ModelPart root, HierarchicalModel<E> animator) {
 		super(root);
+		this.root = root;
+		this.animator = animator;
 	}
 
 	protected static void createBasicBodyLayer(PartDefinition partdefinition, float extraLeftArmRotationZ, float extraRightArmRotationZ) {	
@@ -137,36 +145,47 @@ public abstract class AbstractHumanoidCreeperGirlModel<E extends AbstractCreeper
 	public static LayerDefinition createP3BodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
-
-		createBasicBodyLayer(partdefinition, -0.0872665F, 0.0872665F);	
-        
+		createBasicBodyLayer(partdefinition, -0.0872665F, 0.0872665F);	     
 		PartDefinition body = partdefinition.getChild("body");
-		
 		PartDefinition boobs = body.addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 1.5F, -2.55F, -0.3491F, 0.0F, 0.0F));
-
 		PartDefinition rightBoob = boobs.addOrReplaceChild("right_boob", CubeListBuilder.create(), PartPose.offset(-2.0F, 0.6F, 2.35F));
-
 		rightBoob.addOrReplaceChild("rightBoobCube_r1", CubeListBuilder.create().texOffs(18, 66).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.4F)), PartPose.offsetAndRotation(-0.0336F, 1.7279F, -3.1635F, 0.3491F, 0.1745F, 0.0436F));
-
 		PartDefinition leftBoob = boobs.addOrReplaceChild("left_boob", CubeListBuilder.create(), PartPose.offset(2.0F, 0.6F, 2.35F));
-
 		leftBoob.addOrReplaceChild("letfBoobCube_r1", CubeListBuilder.create().texOffs(18, 66).mirror().addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.4F)).mirror(false), PartPose.offsetAndRotation(0.1326F, 1.7235F, -3.1505F, 0.3491F, -0.1745F, -0.0436F));
-
-		body.addOrReplaceChild("belly", CubeListBuilder.create().texOffs(15, 80).addBox(-4.0F, -3.0F, -9.0F, 8.0F, 6.0F, 7.0F, new CubeDeformation(0.3F))
-		.texOffs(24, 91).addBox(-0.5F, 1.1993F, -9.7305F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 8.5F, 1.0F, 0.0436F, 0.0F, 0.0F));
-        
+		body.addOrReplaceChild("belly", CubeListBuilder.create().texOffs(17, 82).addBox(-4.0F, -3.0F, -7.0F, 8.0F, 6.0F, 5.0F, new CubeDeformation(0.3F))
+		.texOffs(24, 91).addBox(-0.5F, 1.1993F, -7.7305F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 8.5F, 1.0F, 0.0436F, 0.0F, 0.0F));		
+		partdefinition.addOrReplaceChild("right_leg", CubeListBuilder.create().texOffs(0, 16).addBox(-2.1F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F))
+		.texOffs(0, 32).addBox(-2.1F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.25F))
+		.texOffs(32, 66).addBox(-1.9F, -0.35F, 0.85F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.3F)), PartPose.offset(-1.9F, 12.0F, 0.0F));
+		partdefinition.addOrReplaceChild("left_leg", CubeListBuilder.create().texOffs(16, 48).addBox(-1.9F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F))
+		.texOffs(0, 48).addBox(-1.9F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.25F))
+		.texOffs(32, 66).addBox(-2.1F, -0.35F, 0.85F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.3F)), PartPose.offset(1.9F, 12.0F, 0.0F));	
+		return LayerDefinition.create(meshdefinition, 64, 96);
+	}
+    	
+	public static LayerDefinition createP4BodyLayer() {
+		MeshDefinition meshdefinition = new MeshDefinition();
+		PartDefinition partdefinition = meshdefinition.getRoot();
+		createBasicBodyLayer(partdefinition, -0.0972665F, 0.0972665F);	
+		PartDefinition body = partdefinition.getChild("body");	
+		PartDefinition boobs = body.addOrReplaceChild("boobs", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 1.5F, -2.55F, -0.3491F, 0.0F, 0.0F));
+		PartDefinition rightBoob = boobs.addOrReplaceChild("right_boob", CubeListBuilder.create(), PartPose.offset(-2.0F, 0.6F, 2.35F));
+		rightBoob.addOrReplaceChild("rightBoobCube_r1", CubeListBuilder.create().texOffs(18, 66).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.4F)), PartPose.offsetAndRotation(-0.0336F, 1.7279F, -3.1635F, 0.3491F, 0.1745F, 0.0436F));
+		PartDefinition leftBoob = boobs.addOrReplaceChild("left_boob", CubeListBuilder.create(), PartPose.offset(2.0F, 0.6F, 2.35F));
+		leftBoob.addOrReplaceChild("letfBoobCube_r1", CubeListBuilder.create().texOffs(18, 66).mirror().addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.4F)).mirror(false), PartPose.offsetAndRotation(0.1326F, 1.7235F, -3.1505F, 0.3491F, -0.1745F, -0.0436F));
+		body.addOrReplaceChild("belly", CubeListBuilder.create().texOffs(15, 80).addBox(-4.0F, -3.0F, -9.0F, 8.0F, 6.0F, 7.0F, new CubeDeformation(0.35F))
+		.texOffs(24, 91).addBox(-0.5F, 1.1993F, -10.2305F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
+		.texOffs(20, 85).addBox(-4.0F, -3.1F, -9.9F, 8.0F, 6.0F, 2.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(0.0F, 8.5F, 1.0F, 0.0436F, 0.0F, 0.0F));	
 		partdefinition.addOrReplaceChild("right_leg", CubeListBuilder.create().texOffs(0, 16).addBox(-2.1F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F))
 		.texOffs(0, 32).addBox(-2.1F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.25F))
 		.texOffs(32, 66).addBox(-1.9F, -0.35F, 1.25F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.3F)), PartPose.offset(-1.9F, 12.0F, 0.0F));
-
 		partdefinition.addOrReplaceChild("left_leg", CubeListBuilder.create().texOffs(16, 48).addBox(-1.9F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F))
 		.texOffs(0, 48).addBox(-1.9F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.25F))
-		.texOffs(32, 66).addBox(-2.1F, -0.35F, 1.25F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.3F)), PartPose.offset(1.9F, 12.0F, 0.0F));
-		
+		.texOffs(32, 66).addBox(-2.1F, -0.35F, 1.25F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.3F)), PartPose.offset(1.9F, 12.0F, 0.0F));		
 		return LayerDefinition.create(meshdefinition, 64, 96);
 	}
-    
-	public static LayerDefinition createP4BodyLayer() {
+		
+	public static LayerDefinition createP5BodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
@@ -199,7 +218,7 @@ public abstract class AbstractHumanoidCreeperGirlModel<E extends AbstractCreeper
 		return LayerDefinition.create(meshdefinition, 64, 96);
 	}
 	
-	public static LayerDefinition createP5BodyLayer() {
+	public static LayerDefinition createP6BodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
@@ -239,7 +258,7 @@ public abstract class AbstractHumanoidCreeperGirlModel<E extends AbstractCreeper
 		return LayerDefinition.create(meshdefinition, 64, 96);
 	}
 
-	public static LayerDefinition createP6BodyLayer() {
+	public static LayerDefinition createP7BodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
@@ -286,7 +305,7 @@ public abstract class AbstractHumanoidCreeperGirlModel<E extends AbstractCreeper
 		return LayerDefinition.create(meshdefinition, 64, 96);
 	}
 	
-	public static LayerDefinition createP7BodyLayer() {
+	public static LayerDefinition createP8BodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 

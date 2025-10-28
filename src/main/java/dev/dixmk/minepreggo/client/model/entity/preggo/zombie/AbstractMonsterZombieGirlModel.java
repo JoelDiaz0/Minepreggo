@@ -7,13 +7,8 @@ import net.minecraft.client.model.geom.ModelPart;
 
 public abstract class AbstractMonsterZombieGirlModel<E extends AbstractMonsterZombieGirl> extends AbstractZombieGirlModel<E> {
 
-	protected final ModelPart root;
-	protected HierarchicalModel<E> animator;
-	
 	protected AbstractMonsterZombieGirlModel(ModelPart root, HierarchicalModel<E> animator) {
-		super(root);
-		this.root = root;
-		this.animator = animator;
+		super(root, animator);
 		this.belly.visible = false;
 	}
 
@@ -24,7 +19,7 @@ public abstract class AbstractMonsterZombieGirlModel<E extends AbstractMonsterZo
 	@Override
 	public void setupAnim(E entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);			
-		this.moveHead(entity, netHeadYaw, headPitch);
+		this.moveHeadWithHat(entity, netHeadYaw, headPitch);
 	}
 	
 	private static<E extends AbstractMonsterZombieGirl> HierarchicalModel<E> createDefaultHierarchicalModel(ModelPart root) {

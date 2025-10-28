@@ -9,7 +9,6 @@ import javax.annotation.Nullable;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.event.entity.living.EnderGirlAngerEvent;
-import dev.dixmk.minepreggo.world.entity.monster.IllEnderGirl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -35,6 +34,7 @@ import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -49,13 +49,10 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.monster.Endermite;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.ItemStack;
@@ -94,6 +91,9 @@ public abstract class AbstractEnderGirl extends TamableAnimal implements Neutral
 	protected static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
 	protected int remainingPersistentAngerTime;
     
+	public final AnimationState loopAnimationState = new AnimationState();
+	public final AnimationState attackAnimationState = new AnimationState();
+	
     @Nullable
     private UUID persistentAngerTarget;
 
@@ -104,15 +104,47 @@ public abstract class AbstractEnderGirl extends TamableAnimal implements Neutral
     }
 			
 	@Override
+	public boolean removeWhenFarAway(double p_27598_) {
+		return !this.isTame();
+	}
+	
+	@Override
 	public boolean canBeLeashed(Player p_21813_) {
 		return false;
 	}
+	
+    public boolean isAttacking() {
+        return this.attackAnimationState.isStarted();
+    }
+	
+	@Override
+	protected boolean shouldDespawnInPeaceful() {
+		return !this.isTame();
+	}
     
+	public abstract boolean canBeTamedByPlayer();
+	
 	@Override
 	public void baseTick() {
 		super.baseTick();
 		this.refreshDimensions();
 	}
+	
+	@Override
+	public void tick() {
+		super.tick();	
+		if (this.level().isClientSide() && !this.loopAnimationState.isStarted()) {
+			this.loopAnimationState.start(this.tickCount);
+		}		
+	}
+	
+    @Override
+    public boolean doHurtTarget(Entity target) {
+        boolean result = super.doHurtTarget(target);
+        if (result) 
+            this.level().broadcastEntityEvent(this, (byte)4); // triggers handleEntityEvent client-side     
+        return result;
+    }
 	
 	@Override
 	public EntityDimensions getDimensions(Pose p_33597_) {
@@ -123,10 +155,20 @@ public abstract class AbstractEnderGirl extends TamableAnimal implements Neutral
 	protected void tickDeath() {
 		++this.deathTime;
 		if (this.deathTime == 20) {
-			this.remove(IllEnderGirl.RemovalReason.KILLED);
+			this.remove(Entity.RemovalReason.KILLED);
 			this.dropExperience();
 		}
 	}
+	
+    @Override
+    public void handleEntityEvent(byte id) {
+        if (id == 4) { // vanilla "swing/attack" animation event
+            this.attackAnimationState.start(this.tickCount); 
+        }
+        else {
+            super.handleEntityEvent(id);
+        }
+    }
 	
 	@Override
 	public Packet<ClientGamePacketListener> getAddEntityPacket() {
@@ -273,6 +315,12 @@ public abstract class AbstractEnderGirl extends TamableAnimal implements Neutral
         return true;
     }
 
+    
+    protected boolean shouldRandomlyTeleport() {
+    	return true;
+    }
+    
+    
     @SuppressWarnings("deprecation")
 	@Override
     protected void customServerAiStep() {
@@ -280,7 +328,10 @@ public abstract class AbstractEnderGirl extends TamableAnimal implements Neutral
             float f = this.getLightLevelDependentMagicValue();
             if (f > 0.5F && this.level().canSeeSky(this.blockPosition()) && this.random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) {
                 this.setTarget((LivingEntity)null);
-                this.teleport();
+                
+                if (shouldRandomlyTeleport()) {
+                    this.teleport();
+                }           
             }
         }
 
@@ -380,6 +431,11 @@ public abstract class AbstractEnderGirl extends TamableAnimal implements Neutral
         return this.entityData.get(DATA_CARRY_STATE).orElse((BlockState)null);
     }
 
+    public boolean isCarring() {
+    	return this.getCarriedBlock() != null;
+    }
+    
+    
     @Override
     public boolean hurt(DamageSource p_32494_, float p_32495_) {
         if (this.isInvulnerableTo(p_32494_)) {
@@ -450,22 +506,18 @@ public abstract class AbstractEnderGirl extends TamableAnimal implements Neutral
   
     protected void addBehaviourGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(1, new AbstractEnderGirl.EnderGirlFreezeWhenLookedAt(this));
-        this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.0D, false));
-        this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));         
-        this.targetSelector.addGoal(2, new HurtByTargetGoal(this));
-        
+        this.goalSelector.addGoal(1, new AbstractEnderGirl.EnderGirlFreezeWhenLookedAt(this));       
 		this.goalSelector.addGoal(10, new AbstractEnderGirl.EnderGirlLeaveBlockGoal(this));
         this.goalSelector.addGoal(11, new AbstractEnderGirl.EnderGirlTakeBlockGoal(this));
         this.targetSelector.addGoal(1, new AbstractEnderGirl.EnderGirlLookForPlayerGoal(this, this::isAngryAt));
         this.targetSelector.addGoal(4, new ResetUniversalAngerTargetGoal<>(this, false));
+		this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Endermite.class, true, false));
     }
     
-    public static AttributeSupplier.Builder createAttributes() {
+    protected static AttributeSupplier.Builder createBasicAttributes(double movementSpeed) {
         return Mob.createMobAttributes()
         		.add(Attributes.MAX_HEALTH, 40.0D)
-        		.add(Attributes.MOVEMENT_SPEED, 0.3D)
+        		.add(Attributes.MOVEMENT_SPEED, movementSpeed)
         		.add(Attributes.ATTACK_DAMAGE, 7.0D)
         		.add(Attributes.FOLLOW_RANGE, 64.0D);
 	}
@@ -641,7 +693,7 @@ public abstract class AbstractEnderGirl extends TamableAnimal implements Neutral
         }
 
         private boolean canPlaceBlock(Level p_32559_, BlockPos p_32560_, BlockState p_32561_, BlockState p_32562_, BlockState p_32563_, BlockPos p_32564_) {
-            return p_32562_.isAir() && !p_32563_.isAir() && !p_32563_.is(Blocks.BEDROCK) && !p_32563_.is(net.minecraftforge.common.Tags.Blocks.ENDERMAN_PLACE_ON_BLACKLIST) && p_32563_.isCollisionShapeFullBlock(p_32559_, p_32564_) && p_32561_.canSurvive(p_32559_, p_32560_) && p_32559_.getEntities(this.abstractEnderGirl, AABB.unitCubeFromLowerCorner(Vec3.atLowerCornerOf(p_32560_))).isEmpty();
+            return !p_32559_.isClientSide() && p_32562_.isAir() && !p_32563_.isAir() && !p_32563_.is(Blocks.BEDROCK) && !p_32563_.is(net.minecraftforge.common.Tags.Blocks.ENDERMAN_PLACE_ON_BLACKLIST) && p_32563_.isCollisionShapeFullBlock(p_32559_, p_32564_) && p_32561_.canSurvive(p_32559_, p_32560_) && p_32559_.getEntities(this.abstractEnderGirl, AABB.unitCubeFromLowerCorner(Vec3.atLowerCornerOf(p_32560_))).isEmpty();
         }
     }
 
@@ -677,7 +729,7 @@ public abstract class AbstractEnderGirl extends TamableAnimal implements Neutral
             Vec3 vec3 = new Vec3((double)this.abstractEnderGirl.getBlockX() + 0.5D, (double)j + 0.5D, (double)this.abstractEnderGirl.getBlockZ() + 0.5D);
             Vec3 vec31 = new Vec3((double)i + 0.5D, (double)j + 0.5D, (double)k + 0.5D);
             BlockHitResult blockhitresult = level.clip(new ClipContext(vec3, vec31, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, this.abstractEnderGirl));
-            boolean flag = blockhitresult.getBlockPos().equals(blockpos);
+            boolean flag = !level.isClientSide() && blockhitresult.getBlockPos().equals(blockpos);
             if (blockstate.is(BlockTags.ENDERMAN_HOLDABLE) && flag) {
                 level.removeBlock(blockpos, false);
                 level.gameEvent(GameEvent.BLOCK_DESTROY, blockpos, GameEvent.Context.of(this.abstractEnderGirl, blockstate));

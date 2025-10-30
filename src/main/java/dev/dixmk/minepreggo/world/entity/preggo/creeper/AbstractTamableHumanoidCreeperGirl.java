@@ -4,9 +4,9 @@ import dev.dixmk.minepreggo.entity.preggo.PreggoMobSystem;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractCreeperGirl;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractTamableCreeperGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -15,7 +15,7 @@ import net.minecraft.world.level.Level;
 
 public abstract class AbstractTamableHumanoidCreeperGirl<S extends PreggoMobSystem<?>> extends AbstractTamableCreeperGirl<S> {
 
-	protected AbstractTamableHumanoidCreeperGirl(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_) {
+	protected AbstractTamableHumanoidCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_) {
 		super(p_21803_, p_21804_);
 	}
 

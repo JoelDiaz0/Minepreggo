@@ -11,6 +11,7 @@ import dev.dixmk.minepreggo.entity.preggo.PreggoMobSystem.Result;
 import dev.dixmk.minepreggo.init.MinepreggoModMobEffects;
 import dev.dixmk.minepreggo.utils.PreggoMessageHelper;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
@@ -22,7 +23,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -31,7 +31,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class PregnancySystemP1<
-	E extends TamableAnimal & IPreggoMob & IPregnancySystem & IPregnancyP1> {
+	E extends PreggoMob & ITamablePreggoMob & IPregnancySystem & IPregnancyP1> {
 
 	protected final RandomSource randomSource;	
 	protected final E preggoMob;
@@ -76,7 +76,7 @@ public abstract class PregnancySystemP1<
 	    		}
 	        
 	        } else {        	
-	        	PreggoMobHelper.setItemstackOnOffHand(preggoMob, new ItemStack(BabyType.getDeadBabyItem(preggoMob.getBabyType()), PreggoMobHelper.getNumberOfChildrens(preggoMob.getMaxPregnancyStage())));
+	        	PreggoMobHelper.setItemstackOnOffHand(preggoMob, new ItemStack(BabyType.getDeadBabyItem(preggoMob.getBabyType()), PreggoMobHelper.getNumberOfChildrens(preggoMob.getLastPregnancyStage())));
 	        	this.postMiscarriage();	 
 	        	this.preggoMob.discard();
 	        	return Result.SUCCESS;
@@ -141,8 +141,8 @@ public abstract class PregnancySystemP1<
 			}
 		}
 		else {
-			if (preggoMob.getCravingChosen() == Craving.NONE) {
-				preggoMob.setCravingChosen(CravingFactory.getRandomCraving(randomSource));
+			if (preggoMob.getTypeOfCraving() == Craving.NONE) {
+				preggoMob.setTypeOfCraving(CravingFactory.getRandomCraving(randomSource));
 			}
 		}
 	}
@@ -242,7 +242,7 @@ public abstract class PregnancySystemP1<
 	    		return Result.ANGRY;
 	    	}
 	    	    	
-	    	if (preggoMob.isValidCraving(preggoMob.getCravingChosen(), mainHandItem)) {
+	    	if (preggoMob.isValidCraving(preggoMob.getTypeOfCraving(), mainHandItem)) {
 	           
 	    		source.getInventory().clearOrCountMatchingItems(p -> mainHandItem == p.getItem(), 1, source.inventoryMenu.getCraftSlots());
 	            currentCraving = Math.max(0, currentCraving - craving.getGratification());

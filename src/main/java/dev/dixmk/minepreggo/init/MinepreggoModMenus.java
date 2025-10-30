@@ -1,6 +1,8 @@
 package dev.dixmk.minepreggo.init;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.world.inventory.preggo.PreggoMobMedicalCheckUpGUIMenu;
+import dev.dixmk.minepreggo.world.inventory.preggo.SelectPregnantEntityForMedicalCheckUpGUIMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP0InventaryGUIMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP0MainGUIMenu;
 import dev.dixmk.minepreggo.world.inventory.preggo.creeper.CreeperGirlP1InventaryGUIMenu;
@@ -87,4 +89,9 @@ public class MinepreggoModMenus {
 	public static final RegistryObject<MenuType<CreeperGirlP7InventaryGUIMenu>> CREEPER_GIRL_P7_INVENTARY_GUI = REGISTRY.register("creeper_girl_p7_inventary_gui", () -> IForgeMenuType.create(CreeperGirlP7InventaryGUIMenu::new));
 	public static final RegistryObject<MenuType<CreeperGirlP8MainGUIMenu>> CREEPER_GIRL_P8_MAIN_GUI = REGISTRY.register("creeper_girl_p8_main_gui", () -> IForgeMenuType.create(CreeperGirlP8MainGUIMenu::new));
 	public static final RegistryObject<MenuType<CreeperGirlP8InventaryGUIMenu>> CREEPER_GIRL_P8_INVENTARY_GUI = REGISTRY.register("creeper_girl_p8_inventary_gui", () -> IForgeMenuType.create(CreeperGirlP8InventaryGUIMenu::new));
+
+	
+	public static final RegistryObject<MenuType<SelectPregnantEntityForMedicalCheckUpGUIMenu>> SELECT_PREGNANT_ENTITY_FOR_MEDICAL_CHECKUP = REGISTRY.register("select_pregnant_entity_for_medical_checkup", () -> IForgeMenuType.create(SelectPregnantEntityForMedicalCheckUpGUIMenu::new));
+	public static final RegistryObject<MenuType<PreggoMobMedicalCheckUpGUIMenu>> PREGGO_MOB_MEDICAL_CHECKUP = REGISTRY.register("preggo_mob_medical_checkup", () -> IForgeMenuType.create(PreggoMobMedicalCheckUpGUIMenu::new));
+
 }

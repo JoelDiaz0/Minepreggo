@@ -6,19 +6,19 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.entity.preggo.PreggoMobSystem.Result;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public abstract class PregnancySystemP3 <E extends TamableAnimal
-	& IPreggoMob & IPregnancySystem & IPregnancyP3> extends PregnancySystemP2<E> {
+public abstract class PregnancySystemP3 <E extends PreggoMob
+	& ITamablePreggoMob & IPregnancySystem & IPregnancyP3> extends PregnancySystemP2<E> {
 
 	protected PregnancySystemP3(@Nonnull E preggoMob) {
 		super(preggoMob);
@@ -51,8 +51,8 @@ public abstract class PregnancySystemP3 <E extends TamableAnimal
 		}
 		else {
 			if (preggoMob.getPregnancySymptom() == PregnancySymptom.CRAVING
-					&& preggoMob.getCravingChosen() == Craving.NONE) {
-				preggoMob.setCravingChosen(CravingFactory.getRandomCraving(randomSource));
+					&& preggoMob.getTypeOfCraving() == Craving.NONE) {
+				preggoMob.setTypeOfCraving(CravingFactory.getRandomCraving(randomSource));
 			}
 		}
 	}

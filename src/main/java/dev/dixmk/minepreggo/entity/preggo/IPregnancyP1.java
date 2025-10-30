@@ -1,9 +1,11 @@
 package dev.dixmk.minepreggo.entity.preggo;
 
-public interface IPregnancyP1 {
+import net.minecraft.world.item.Item;
 
-	Craving getCravingChosen();
-	void setCravingChosen(Craving craving);
+public interface IPregnancyP1 {
+	Craving getTypeOfCraving();
+	boolean isValidCraving(Craving craving, Item item);
+	void setTypeOfCraving(Craving craving);
 	
 	int getCraving();
 	void setCraving(int craving);

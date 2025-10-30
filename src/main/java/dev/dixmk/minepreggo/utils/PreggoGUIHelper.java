@@ -3,7 +3,7 @@ package dev.dixmk.minepreggo.utils;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.entity.preggo.Craving;
 import dev.dixmk.minepreggo.entity.preggo.IBreedable;
-import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
+import dev.dixmk.minepreggo.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancyP1;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancyP2;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancyP3;
@@ -11,13 +11,13 @@ import dev.dixmk.minepreggo.entity.preggo.IPregnancyP4;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancySystem;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
 import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -60,41 +60,41 @@ public class PreggoGUIHelper {
 	public static final ResourceLocation ICONS_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/icons.png");
 	
 
-	public static<T extends TamableAnimal & IPreggoMob> void syncPreggoMobInventaryOnStart(T preggoEntity) {
+	public static<T extends PreggoMob & ITamablePreggoMob> void syncPreggoMobInventaryOnStart(T preggoEntity) {
 	    if (preggoEntity == null)
 	        return;
 	    
         preggoEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> {
             if (capability instanceof IItemHandlerModifiable modHandlerEntSetSlot) {
-                modHandlerEntSetSlot.setStackInSlot(IPreggoMob.HEAD_INVENTORY_SLOT, preggoEntity.getItemBySlot(EquipmentSlot.HEAD));
-                modHandlerEntSetSlot.setStackInSlot(IPreggoMob.CHEST_INVENTORY_SLOT, preggoEntity.getItemBySlot(EquipmentSlot.CHEST));
-                modHandlerEntSetSlot.setStackInSlot(IPreggoMob.LEGS_INVENTORY_SLOT, preggoEntity.getItemBySlot(EquipmentSlot.LEGS));
-                modHandlerEntSetSlot.setStackInSlot(IPreggoMob.FEET_INVENTORY_SLOT, preggoEntity.getItemBySlot(EquipmentSlot.FEET));
-                modHandlerEntSetSlot.setStackInSlot(IPreggoMob.MAINHAND_INVENTORY_SLOT, preggoEntity.getMainHandItem());
-                modHandlerEntSetSlot.setStackInSlot(IPreggoMob.OFFHAND_INVENTORY_SLOT, preggoEntity.getOffhandItem());
+                modHandlerEntSetSlot.setStackInSlot(ITamablePreggoMob.HEAD_INVENTORY_SLOT, preggoEntity.getItemBySlot(EquipmentSlot.HEAD));
+                modHandlerEntSetSlot.setStackInSlot(ITamablePreggoMob.CHEST_INVENTORY_SLOT, preggoEntity.getItemBySlot(EquipmentSlot.CHEST));
+                modHandlerEntSetSlot.setStackInSlot(ITamablePreggoMob.LEGS_INVENTORY_SLOT, preggoEntity.getItemBySlot(EquipmentSlot.LEGS));
+                modHandlerEntSetSlot.setStackInSlot(ITamablePreggoMob.FEET_INVENTORY_SLOT, preggoEntity.getItemBySlot(EquipmentSlot.FEET));
+                modHandlerEntSetSlot.setStackInSlot(ITamablePreggoMob.MAINHAND_INVENTORY_SLOT, preggoEntity.getMainHandItem());
+                modHandlerEntSetSlot.setStackInSlot(ITamablePreggoMob.OFFHAND_INVENTORY_SLOT, preggoEntity.getOffhandItem());
             }
         });
 	}
 	
 
-	public static<T extends TamableAnimal & IPreggoMob> void syncPreggoMobInventaryOnTick(Level world, T preggoEntity) {
+	public static<T extends PreggoMob & ITamablePreggoMob> void syncPreggoMobInventaryOnTick(Level world, T preggoEntity) {
 	    if (preggoEntity == null)
 	        return;
 	    
 	    if (!world.isClientSide()) {
 		    preggoEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> {   	
-		        preggoEntity.setItemInHand(InteractionHand.MAIN_HAND, capability.getStackInSlot(IPreggoMob.MAINHAND_INVENTORY_SLOT));
-		        preggoEntity.setItemInHand(InteractionHand.OFF_HAND, capability.getStackInSlot(IPreggoMob.OFFHAND_INVENTORY_SLOT));
-		        preggoEntity.setItemSlot(EquipmentSlot.HEAD, capability.getStackInSlot(IPreggoMob.HEAD_INVENTORY_SLOT));	   
-		        preggoEntity.setItemSlot(EquipmentSlot.CHEST, capability.getStackInSlot(IPreggoMob.CHEST_INVENTORY_SLOT));	   
-		        preggoEntity.setItemSlot(EquipmentSlot.LEGS, capability.getStackInSlot(IPreggoMob.LEGS_INVENTORY_SLOT));	   
-		        preggoEntity.setItemSlot(EquipmentSlot.FEET, capability.getStackInSlot(IPreggoMob.FEET_INVENTORY_SLOT));		
+		        preggoEntity.setItemInHand(InteractionHand.MAIN_HAND, capability.getStackInSlot(ITamablePreggoMob.MAINHAND_INVENTORY_SLOT));
+		        preggoEntity.setItemInHand(InteractionHand.OFF_HAND, capability.getStackInSlot(ITamablePreggoMob.OFFHAND_INVENTORY_SLOT));
+		        preggoEntity.setItemSlot(EquipmentSlot.HEAD, capability.getStackInSlot(ITamablePreggoMob.HEAD_INVENTORY_SLOT));	   
+		        preggoEntity.setItemSlot(EquipmentSlot.CHEST, capability.getStackInSlot(ITamablePreggoMob.CHEST_INVENTORY_SLOT));	   
+		        preggoEntity.setItemSlot(EquipmentSlot.LEGS, capability.getStackInSlot(ITamablePreggoMob.LEGS_INVENTORY_SLOT));	   
+		        preggoEntity.setItemSlot(EquipmentSlot.FEET, capability.getStackInSlot(ITamablePreggoMob.FEET_INVENTORY_SLOT));		
 		    });   
 	    }
 	}
 	
 	private static<E extends AbstractTamablePregnantZombieGirl<?,?> & IPregnancyP1> void renderZombieGirlCravingMainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, E zombieGirl) {
-		switch (zombieGirl.getCravingChosen()) {
+		switch (zombieGirl.getTypeOfCraving()) {
 		case SWEET: {
 			guiGraphics.blit(ZOMBIE_GIRL_SWEET_CRAVING, leftPos + 113, topPos + 43, 0, 0, 24, 24, 24, 24);
 			return;
@@ -118,7 +118,7 @@ public class PreggoGUIHelper {
 	
 	
 	private static<E extends AbstractTamablePregnantCreeperGirl<?,?> & IPregnancyP1> void renderCreeperGirlCravingMainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, E creeperGirl) {
-		switch (creeperGirl.getCravingChosen()) {
+		switch (creeperGirl.getTypeOfCraving()) {
 		case SWEET: {
 			guiGraphics.blit(CREEPER_GIRL_SWEET_CRAVING, leftPos + 113, topPos + 43, 0, 0, 24, 24, 24, 24);
 			return;
@@ -141,7 +141,7 @@ public class PreggoGUIHelper {
 	}
 	
 	
-	public static void renderDefaultPreggoP0MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, IPreggoMob p0) {
+	public static void renderDefaultPreggoP0MainGUI(GuiGraphics guiGraphics, int leftPos, int topPos, float health, ITamablePreggoMob p0) {
 
 		for (int i = 0, pos = 74; i < 10; i++, pos += 10) {
 			guiGraphics.blit(MINECRAFT_ICONS_TEXTURE, leftPos + pos, topPos + 56, 16, 27, 9, 9, 256, 256);
@@ -240,8 +240,8 @@ public class PreggoGUIHelper {
 		}		
 	}
 	
-	public static<E extends IPreggoMob & IBreedable> void renderDefaultPreggoP0LabelMainGUI(GuiGraphics guiGraphics, Font font, E p0) {	
-		guiGraphics.drawString(font, p0.getPreggoName(), 90, 4, -12829636, false);
+	public static<E extends PreggoMob & ITamablePreggoMob & IBreedable> void renderDefaultPreggoP0LabelMainGUI(GuiGraphics guiGraphics, Font font, E p0) {	
+		guiGraphics.drawString(font, p0.getSimpleName(), 90, 4, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_state"), 78, 21, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_phase"), 75, 34, -12829636, false);
 		guiGraphics.drawString(font, "P0", 107, 34, -12829636, false);
@@ -252,56 +252,56 @@ public class PreggoGUIHelper {
 		}
 	}
 	
-	public static<E extends IPreggoMob & IPregnancySystem & IPregnancyP1> void renderP1LabelMainGUI(GuiGraphics guiGraphics, Font font, E p1) {	
-		guiGraphics.drawString(font, p1.getPreggoName(), 90, 4, -12829636, false);
+	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystem & IPregnancyP1> void renderP1LabelMainGUI(GuiGraphics guiGraphics, Font font, E p1) {	
+		guiGraphics.drawString(font, p1.getSimpleName(), 90, 4, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_state"), 75, 22, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_pregnant"), 107, 22, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_phase"), 75, 37, -12829636, false);
 		guiGraphics.drawString(font, p1.getCurrentPregnancyStage().toString(), 107, 37, -12829636, false);
 		
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_craving"), 75, 51, -12829636, false);
-		if (p1.getCravingChosen() == Craving.NONE) {
+		if (p1.getTypeOfCraving() == Craving.NONE) {
 			guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_none"), 118, 51, -12829636, false);
 		}   	
 	}
 	
-	public static<E extends IPreggoMob & IPregnancySystem & IPregnancyP2> void renderP2LabelMainGUI(GuiGraphics guiGraphics, Font font, E p2) {
+	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystem & IPregnancyP2> void renderP2LabelMainGUI(GuiGraphics guiGraphics, Font font, E p2) {
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_phase"), 77, 31, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_state"), 77, 17, -12829636, false);
 		guiGraphics.drawString(font, p2.getCurrentPregnancyStage().toString(), 109, 31, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_pregnant"), 109, 17, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_craving"), 77, 45, -12829636, false);
 		
-		guiGraphics.drawString(font, p2.getPreggoName(), 90, 4, -12829636, false);
+		guiGraphics.drawString(font, p2.getSimpleName(), 90, 4, -12829636, false);
 
-		if (p2.getCravingChosen() == Craving.NONE) {
+		if (p2.getTypeOfCraving() == Craving.NONE) {
 			guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_none"), 118, 45, -12829636, false);
 		} 
 	}
 	
-	public static<E extends IPreggoMob & IPregnancySystem & IPregnancyP3> void renderP3LabelMainGUI(GuiGraphics guiGraphics, Font font, E p3) {
+	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystem & IPregnancyP3> void renderP3LabelMainGUI(GuiGraphics guiGraphics, Font font, E p3) {
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_phase"), 75, 31, -12829636, false);
 		guiGraphics.drawString(font, p3.getCurrentPregnancyStage().toString(), 107, 31, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_state"), 75, 17, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_pregnant"), 107, 17, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_craving"), 75, 45, -12829636, false);
 
-		guiGraphics.drawString(font, p3.getPreggoName(), 90, 4, -12829636, false);
+		guiGraphics.drawString(font, p3.getSimpleName(), 90, 4, -12829636, false);
 
-		if (p3.getCravingChosen() == Craving.NONE) {
+		if (p3.getTypeOfCraving() == Craving.NONE) {
 			guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_none"), 118, 45, -12829636, false);
 		} 
 	}
 	
-	public static<E extends IPreggoMob & IPregnancySystem & IPregnancyP4> void renderP4LabelMainGUI(GuiGraphics guiGraphics, Font font, E p4) {
-		guiGraphics.drawString(font, p4.getPreggoName(), 90, 4, -12829636, false);	
+	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystem & IPregnancyP4> void renderP4LabelMainGUI(GuiGraphics guiGraphics, Font font, E p4) {
+		guiGraphics.drawString(font, p4.getSimpleName(), 90, 4, -12829636, false);	
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_phase"), 74, 35, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_craving"), 74, 51, -12829636, false);
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_state"), 74, 19, -12829636, false);
 		guiGraphics.drawString(font, p4.getCurrentPregnancyStage().toString(), 107, 35, -12829636, false);	
 		guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_pregnant"), 106, 19, -12829636, false);
 		
-		if (p4.getCravingChosen() == Craving.NONE) {
+		if (p4.getTypeOfCraving() == Craving.NONE) {
 			guiGraphics.drawString(font, Component.translatable("gui.minepreggo.preggo_mob_main.label_none"), 118, 51, -12829636, false);
 		} 
 	}

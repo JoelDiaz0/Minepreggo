@@ -9,7 +9,7 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
+import dev.dixmk.minepreggo.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancyP1;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancyP2;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancyP3;
@@ -25,7 +25,7 @@ import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractTamablePregnantZombieGi
 import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractZombieGirl;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
-
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -44,7 +44,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -60,7 +59,7 @@ public class PreggoMobHelper {
 			
 	private PreggoMobHelper() {}
 	
-	public static<E extends TamableAnimal & IPreggoMob> void transferPreggoMobBasicData(E source, E target) {		
+	public static<E extends PreggoMob & ITamablePreggoMob> void transferPreggoMobBasicData(E source, E target) {		
 		target.setYRot(source.getYRot());
 		target.setYBodyRot(source.getYRot());
 		target.setYHeadRot(source.getYRot());
@@ -77,11 +76,11 @@ public class PreggoMobHelper {
 		target.setSavage(source.isSavage());
 	}
 	
-	public static<E extends TamableAnimal & IPreggoMob & IPregnancySystem & IPregnancyP1> void transferPregnancyP1Data(E source, E target) {
+	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystem & IPregnancyP1> void transferPregnancyP1Data(E source, E target) {
 		transferPreggoMobBasicData(source, target);
 		target.setCraving(source.getCraving());
 		target.setCravingTimer(source.getCravingTimer());
-		target.setCravingChosen(source.getCravingChosen());
+		target.setTypeOfCraving(source.getTypeOfCraving());
 		
 		target.setDaysByStage(source.getDaysByStage());
 		target.setDaysPassed(0);
@@ -91,22 +90,22 @@ public class PreggoMobHelper {
 		target.setPregnancySymptom(source.getPregnancySymptom());
 		target.setPregnancyPainTimer(source.getPregnancyPainTimer());
 		target.setPregnancyTimer(0);
-		target.setMaxPregnancyStage(source.getMaxPregnancyStage());
+		target.setLastPregnancyStage(source.getLastPregnancyStage());
 	}
 	
-	public static<E extends TamableAnimal & IPreggoMob & IPregnancySystem & IPregnancyP2> void transferPregnancyP2Data(E source, E target) {
+	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystem & IPregnancyP2> void transferPregnancyP2Data(E source, E target) {
 		transferPregnancyP1Data(source, target);
 		target.setMilking(source.getMilking());
 		target.setMilkingTimer(source.getMilkingTimer());
 	}
 
-	public static<E extends TamableAnimal & IPreggoMob & IPregnancySystem & IPregnancyP3> void transferPregnancyP3Data(E source, E target) {
+	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystem & IPregnancyP3> void transferPregnancyP3Data(E source, E target) {
 		transferPregnancyP2Data(source, target);
 		target.setBellyRubs(source.getBellyRubs());
 		target.setBellyRubsTimer(source.getBellyRubsTimer());
 	}
 	
-	public static<E extends TamableAnimal & IPreggoMob & IPregnancySystem & IPregnancyP4> void transferPregnancyP4Data(E source, E target) {
+	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystem & IPregnancyP4> void transferPregnancyP4Data(E source, E target) {
 		transferPregnancyP3Data(source, target);
 		target.setHorny(source.getHorny());
 		target.setHornyTimer(source.getHornyTimer());
@@ -132,7 +131,7 @@ public class PreggoMobHelper {
 		entity.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(item, num));
 	}
 
-	public static <E extends TamableAnimal & IPreggoMob> void transferPreggoMobInventary(E source, E target) {
+	public static <E extends PreggoMob & ITamablePreggoMob> void transferPreggoMobInventary(E source, E target) {
 		transferSlots(source, target);
 	
 	    source.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(sourceHandler -> {
@@ -147,7 +146,7 @@ public class PreggoMobHelper {
 	    });
 	}
 	
-	public static<E extends TamableAnimal & IPreggoMob> void addItemToInventory(E preggoMob, ItemEntity itemEntity) {		
+	public static<E extends PreggoMob & ITamablePreggoMob> void addItemToInventory(E preggoMob, ItemEntity itemEntity) {		
 		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(sourceHandler -> {		
 			var originalItemStack = itemEntity.getItem();
 			var remainder = ItemHandlerHelper.insertItemStacked(sourceHandler, originalItemStack, false);		
@@ -163,7 +162,7 @@ public class PreggoMobHelper {
 		});
 	}
 	
-	public static<E extends TamableAnimal & IPreggoMob> void storeItemInSpecificRange(E preggoMob, ItemEntity itemEntity, int minStorageSlot, int maxStorageSlot) {
+	public static<E extends PreggoMob & ITamablePreggoMob> void storeItemInSpecificRange(E preggoMob, ItemEntity itemEntity, int minStorageSlot, int maxStorageSlot) {
 		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(sourceHandler -> {		
 			var originalItemStack = itemEntity.getItem();
 			var originalCount = originalItemStack.getCount();
@@ -187,7 +186,7 @@ public class PreggoMobHelper {
 		});	
 	}
 	
-	private static <E extends TamableAnimal> void transferSlots(E source, E target) {
+	private static <E extends PreggoMob> void transferSlots(E source, E target) {
 		target.setItemInHand(InteractionHand.MAIN_HAND, source.getMainHandItem());
 		target.setItemInHand(InteractionHand.OFF_HAND, source.getOffhandItem());
 		target.setItemSlot(EquipmentSlot.HEAD, source.getItemBySlot(EquipmentSlot.HEAD));
@@ -219,16 +218,19 @@ public class PreggoMobHelper {
 	public static int getNumberOfChildrens(PregnancyStage maxPregnancyStage) {			
 		switch (maxPregnancyStage) {
 		case P5: {		
-			return 3;
+			return 2;
 		}
 		case P6: {		
-			return 4;
+			return 3;
 		}
 		case P7: {		
+			return 4;
+		}
+		case P8: {		
 			return 5;
 		}
 		default:
-			return 2;
+			return 1;
 		}
 	}
 		
@@ -237,12 +239,12 @@ public class PreggoMobHelper {
 		return PregnancySystemConstants.TOTAL_PREGNANCY_DAYS / maxPregnancyStage.ordinal();
 	}
 	
-	public static<E extends TamableAnimal & IPreggoMob & IPregnancySystem> void startPregnancy(E preggoMob, PregnancyStage maxPregnancyStage) {	
+	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystem> void startPregnancy(E preggoMob, PregnancyStage maxPregnancyStage) {	
 		final int daysByStage = getNumberOfDaysByMaxPregnancyStage(maxPregnancyStage, preggoMob.getRandom());
 		final int daysToBirth = (maxPregnancyStage.ordinal() - preggoMob.getCurrentPregnancyStage().ordinal() + 1) * daysByStage;
 		
 		preggoMob.setDaysPassed(0);
-		preggoMob.setMaxPregnancyStage(maxPregnancyStage);
+		preggoMob.setLastPregnancyStage(maxPregnancyStage);
 		preggoMob.setDaysByStage(daysByStage);
 		preggoMob.setDaysToGiveBirth(daysToBirth);
 		preggoMob.setPregnancyHealth(100);
@@ -251,15 +253,15 @@ public class PreggoMobHelper {
 				preggoMob.getId(), preggoMob.getClass().getSimpleName(),preggoMob.getCurrentPregnancyStage(), maxPregnancyStage, daysByStage, daysToBirth);
 	}
 		
-	public static<E extends TamableAnimal & IPreggoMob & IPregnancySystem> void startPregnancy(E preggoMob) {		
+	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystem> void startPregnancy(E preggoMob) {		
 		startPregnancy(preggoMob, PregnancyStage.getRandomFinalCurrentStage(preggoMob.getCurrentPregnancyStage()));
 	}
 	
-	private static<E extends TamableAnimal & IPreggoMob & IPregnancySystem> float getSpawnProbabilityBasedPregnancy(E preggoMob, float t0, float k, float pMin, float pMax) {
-		final int totalDays = preggoMob.getMaxPregnancyStage().ordinal() * preggoMob.getDaysByStage();
+	private static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystem> float getSpawnProbabilityBasedPregnancy(E preggoMob, float t0, float k, float pMin, float pMax) {
+		final int totalDays = preggoMob.getLastPregnancyStage().ordinal() * preggoMob.getDaysByStage();
 		final int totalDaysPassed = Math.max(0, preggoMob.getCurrentPregnancyStage().ordinal() - 1) * preggoMob.getDaysByStage() + preggoMob.getDaysPassed();  				
 		final float t = Mth.clamp(totalDaysPassed / (float) totalDays, 0, 1);	
-		final float p = PreggoMathHelper.sigmoid(pMin, pMax, k, t, t0);
+		final float p = MathHelper.sigmoid(pMin, pMax, k, t, t0);
 		
 		MinepreggoMod.LOGGER.debug("SPAWN PROBABILITY BASED IN PREGNANCY: class={}, totalDays={}, totalDaysPassed={}, t={}, p={}",
 				preggoMob.getClass().getSimpleName(), totalDays, totalDaysPassed, t, p);
@@ -371,7 +373,7 @@ public class PreggoMobHelper {
 		
 	public static void spawnBabyAndFetusZombies(AbstractTamablePregnantZombieGirl<?,?> zombieGirl) {		
 
-		final var numOfBabies = getNumberOfChildrens(zombieGirl.getMaxPregnancyStage());
+		final var numOfBabies = getNumberOfChildrens(zombieGirl.getLastPregnancyStage());
 		
 		if (zombieGirl instanceof IPregnancyP3) {
 			final var alive = getSpawnProbabilityBasedPregnancy(zombieGirl, 0.6F, 0.1F, 0.2F, 0.95F);
@@ -385,7 +387,7 @@ public class PreggoMobHelper {
 	
 	public static void spawnBabyAndFetusCreepers(AbstractTamablePregnantCreeperGirl<?,?> creeperGirl) {
 		
-		final var numOfBabies = getNumberOfChildrens(creeperGirl.getMaxPregnancyStage());
+		final var numOfBabies = getNumberOfChildrens(creeperGirl.getLastPregnancyStage());
 	
 		if (creeperGirl instanceof IPregnancyP3) {
 			final var alive = getSpawnProbabilityBasedPregnancy(creeperGirl, 0.6F, 0.15F, 0.15F, 0.8F);
@@ -412,11 +414,11 @@ public class PreggoMobHelper {
 		float p;
 		
 		if (currentPregnancyStage.ordinal() > 2) {
-			p = PreggoMathHelper.sigmoid(0.2F, 0.8F, 0.15F, t, 0.6F);
+			p = MathHelper.sigmoid(0.2F, 0.8F, 0.15F, t, 0.6F);
 			spawnBabyOrFetusCreepers(p, numOfBabies, creeperGirl);
 		}
 		else {
-			p = PreggoMathHelper.sigmoid(0.5F, 0.9F, 0.15F, t, 0.3F);
+			p = MathHelper.sigmoid(0.5F, 0.9F, 0.15F, t, 0.3F);
 			spawnFetusCreepers(p, numOfBabies, creeperGirl);
 		}
 		
@@ -438,11 +440,11 @@ public class PreggoMobHelper {
 		float p;
 		
 		if (currentPregnancyStage.ordinal() > 2) {
-			p = PreggoMathHelper.sigmoid(0.2F, 0.9F, 0.1F, t, 0.7F);
+			p = MathHelper.sigmoid(0.2F, 0.9F, 0.1F, t, 0.7F);
 			spawnBabyOrFetusZombies(p, numOfBabies, zombie);
 		}
 		else {
-			p = PreggoMathHelper.sigmoid(0.2F, 0.9F, 0.1F, t, 0.3F);
+			p = MathHelper.sigmoid(0.2F, 0.9F, 0.1F, t, 0.3F);
 			spawnFetusZombies(p, numOfBabies, zombie);
 		}
 		
@@ -450,7 +452,7 @@ public class PreggoMobHelper {
 				zombie.getId(), zombie.getClass().getSimpleName(), currentPregnancyStage, zombie.getMaxPregnancyStage(), totalDaysPassed, t);
 	}
 		
-	public static<E extends TamableAnimal & IPreggoMob> void onSuccessfulAttack(E entity) {
+	public static<E extends PreggoMob & ITamablePreggoMob> void onSuccessfulAttack(E entity) {
   	    
 	    Level world = entity.level();
 	    ItemStack stack = entity.getMainHandItem();
@@ -480,13 +482,13 @@ public class PreggoMobHelper {
 	    } else {
 	        entity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(cap -> {
 	            if (cap instanceof IItemHandlerModifiable mod) {
-	                mod.setStackInSlot(IPreggoMob.MAINHAND_INVENTORY_SLOT, stack);
+	                mod.setStackInSlot(ITamablePreggoMob.MAINHAND_INVENTORY_SLOT, stack);
 	            }
 	        });
 	    }	
 	}
 	
-	public static <E extends TamableAnimal & IPreggoMob> void onSuccessfulHurt(E entity, DamageSource damageSource) {
+	public static <E extends PreggoMob & ITamablePreggoMob> void onSuccessfulHurt(E entity, DamageSource damageSource) {
 	    var world = entity.level();
 	
 	    List<ItemStack> armorStacks = new ArrayList<>(4);
@@ -543,7 +545,7 @@ public class PreggoMobHelper {
 	    return random.nextDouble() < threshold;
 	}
 
-	private static<E extends TamableAnimal & IPreggoMob> void updateItemHandler(E entity, int slotId, ItemStack stack) {
+	private static<E extends PreggoMob & ITamablePreggoMob> void updateItemHandler(E entity, int slotId, ItemStack stack) {
 		entity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(handler -> {
 	        if (handler instanceof IItemHandlerModifiable modHandler) {
 	            modHandler.setStackInSlot(slotId, stack);
@@ -551,24 +553,24 @@ public class PreggoMobHelper {
 	    });
 	}
 
-	public static<E extends TamableAnimal & IPreggoMob & IPregnancySystem> void setItemstackOnOffHand(E preggoMob, @Nonnull ItemStack itemStack) {			
+	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystem> void setItemstackOnOffHand(E preggoMob, @Nonnull ItemStack itemStack) {			
 		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(handler -> {			    	
 			if (handler instanceof IItemHandlerModifiable modHandler) {
 				
-				var oldItemstack = modHandler.getStackInSlot(IPreggoMob.OFFHAND_INVENTORY_SLOT);
+				var oldItemstack = modHandler.getStackInSlot(ITamablePreggoMob.OFFHAND_INVENTORY_SLOT);
 				
 				if (!oldItemstack.isEmpty()) {
 					removeAndDropItemStackFromEquipmentSlot(preggoMob, EquipmentSlot.OFFHAND);			
 				}
 						
-	            modHandler.setStackInSlot(IPreggoMob.OFFHAND_INVENTORY_SLOT, itemStack);
+	            modHandler.setStackInSlot(ITamablePreggoMob.OFFHAND_INVENTORY_SLOT, itemStack);
 	            preggoMob.setItemSlot(EquipmentSlot.OFFHAND, itemStack);
 	        }	
 		});
 	}
 	
 	
-	public static<E extends TamableAnimal & IPreggoMob> void removeAndDropItemStackFromEquipmentSlot(E preggoMob, EquipmentSlot slotId) {			
+	public static<E extends PreggoMob & ITamablePreggoMob> void removeAndDropItemStackFromEquipmentSlot(E preggoMob, EquipmentSlot slotId) {			
 		if (dropItemStack(preggoMob, preggoMob.getItemBySlot(slotId))) {		
 			preggoMob.setItemSlot(slotId, ItemStack.EMPTY);
 			preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(handler -> {			    

@@ -13,15 +13,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public class SexCinematicControlPacket {
-	
-	private final boolean start;
-	private final int mobEntityId;
-	
-	public SexCinematicControlPacket(boolean start, int mobEntityId) {
-		this.start = start;
-		this.mobEntityId = mobEntityId;	
-	}
+public record SexCinematicControlPacket(boolean start, int mobEntityId) {
 	
 	public static SexCinematicControlPacket decode(FriendlyByteBuf buffer) {	
 		return new SexCinematicControlPacket(

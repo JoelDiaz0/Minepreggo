@@ -144,9 +144,9 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 		return ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "preggo_death"));
 	}
 	
-	@Override
-	public boolean isValidCraving(Craving kindOfCraving, Item item) {
-		return item == CRAVING_ENUM_MAP.get(kindOfCraving);
+	public boolean isCraving(Craving craving, Item item) {	
+		var food = CRAVING_ENUM_MAP.get(craving);
+		return food != null && food == item;
 	}
 	
 	@Override
@@ -239,12 +239,12 @@ public abstract class AbstractTamablePregnantZombieGirl<S extends PreggoMobSyste
 	}
 	
 	@Override
-	public PregnancyStage getMaxPregnancyStage() {
+	public PregnancyStage getLastPregnancyStage() {
 		return this.entityData.get(DATA_MAX_PREGNANCY_STAGE); 
 	}
 	
 	@Override
-	public void setMaxPregnancyStage(PregnancyStage stage) {
+	public void setLastPregnancyStage(PregnancyStage stage) {
 		this.entityData.set(DATA_MAX_PREGNANCY_STAGE, stage);
 	}
 	

@@ -3,7 +3,7 @@ package dev.dixmk.minepreggo.network.packet;
 import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
+import dev.dixmk.minepreggo.entity.preggo.ITamablePreggoMob;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -11,15 +11,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public class PreggoMobPickUpItemPacket {
-
-	private final int preggoMobId;
-	private final boolean canPickUpItem;
-	
-	public PreggoMobPickUpItemPacket(int preggoMobId, boolean canPickUpItem) {
-		this.preggoMobId = preggoMobId;
-		this.canPickUpItem = canPickUpItem;
-	}
+public record PreggoMobPickUpItemPacket(int preggoMobId, boolean canPickUpItem) {
 	
 	public static PreggoMobPickUpItemPacket decode(FriendlyByteBuf buffer) {	
 		return new PreggoMobPickUpItemPacket(
@@ -39,7 +31,7 @@ public class PreggoMobPickUpItemPacket {
 			if (serverPlayer == null) return;		
 			var world = serverPlayer.level();
 			
-			if (!world.isClientSide() && world.getEntity(message.preggoMobId) instanceof IPreggoMob mob) {
+			if (!world.isClientSide() && world.getEntity(message.preggoMobId) instanceof ITamablePreggoMob mob) {
 				mob.setPickUpItems(message.canPickUpItem);
 			}
 		});

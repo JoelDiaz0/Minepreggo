@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.utils;
 
-import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
+import dev.dixmk.minepreggo.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancySystem;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractTamableCreeperGirl;
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractTamablePregnantCreeperGirl;
@@ -11,7 +11,7 @@ import dev.dixmk.minepreggo.world.entity.ai.goal.PreggoMobFollowOwnerGoal;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PregnantPreggoMobFollowOwnerGoal;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PregnantPreggoMobOwnerHurtByTargetGoal;
 import dev.dixmk.minepreggo.world.entity.ai.goal.PregnantPreggoMobOwnerHurtTargetGoal;
-import net.minecraft.world.entity.TamableAnimal;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.FleeSunGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -298,7 +298,7 @@ public class PreggoAIHelper {
 		});
 	}
 	
-	private static<T extends TamableAnimal & IPreggoMob> void setBasicPreggoMobGoals(T preggoMob) {	
+	private static<T extends PreggoMob & ITamablePreggoMob> void setBasicPreggoMobGoals(T preggoMob) {	
 		
 		preggoMob.targetSelector.addGoal(2, new HurtByTargetGoal(preggoMob));	
 		
@@ -349,7 +349,7 @@ public class PreggoAIHelper {
 		preggoMob.goalSelector.addGoal(11, new FloatGoal(preggoMob));
 	}
 	
-	private static<T extends TamableAnimal & IPreggoMob & IPregnancySystem> void setBasicPregnantPreggoMobGoals(T preggoMob) {	
+	private static<T extends PreggoMob & ITamablePreggoMob & IPregnancySystem> void setBasicPregnantPreggoMobGoals(T preggoMob) {	
 		
 		preggoMob.targetSelector.addGoal(2, new HurtByTargetGoal(preggoMob) {
 			@Override

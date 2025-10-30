@@ -9,6 +9,7 @@ import dev.dixmk.minepreggo.entity.preggo.PregnantPreggoMobSystem;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PlayMessages;
 
@@ -75,12 +76,12 @@ public class TamableZombieGirlP8 extends AbstractTamablePregnantZombieGirl<Pregn
 	}
 	
 	@Override
-	public Craving getCravingChosen() {
+	public Craving getTypeOfCraving() {
 		return this.entityData.get(DATA_CRAVING_CHOSEN);
 	}
 	
 	@Override
-	public void setCravingChosen(Craving craving) {
+	public void setTypeOfCraving(Craving craving) {
 		this.entityData.set(DATA_CRAVING_CHOSEN, craving);
 	}
 	
@@ -144,4 +145,8 @@ public class TamableZombieGirlP8 extends AbstractTamablePregnantZombieGirl<Pregn
 	    this.hornyTimer = timer;
 	}
 
+	@Override
+	public boolean isValidCraving(Craving craving, Item item) {
+		return this.isCraving(craving, item);
+	}
 }

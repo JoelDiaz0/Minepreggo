@@ -4,11 +4,11 @@ import javax.annotation.Nonnull;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.entity.preggo.PreggoMobSystem.Result;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.TamableAnimal;
 
-public abstract class PregnancySystemP6<E extends TamableAnimal
-	& IPreggoMob & IPregnancySystem & IPregnancyP6> extends PregnancySystemP5<E> {
+public abstract class PregnancySystemP6<E extends PreggoMob
+	& ITamablePreggoMob & IPregnancySystem & IPregnancyP6> extends PregnancySystemP5<E> {
 
 	protected PregnancySystemP6(@Nonnull E preggoMob) {
 		super(preggoMob);

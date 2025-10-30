@@ -1,5 +1,6 @@
 package dev.dixmk.minepreggo.entity.preggo.creeper;
 
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -7,7 +8,6 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -26,7 +26,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 public abstract class AbstractMonsterCreeperGirl extends AbstractCreeperGirl {
 	private CombatMode basicCombatMode = CombatMode.EXPLODE;
 	
-	protected AbstractMonsterCreeperGirl(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_) {
+	protected AbstractMonsterCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_) {
 		super(p_21803_, p_21804_);	
 		this.setRandomCombatMode();
 	}

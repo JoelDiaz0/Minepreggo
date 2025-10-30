@@ -6,20 +6,11 @@ import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import net.minecraft.world.item.Item;
 
 public enum BabyType {
-    ZOMBIE("Zombie"),
-    HUMANOID_CREEPER("HumanoidCreeper"),
-    QUADRUPED_CREEPER("QuadrupedCreeper"),
-    HUMAN("Human");
-
-    private final String name;
-    
-    BabyType(String name) {
-        this.name = name;
-    }
-
-    public String getString() {
-        return name;
-    }
+    ZOMBIE,
+    HUMANOID_CREEPER,
+    QUADRUPED_CREEPER,
+    HUMAN,
+	ENDER;
     
 	protected static final ImmutableMap<BabyType, Item> ALIVE_BABIES = ImmutableMap.of(
 			BabyType.HUMAN, MinepreggoModItems.BABY_HUMAN.get(), 

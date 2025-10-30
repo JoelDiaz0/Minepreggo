@@ -1,6 +1,9 @@
 package dev.dixmk.minepreggo.world.entity.preggo.creeper;
 
 import dev.dixmk.minepreggo.entity.preggo.creeper.AbstractMonsterCreeperGirl;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -24,5 +27,20 @@ public abstract class AbstractMonsterQuadrupedCreeperGirl extends AbstractMonste
 	
 	public static AttributeSupplier.Builder createDefaultAttributes() {
 		return getBasicAttributes(0.24);
+	}
+	
+	@Override
+	public boolean hasCustomHeadAnimation() {
+		return false;
+	}
+	
+	@Override
+	public SoundEvent getHurtSound(DamageSource p_32309_) {
+		return SoundEvents.CREEPER_HURT;
+	}
+	
+	@Override
+	public SoundEvent getDeathSound() {
+		return SoundEvents.CREEPER_DEATH;
 	}
 }

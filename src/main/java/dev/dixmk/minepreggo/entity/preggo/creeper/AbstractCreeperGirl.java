@@ -1,6 +1,5 @@
 package dev.dixmk.minepreggo.entity.preggo.creeper;
 
-import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
@@ -8,7 +7,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Collection;
@@ -21,9 +19,8 @@ import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.utils.PreggoArmorHelper;
 import dev.dixmk.minepreggo.utils.PreggoTags;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -41,25 +38,18 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.AreaEffectCloud;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.PowerableMob;
 
-public abstract class AbstractCreeperGirl extends TamableAnimal implements PowerableMob, Enemy {
+public abstract class AbstractCreeperGirl extends PreggoMob implements PowerableMob, Enemy {
 	private static final EntityDataAccessor<Integer> DATA_SWELL_DIR = SynchedEntityData.defineId(AbstractCreeperGirl.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Boolean> DATA_IS_POWERED = SynchedEntityData.defineId(AbstractCreeperGirl.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Boolean> DATA_IS_IGNITED = SynchedEntityData.defineId(AbstractCreeperGirl.class, EntityDataSerializers.BOOLEAN);
-	
-	public final AnimationState loopAnimationState = new AnimationState();
-	public final AnimationState attackAnimationState = new AnimationState();
 	
 	private int oldSwell;
 	private int swell;
@@ -69,7 +59,7 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 	protected int explosionItensity = 1;
 	protected double maxDistance = 9D;
 	
-	protected AbstractCreeperGirl(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_) {
+	protected AbstractCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_) {
       super(p_21803_, p_21804_);
       this.reassessTameGoals();	    
 	}
@@ -89,8 +79,6 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 		return !this.isTame();
 	}
 	
-	public abstract boolean canBeTamedByPlayer();
-	
 	@Override
 	public SoundSource getSoundSource() {
 		return SoundSource.HOSTILE;
@@ -101,8 +89,14 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 		return stack.is(PreggoTags.CREEPER_GIRL_FOOD);
 	}
 	
+	@Override
 	public boolean isFoodToTame(ItemStack stack) {
 		return stack.is(MinepreggoModItems.ACTIVATED_GUNPOWDER.get());
+	}
+	
+	@Override
+	public String getSimpleName() {
+		return this.hasCustomName() ? this.getDisplayName().getString() : "Creeper Girl";
 	}
 	
 	@Override
@@ -224,10 +218,6 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 
 		return flag;
 	}
-
-    public boolean isAttacking() {
-        return this.attackAnimationState.isStarted();
-    }
 	
 	@Override
 	public void tick() {	
@@ -255,53 +245,22 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 		}	
 		
 		super.tick();
-		
-		if (this.level().isClientSide() && !this.loopAnimationState.isStarted()) {
-			this.loopAnimationState.start(this.tickCount);
-		}
 	}
-	
-    @Override
-    public void handleEntityEvent(byte id) {
-        if (id == 4) { // vanilla "swing/attack" animation event
-            this.attackAnimationState.start(this.tickCount); 
-        }
-        else {
-            super.handleEntityEvent(id);
-        }
-    }
-	
-    @Override
-    public boolean doHurtTarget(Entity target) {
-        boolean result = super.doHurtTarget(target);
-        if (result) 
-            this.level().broadcastEntityEvent(this, (byte)4); // triggers handleEntityEvent client-side     
-        return result;
-    }
-    
-	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
-    
+
 	@Override
 	protected ResourceLocation getDefaultLootTable() {
 	    return ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "entities/abstract_creeper_girl_loot");
 	}
+
+	@Override
+	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {		
+		var retval = super.mobInteract(sourceentity, hand);
 		
-	@Override
-	public void baseTick() {
-		super.baseTick();
-		this.refreshDimensions();
-	}
-	
-	@Override
-	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {	
-				
+		if (retval == InteractionResult.SUCCESS || retval == InteractionResult.CONSUME) {
+			return retval;
+		}	
+		
 		ItemStack itemstack = sourceentity.getItemInHand(hand);
-		InteractionResult retval = InteractionResult.PASS;
-		
-		
 		if (itemstack.is(ItemTags.CREEPER_IGNITERS)) {
 			SoundEvent soundevent = itemstack.is(Items.FIRE_CHARGE) ? SoundEvents.FIRECHARGE_USE : SoundEvents.FLINTANDSTEEL_USE;
 			this.level().playSound(sourceentity, this.getX(), this.getY(), this.getZ(), soundevent, this.getSoundSource(), 1.0F, this.random.nextFloat() * 0.4F + 0.8F);
@@ -317,21 +276,6 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 			}
 			retval = InteractionResult.sidedSuccess(this.level().isClientSide());
 		}	
-		else if (this.isBaby() || !this.canBeTamedByPlayer() ) {
-			retval = InteractionResult.FAIL;	
-		}
-		else if (!this.isTame() && this.isFoodToTame(itemstack)) {
-			this.usePlayerItem(sourceentity, hand, itemstack);
-			if (this.random.nextInt(3) == 0 && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(this, sourceentity)) {
-				this.tame(sourceentity);
-				this.level().broadcastEntityEvent(this, (byte) 7);						
-			} else {
-				this.level().broadcastEntityEvent(this, (byte) 6);
-			}
-			this.setPersistenceRequired();
-			retval = InteractionResult.sidedSuccess(this.level().isClientSide());	
-		}
-		
 		
 		return retval;
 	}
@@ -346,11 +290,6 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 	@Override
 	public boolean wantsToPickUp(ItemStack p_182400_) {
 		return !p_182400_.is(Items.GLOW_INK_SAC) && super.wantsToPickUp(p_182400_);
-	}
-	
-	@Override
-	public EntityDimensions getDimensions(Pose p_33597_) {
-		return super.getDimensions(p_33597_).scale(1F);
 	}
 	
 	@Override
@@ -416,8 +355,6 @@ public abstract class AbstractCreeperGirl extends TamableAnimal implements Power
 		DONT_EXPLODE,
 		FIGHT_AND_EXPLODE;    
 	}
-	
-	
 	
 	public static boolean canReplaceCurrentItem(AbstractCreeperGirl target, ItemStack p_21428_, ItemStack p_21429_, PregnancyStage currentPregnancyStage) {
 		if ((PreggoArmorHelper.isChest(p_21428_) && !PreggoArmorHelper.canPreggoMobUseChestplate(p_21428_, currentPregnancyStage))

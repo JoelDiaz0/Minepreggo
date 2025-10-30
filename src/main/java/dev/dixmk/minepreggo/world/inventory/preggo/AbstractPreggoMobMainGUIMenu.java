@@ -7,10 +7,10 @@ import java.util.function.Supplier;
 
 import org.joml.Vector3i;
 
-import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
+import dev.dixmk.minepreggo.entity.preggo.ITamablePreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -22,7 +22,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 public abstract class AbstractPreggoMobMainGUIMenu
-	<E extends TamableAnimal & IPreggoMob> extends AbstractContainerMenu implements Supplier<Map<Integer, Slot>> {
+	<E extends PreggoMob & ITamablePreggoMob> extends AbstractContainerMenu implements Supplier<Map<Integer, Slot>> {
 
 	public final Level level;
 	public final Player player;
@@ -33,7 +33,6 @@ public abstract class AbstractPreggoMobMainGUIMenu
 	protected final Optional<E> preggoMob;
 	protected ContainerLevelAccess access = ContainerLevelAccess.NULL;
 	protected final Map<Integer, Slot> customSlots = new HashMap<>();
-	protected boolean bound = false;
 	protected Supplier<Boolean> boundItemMatcher = null;
 	protected Entity boundEntity = null;
 	protected BlockEntity boundBlockEntity = null;	
@@ -79,15 +78,7 @@ public abstract class AbstractPreggoMobMainGUIMenu
 	
 	@Override
 	public boolean stillValid(Player player) {
-		if (this.bound) {
-			if (this.boundItemMatcher != null)
-				return this.boundItemMatcher.get();
-			else if (this.boundBlockEntity != null)
-				return AbstractContainerMenu.stillValid(this.access, player, this.boundBlockEntity.getBlockState().getBlock());
-			else if (this.boundEntity != null)
-				return this.boundEntity.isAlive();
-		}
-		return true;
+		return this.preggoMob.isPresent() && this.preggoMob.get().isAlive();
 	}
 
 	@Override

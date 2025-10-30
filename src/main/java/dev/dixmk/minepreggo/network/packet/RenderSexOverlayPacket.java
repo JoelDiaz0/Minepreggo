@@ -13,14 +13,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public class RenderSexOverlayPacket {
+public record RenderSexOverlayPacket(boolean start) {
 
-	private final boolean start;
-	
-	public RenderSexOverlayPacket(boolean start) {
-		this.start = start;
-	}
-	
 	public static RenderSexOverlayPacket decode(FriendlyByteBuf buffer) {	
 		return new RenderSexOverlayPacket(
 				buffer.readBoolean());

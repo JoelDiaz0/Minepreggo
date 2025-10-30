@@ -18,18 +18,7 @@ import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkHooks;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public class PreggoMobInventoryMenuPacket {
-	private final int x;
-	private final int y;
-	private final int z;
-	private final int preggoMobId;
-	
-	public PreggoMobInventoryMenuPacket(int x, int y, int z, int creeperGirlId) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
-		this.preggoMobId = creeperGirlId;
-	}
+public record PreggoMobInventoryMenuPacket(int x, int y, int z, int preggoMobId) {
 
 	public static PreggoMobInventoryMenuPacket decode(FriendlyByteBuf buffer) {	
 		return new PreggoMobInventoryMenuPacket(

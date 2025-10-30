@@ -3,7 +3,7 @@ package dev.dixmk.minepreggo.network.packet;
 import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
+import dev.dixmk.minepreggo.entity.preggo.ITamablePreggoMob;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -11,14 +11,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public class PreggoMobBreakBlocksPacket {
-	private final int preggoMobId;
-	private final boolean canBreakBlocks;
-	
-	public PreggoMobBreakBlocksPacket(int preggoMobId, boolean canBreakBlocks) {
-		this.preggoMobId = preggoMobId;
-		this.canBreakBlocks = canBreakBlocks;
-	}
+public record PreggoMobBreakBlocksPacket(int preggoMobId, boolean canBreakBlocks) {
 	
 	public static PreggoMobBreakBlocksPacket decode(FriendlyByteBuf buffer) {	
 		return new PreggoMobBreakBlocksPacket(
@@ -38,7 +31,7 @@ public class PreggoMobBreakBlocksPacket {
 			if (serverPlayer == null) return;		
 			var world = serverPlayer.level();
 			
-			if (!world.isClientSide() && world.getEntity(message.preggoMobId) instanceof IPreggoMob mob) {
+			if (!world.isClientSide() && world.getEntity(message.preggoMobId) instanceof ITamablePreggoMob mob) {
 				mob.setBreakBlocks(message.canBreakBlocks);
 			}
 		});

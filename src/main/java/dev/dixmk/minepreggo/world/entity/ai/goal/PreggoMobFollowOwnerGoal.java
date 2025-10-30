@@ -1,11 +1,11 @@
 package dev.dixmk.minepreggo.world.entity.ai.goal;
 
-import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
+import dev.dixmk.minepreggo.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
-import net.minecraft.world.entity.TamableAnimal;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.world.entity.ai.goal.FollowOwnerGoal;
 
-public class PreggoMobFollowOwnerGoal<T extends TamableAnimal & IPreggoMob> extends FollowOwnerGoal {
+public class PreggoMobFollowOwnerGoal<T extends PreggoMob & ITamablePreggoMob> extends FollowOwnerGoal {
 	
 	protected final T preggoMob;
 	

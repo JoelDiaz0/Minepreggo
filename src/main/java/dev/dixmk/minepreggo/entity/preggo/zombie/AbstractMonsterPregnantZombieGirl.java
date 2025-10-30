@@ -4,8 +4,9 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.entity.preggo.ISimplePregnancy;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySystemConstants;
-import dev.dixmk.minepreggo.utils.PreggoMathHelper;
+import dev.dixmk.minepreggo.utils.MathHelper;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -15,7 +16,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.goal.FleeSunGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
@@ -39,10 +39,8 @@ public abstract class AbstractMonsterPregnantZombieGirl extends AbstractMonsterZ
 	private PregnancyStage currentPregnanctStage;
 	private PregnancyStage maxPregnanctStage;
 	private int totalDaysPassed;
-	private static final int PREGNANCY_PAIN_COOLDOWN = 100;
 	
-	
-	protected AbstractMonsterPregnantZombieGirl(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_, PregnancyStage currentPregnancyStage, PregnancyStage maxPregnancyStage) {
+	protected AbstractMonsterPregnantZombieGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, PregnancyStage currentPregnancyStage, PregnancyStage maxPregnancyStage) {
 		super(p_21803_, p_21804_);
 		this.currentPregnanctStage = currentPregnancyStage;
 		this.maxPregnanctStage = maxPregnancyStage;
@@ -78,6 +76,12 @@ public abstract class AbstractMonsterPregnantZombieGirl extends AbstractMonsterZ
 		return ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "preggo_death"));
 	}
 	
+	
+	@Override
+	public boolean hasCustomHeadAnimation() {
+		return this.hasPregnancyPain();
+	}
+	
 	@Override
    	public void tick() {
       super.tick();
@@ -88,7 +92,7 @@ public abstract class AbstractMonsterPregnantZombieGirl extends AbstractMonsterZ
 
       if (this.hasPregnancyPain()) {   	  
     	  final var timer = this.getPregnancyPainTimer();
-    	  if (timer > PREGNANCY_PAIN_COOLDOWN) {
+    	  if (timer > 100) {
     		  this.setPregnancyPainTimer(0);
     		  this.setPregnancyPain(false);
     	  }
@@ -101,7 +105,7 @@ public abstract class AbstractMonsterPregnantZombieGirl extends AbstractMonsterZ
 	@Override
 	public boolean hurt(DamageSource damagesource, float amount) {	
 		if (super.hurt(damagesource, amount) && !this.hasPregnancyPain() && !this.level().isClientSide()) {		
-			final var p = PreggoMathHelper.sigmoid(0.1F, 0.4F, 0.1F, Mth.clamp(this.getTotalDaysPassed() /(float) PregnancySystemConstants.TOTAL_PREGNANCY_DAYS , 0, 1), 0.6F);		
+			final var p = MathHelper.sigmoid(0.1F, 0.4F, 0.1F, Mth.clamp(this.getTotalDaysPassed() /(float) PregnancySystemConstants.TOTAL_PREGNANCY_DAYS , 0, 1), 0.6F);		
 			if (this.getRandom().nextFloat() < p) {
 				this.setPregnancyPain(true);
 			}			

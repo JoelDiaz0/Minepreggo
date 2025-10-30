@@ -4,8 +4,9 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.entity.preggo.ISimplePregnancy;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySystemConstants;
-import dev.dixmk.minepreggo.utils.PreggoMathHelper;
+import dev.dixmk.minepreggo.utils.MathHelper;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -15,7 +16,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -31,16 +31,13 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonsterCreeperGirl implements ISimplePregnancy {
-
 	private static final EntityDataAccessor<Boolean> DATA_HAS_PREGNANCY_PAIN = SynchedEntityData.defineId(AbstractMonsterPregnantCreeperGirl.class, EntityDataSerializers.BOOLEAN);
-	private static final int PREGNANCY_PAIN_COOLDOWN = 120;
-	
 	private int pregnancyPainTimer = 0;
 	private final PregnancyStage currentPregnanctStage;
 	private final PregnancyStage maxPregnanctStage;
 	private final int totalDaysPassed;
 		
-	protected AbstractMonsterPregnantCreeperGirl(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_, PregnancyStage currentPregnancyStage, PregnancyStage maxPregnancyStage) {
+	protected AbstractMonsterPregnantCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_, PregnancyStage currentPregnancyStage, PregnancyStage maxPregnancyStage) {
 		super(p_21803_, p_21804_);
 		this.currentPregnanctStage = currentPregnancyStage;
 		this.maxPregnanctStage = maxPregnancyStage;
@@ -99,13 +96,19 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 	@Override
 	public boolean hurt(DamageSource damagesource, float amount) {	
 		if (super.hurt(damagesource, amount) && !this.hasPregnancyPain() && !this.level().isClientSide()) {		
-			final var p = PreggoMathHelper.sigmoid(0.1F, 0.4F, 0.1F, Mth.clamp(this.getTotalDaysPassed() /(float) PregnancySystemConstants.TOTAL_PREGNANCY_DAYS , 0, 1), 0.6F);		
+			final var p = MathHelper.sigmoid(0.1F, 0.4F, 0.1F, Mth.clamp(this.getTotalDaysPassed() /(float) PregnancySystemConstants.TOTAL_PREGNANCY_DAYS , 0, 1), 0.6F);		
 			if (this.getRandom().nextFloat() < p) {
 				this.setPregnancyPain(true);
 			}			
 			return true;
 		}
 		return false;
+	}
+	
+	
+	@Override
+	public boolean hasCustomHeadAnimation() {
+		return this.hasPregnancyPain();
 	}
 	
 	@Override
@@ -118,7 +121,7 @@ public abstract class AbstractMonsterPregnantCreeperGirl extends AbstractMonster
 
       if (this.hasPregnancyPain()) {   	  
     	  final var timer = this.getPregnancyPainTimer();
-    	  if (timer > PREGNANCY_PAIN_COOLDOWN) {
+    	  if (timer > 120) {
     		  this.setPregnancyPainTimer(0);
     		  this.setPregnancyPain(false);
     	  }

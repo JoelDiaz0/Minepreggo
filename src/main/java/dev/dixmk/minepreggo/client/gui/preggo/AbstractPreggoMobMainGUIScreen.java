@@ -7,13 +7,14 @@ import java.util.Optional;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.gui.components.ToggleableCheckbox;
-import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
+import dev.dixmk.minepreggo.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.network.packet.PreggoMobBreakBlocksPacket;
 import dev.dixmk.minepreggo.network.packet.PreggoMobInventoryMenuPacket;
 import dev.dixmk.minepreggo.network.packet.PreggoMobPickUpItemPacket;
 import dev.dixmk.minepreggo.network.packet.PreggoMobWaitPacket;
 import dev.dixmk.minepreggo.network.packet.RequestSexCinematicPacket;
 import dev.dixmk.minepreggo.utils.PreggoGUIHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.inventory.preggo.AbstractPreggoMobMainGUIMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Checkbox;
@@ -21,13 +22,12 @@ import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 public abstract class AbstractPreggoMobMainGUIScreen
-	<E extends TamableAnimal & IPreggoMob, M extends AbstractPreggoMobMainGUIMenu<E>> extends AbstractContainerScreen<M> {
+	<E extends PreggoMob & ITamablePreggoMob, M extends AbstractPreggoMobMainGUIMenu<E>> extends AbstractContainerScreen<M> {
 	
 	protected final Level world;
 	protected final int x;

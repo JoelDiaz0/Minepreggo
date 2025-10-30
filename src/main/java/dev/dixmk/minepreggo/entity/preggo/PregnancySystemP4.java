@@ -6,15 +6,15 @@ import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.entity.preggo.PreggoMobSystem.Result;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.item.ItemStack;
 
-public abstract class PregnancySystemP4<E extends TamableAnimal
-	& IPreggoMob & IPregnancySystem & IPregnancyP4> extends PregnancySystemP3<E> {
+public abstract class PregnancySystemP4<E extends PreggoMob
+	& ITamablePreggoMob & IPregnancySystem & IPregnancyP4> extends PregnancySystemP3<E> {
 
 	protected final PregnancyStage currentPregnancyStage;
 	
@@ -46,7 +46,7 @@ public abstract class PregnancySystemP4<E extends TamableAnimal
 		}
 		else if (preggoMob.getPregnancyPain() == PregnancyPain.BIRTH) {
 			if (preggoMob.getPregnancyPainTimer() >= totalTicksOfBirth) {
-	        	PreggoMobHelper.setItemstackOnOffHand(preggoMob, new ItemStack(BabyType.getAliveBabyItem(preggoMob.getBabyType()), PreggoMobHelper.getNumberOfChildrens(preggoMob.getMaxPregnancyStage())));
+	        	PreggoMobHelper.setItemstackOnOffHand(preggoMob, new ItemStack(BabyType.getAliveBabyItem(preggoMob.getBabyType()), PreggoMobHelper.getNumberOfChildrens(preggoMob.getLastPregnancyStage())));
 				this.postBirth();
 	        	this.preggoMob.discard();
 			}	
@@ -61,7 +61,7 @@ public abstract class PregnancySystemP4<E extends TamableAnimal
 	}
 	
 	protected final boolean hasToGiveBirth() {
-		return preggoMob.getMaxPregnancyStage() == currentPregnancyStage;
+		return preggoMob.getLastPregnancyStage() == currentPregnancyStage;
 	}
 	
 	@Override
@@ -96,7 +96,7 @@ public abstract class PregnancySystemP4<E extends TamableAnimal
 				flag = true;
 			}
 			else if (randomSource.nextFloat() < pregnancyPainProbability) {			
-				if (preggoMob.getMaxPregnancyStage() == currentPregnancyStage) {
+				if (preggoMob.getLastPregnancyStage() == currentPregnancyStage) {
 					preggoMob.setPregnancyPain(PregnancyPain.CONTRACTION);		
 				}
 				else {
@@ -108,7 +108,7 @@ public abstract class PregnancySystemP4<E extends TamableAnimal
 			
 			if (flag) {
 				MinepreggoMod.LOGGER.debug("PREGNANCY PAIN ACTIVE: id={}, class={}, pregnancyPain={}, maxPregnancyStage={}",
-						preggoMob.getId(), preggoMob.getClass().getSimpleName(), pregnancyPain, preggoMob.getMaxPregnancyStage());
+						preggoMob.getId(), preggoMob.getClass().getSimpleName(), pregnancyPain, preggoMob.getLastPregnancyStage());
 			}
 		} 
 		else {	
@@ -144,8 +144,8 @@ public abstract class PregnancySystemP4<E extends TamableAnimal
 		}
 		else {
 			if (preggoMob.getPregnancySymptom() == PregnancySymptom.CRAVING
-					&& preggoMob.getCravingChosen() == Craving.NONE) {
-				preggoMob.setCravingChosen(CravingFactory.getRandomCraving(randomSource));
+					&& preggoMob.getTypeOfCraving() == Craving.NONE) {
+				preggoMob.setTypeOfCraving(CravingFactory.getRandomCraving(randomSource));
 			}
 		}
 	}

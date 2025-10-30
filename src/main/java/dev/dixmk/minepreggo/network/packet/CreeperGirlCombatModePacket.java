@@ -15,22 +15,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public class CreeperGirlCombatModePacket {
-
-	private final int x;
-	private final int y;
-	private final int z;
-	private final CombatMode combatMode;
-	private final int creeperGirlId;
-	
-	public CreeperGirlCombatModePacket(int x, int y, int z, CombatMode combatMode, int creeperGirlId) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
-		this.combatMode = combatMode;
-		this.creeperGirlId = creeperGirlId;
-	}
-	
+public record CreeperGirlCombatModePacket(int x, int y, int z, CombatMode combatMode, int creeperGirlId) {
+		
 	public static CreeperGirlCombatModePacket decode(FriendlyByteBuf buffer) {	
 		return new CreeperGirlCombatModePacket(
 				buffer.readInt(),
@@ -39,7 +25,6 @@ public class CreeperGirlCombatModePacket {
 				buffer.readEnum(CombatMode.class),
 				buffer.readVarInt());
 	}
-	
 	
 	public static void encode(CreeperGirlCombatModePacket message, FriendlyByteBuf buffer) {
 		buffer.writeInt(message.x);

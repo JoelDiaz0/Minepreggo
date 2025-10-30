@@ -1,7 +1,7 @@
 package dev.dixmk.minepreggo.utils;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
+import dev.dixmk.minepreggo.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancyP1;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancyP2;
 import dev.dixmk.minepreggo.entity.preggo.IPregnancyP3;
@@ -25,19 +25,19 @@ import dev.dixmk.minepreggo.entity.preggo.zombie.TamableZombieGirlP4;
 import dev.dixmk.minepreggo.entity.preggo.zombie.TamableZombieGirlP5;
 import dev.dixmk.minepreggo.entity.preggo.zombie.TamableZombieGirlP6;
 import dev.dixmk.minepreggo.entity.preggo.zombie.TamableZombieGirlP7;
-import net.minecraft.world.entity.TamableAnimal;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 
 public class PreggoMobDebugHelper {
 
 	private PreggoMobDebugHelper() {}
 	
-	public static<E extends TamableAnimal & IPreggoMob> void showBasicInfo(E preggoMob) {
+	public static<E extends PreggoMob & ITamablePreggoMob> void showBasicInfo(E preggoMob) {
 		MinepreggoMod.LOGGER.debug("BASIC INFO: id={} class={}, hungry={}, hungryTimer={}, isAngry={}",
 				preggoMob.getId(), preggoMob.getClass().getSimpleName(), preggoMob.getHungry(), preggoMob.getHungryTimer(), 
 				preggoMob.isAngry());		
 	}
 	
-	public static<E extends TamableAnimal & IPreggoMob & IPregnancySystem> void showPregnancyInfo(E preggoMob) {
+	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystem> void showPregnancyInfo(E preggoMob) {
 		MinepreggoMod.LOGGER.debug("BASIC PREGNANCY INFO: pregnancyTimer={}, daysByStage={}, daysByStage={}, daysToGiveBirth={}, pregnancyPain={}, "
 				+ "pregnancyPainTimer={}, pregnanctSymptom={}, isIncapacitated={}",
 				preggoMob.getPregnancyTimer(), preggoMob.getDaysByStage(), preggoMob.getDaysByStage(),
@@ -45,27 +45,27 @@ public class PreggoMobDebugHelper {
 				preggoMob.getPregnancySymptom(), preggoMob.isIncapacitated());
 	}
 	
-	public static<E extends TamableAnimal & IPreggoMob & IPregnancySystem & IPregnancyP1> void showPregnancyP1Info(E preggoMob) {
+	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystem & IPregnancyP1> void showPregnancyP1Info(E preggoMob) {
 		MinepreggoMod.LOGGER.debug("PREGNANCY P1 INFO: craving={}, cravingTimer={}, cravingChosen={}",
-				preggoMob.getCraving(), preggoMob.getCravingTimer(), preggoMob.getCravingChosen());
+				preggoMob.getCraving(), preggoMob.getCravingTimer(), preggoMob.getTypeOfCraving());
 	}
 	
-	public static<E extends TamableAnimal & IPreggoMob & IPregnancySystem & IPregnancyP2> void showPregnancyP2Info(E preggoMob) {
+	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystem & IPregnancyP2> void showPregnancyP2Info(E preggoMob) {
 		MinepreggoMod.LOGGER.debug("PREGNANCY P2 INFO: milking={}, milkingTimer={}",
 				preggoMob.getMilking(), preggoMob.getMilkingTimer());
 	}
 	
-	public static<E extends TamableAnimal & IPreggoMob & IPregnancySystem & IPregnancyP3> void showPregnancyP3Info(E preggoMob) {
+	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystem & IPregnancyP3> void showPregnancyP3Info(E preggoMob) {
 		MinepreggoMod.LOGGER.debug("PREGNANCY P3 INFO: bellyRubs={}, bellyRubsTimer={}",
 				preggoMob.getBellyRubs(), preggoMob.getBellyRubsTimer());
 	}
 	
-	public static<E extends TamableAnimal & IPreggoMob & IPregnancySystem & IPregnancyP4> void showPregnancyP4Info(E preggoMob) {
+	public static<E extends PreggoMob & ITamablePreggoMob & IPregnancySystem & IPregnancyP4> void showPregnancyP4Info(E preggoMob) {
 		MinepreggoMod.LOGGER.debug("PREGNANCY P4 INFO: horny={}, hornyTimer={}",
 				preggoMob.getHorny(), preggoMob.getHornyTimer());
 	}
 	
-	public static<E extends TamableAnimal> void check(E entity) {
+	public static<E extends PreggoMob> void check(E entity) {
 		
 		if (entity.level().isClientSide()) {
 			return;

@@ -9,6 +9,7 @@ import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.network.packet.SexCinematicControlPacket;
 import dev.dixmk.minepreggo.server.ServerSexCinematicManager;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -29,7 +30,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
+public class PreggoMobSystem<E extends PreggoMob & ITamablePreggoMob> {
 	
 	public static final int MIN_HUNGRY_TO_HEAL = 16;
 	public static final int MIN_HUNGRY_TO_TAME_AGAIN = 12;
@@ -145,7 +146,7 @@ public class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 		}
 		
 		preggoMob.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> {		
-			ItemStack food = capability.extractItem(IPreggoMob.FOOD_INVENTORY_SLOT, 1, false);
+			ItemStack food = capability.extractItem(ITamablePreggoMob.FOOD_INVENTORY_SLOT, 1, false);
 			
 			if (food.isEmpty()) {
 				return;
@@ -250,7 +251,7 @@ public class PreggoMobSystem<E extends TamableAnimal & IPreggoMob> {
 		}
 	}
 	
-	public static<E extends TamableAnimal & IPreggoMob> void spawnParticles(E preggoMob, ServerLevel serverLevel, Result result) {
+	public static<E extends TamableAnimal & ITamablePreggoMob> void spawnParticles(E preggoMob, ServerLevel serverLevel, Result result) {
 
 		ParticleOptions particleoptions;
 			

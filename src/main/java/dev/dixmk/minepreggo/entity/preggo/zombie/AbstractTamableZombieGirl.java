@@ -9,7 +9,7 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
+import dev.dixmk.minepreggo.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.entity.preggo.PreggoMobState;
 import dev.dixmk.minepreggo.entity.preggo.PreggoMobSystem;
 import dev.dixmk.minepreggo.entity.preggo.PregnancySymptom;
@@ -19,6 +19,7 @@ import dev.dixmk.minepreggo.utils.PreggoAIHelper;
 import dev.dixmk.minepreggo.utils.PreggoArmorHelper;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
 import dev.dixmk.minepreggo.utils.ZombieGirlGUIMenuFactory;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -55,8 +56,7 @@ import net.minecraftforge.items.wrapper.EntityArmorInvWrapper;
 import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
 import net.minecraftforge.network.NetworkHooks;
 
-public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> extends AbstractZombieGirl implements IPreggoMob {
-
+public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> extends AbstractZombieGirl implements ITamablePreggoMob {
 	protected static final EntityDataAccessor<Integer> DATA_HUNGRY = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<PregnancyStage> DATA_MAX_PREGNANCY_STAGE = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, MinepreggoModEntityDataSerializers.PREGNANCY_STAGE);
 	protected static final EntityDataAccessor<PregnancySymptom> DATA_PREGNANCY_SYMPTOM = SynchedEntityData.defineId(AbstractTamableZombieGirl.class, MinepreggoModEntityDataSerializers.PREGNANCY_SYMPTOM);
@@ -77,7 +77,7 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 	
 	protected final P preggoMobSystem;
 	
-	protected AbstractTamableZombieGirl(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_) {
+	protected AbstractTamableZombieGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_) {
 	      super(p_21803_, p_21804_);
 	      this.reassessTameGoals();	     
 	      this.inventory = new ItemStackHandler(INVENTORY_SIZE);
@@ -207,11 +207,6 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 		}
 		return result;
 	}
-
-	@Override
-	public String getPreggoName() {
-		return this.hasCustomName() ? this.getDisplayName().getString() : "Zombie Girl";
-	}
 	
 	@Override
 	protected void registerGoals() {
@@ -238,7 +233,7 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {	
 		var retval = super.mobInteract(sourceentity, hand); 		
 	
-		if (retval == InteractionResult.SUCCESS) {
+		if (retval == InteractionResult.SUCCESS || retval == InteractionResult.CONSUME) {
 			return retval;
 		}
 		
@@ -304,7 +299,7 @@ public abstract class AbstractTamableZombieGirl<P extends PreggoMobSystem<?>> ex
 			}
 		}
 		else {
-			PreggoMobHelper.storeItemInSpecificRange(this, p_21471_, IPreggoMob.FOOD_INVENTORY_SLOT + 1, INVENTORY_SIZE - 1);	
+			PreggoMobHelper.storeItemInSpecificRange(this, p_21471_, ITamablePreggoMob.FOOD_INVENTORY_SLOT + 1, INVENTORY_SIZE - 1);	
 		}
 	}
 	

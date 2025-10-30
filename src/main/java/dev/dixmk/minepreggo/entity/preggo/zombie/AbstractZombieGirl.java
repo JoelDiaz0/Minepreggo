@@ -1,6 +1,5 @@
 package dev.dixmk.minepreggo.entity.preggo.zombie;
 
-import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.ai.goal.RemoveBlockGoal;
@@ -13,11 +12,10 @@ import net.minecraft.world.level.LevelAccessor;
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.init.MinepreggoModItems;
 import dev.dixmk.minepreggo.utils.PreggoTags;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -26,31 +24,21 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.AnimationState;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MobType;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 
 
-public abstract class AbstractZombieGirl extends TamableAnimal implements Enemy {
+public abstract class AbstractZombieGirl extends PreggoMob implements Enemy {
 	
-	public final AnimationState loopAnimationState = new AnimationState();
-	public final AnimationState attackAnimationState = new AnimationState();
-	
-	protected AbstractZombieGirl(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_) {
+	protected AbstractZombieGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_) {
 	      super(p_21803_, p_21804_);
 	      this.reassessTameGoals();	     
 		}
@@ -75,11 +63,14 @@ public abstract class AbstractZombieGirl extends TamableAnimal implements Enemy 
 	}
 	
 	@Override
+	public String getSimpleName() {
+		return this.hasCustomName() ? this.getDisplayName().getString() : "Zombie Girl";
+	}
+	
+	@Override
 	protected boolean shouldDespawnInPeaceful() {
 		return !this.isTame();
 	}
-	
-	public abstract boolean canBeTamedByPlayer();
 	
 	@Override
 	public SoundSource getSoundSource() {
@@ -91,24 +82,9 @@ public abstract class AbstractZombieGirl extends TamableAnimal implements Enemy 
 		return stack.is(PreggoTags.ZOMBIE_GIRL_FOOD);
 	}
 	
+	@Override
 	public boolean isFoodToTame(ItemStack stack) {
 		return stack.is(MinepreggoModItems.VILLAGER_BRAIN.get());
-	}
-	
-    @Override
-    public void handleEntityEvent(byte id) {
-        if (id == 4) { // vanilla "swing/attack" animation event
-            this.attackAnimationState.start(this.tickCount); 
-        }
-        else {
-            super.handleEntityEvent(id);
-        }
-    }
-	
-	@Override
-	public void baseTick() {
-		super.baseTick();
-		this.refreshDimensions();
 	}
     
 	@Override
@@ -128,26 +104,6 @@ public abstract class AbstractZombieGirl extends TamableAnimal implements Enemy 
       }
    }
 
-    public boolean isAttacking() {
-        return this.attackAnimationState.isStarted();
-    }
-	
-	@Override
-	public void tick() {
-		super.tick();	
-		if (this.level().isClientSide() && !this.loopAnimationState.isStarted()) {
-			this.loopAnimationState.start(this.tickCount);
-		}		
-	}
-	
-    @Override
-    public boolean doHurtTarget(Entity target) {
-        boolean result = super.doHurtTarget(target);
-        if (result) 
-            this.level().broadcastEntityEvent(this, (byte)4); // triggers handleEntityEvent client-side     
-        return result;
-    }
-	
 	@Override
 	public boolean killedEntity(ServerLevel p_219160_, LivingEntity p_219161_) {
 		boolean flag = super.killedEntity(p_219160_, p_219161_);
@@ -188,29 +144,6 @@ public abstract class AbstractZombieGirl extends TamableAnimal implements Enemy 
 		}
 	}
 	
-	
-	@Override
-	public InteractionResult mobInteract(Player sourceentity, InteractionHand hand) {	
-		ItemStack itemstack = sourceentity.getItemInHand(hand);
-
-		if (this.isBaby() || !this.canBeTamedByPlayer() ) {
-			return InteractionResult.FAIL;	
-		}
-		else if (!this.isTame() && this.isFoodToTame(itemstack)) {
-			this.usePlayerItem(sourceentity, hand, itemstack);
-			if (this.random.nextInt(3) == 0 && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(this, sourceentity)) {
-				this.tame(sourceentity);
-				this.level().broadcastEntityEvent(this, (byte) 7);						
-			} else {
-				this.level().broadcastEntityEvent(this, (byte) 6);
-			}
-			this.setPersistenceRequired();
-			return InteractionResult.sidedSuccess(this.level().isClientSide());
-		} 
-		
-		return InteractionResult.PASS;
-	}
-	
 	@Override
 	protected ResourceLocation getDefaultLootTable() {
 	    return ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "entities/abstract_zombie_girl_loot");
@@ -225,26 +158,7 @@ public abstract class AbstractZombieGirl extends TamableAnimal implements Enemy 
 	public boolean wantsToPickUp(ItemStack p_182400_) {
 		return !p_182400_.is(Items.GLOW_INK_SAC) && super.wantsToPickUp(p_182400_);
 	}
-	
-	@Override
-	public EntityDimensions getDimensions(Pose p_33597_) {
-		return super.getDimensions(p_33597_).scale(1F);
-	}
-	
-	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return NetworkHooks.getEntitySpawningPacket(this);
-	}
-	
-	@Override
-	protected void tickDeath() {
-		++this.deathTime;
-		if (this.deathTime == 20) {
-			this.remove(Entity.RemovalReason.KILLED);
-			this.dropExperience();
-		}
-	}
-	
+
 	@Override
 	public SoundEvent getHurtSound(DamageSource ds) {
 		return ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.withDefaultNamespace("entity.generic.hurt"));
@@ -277,6 +191,4 @@ public abstract class AbstractZombieGirl extends TamableAnimal implements Enemy 
          return 1.14D;
       } 	
    }
-
 }
-

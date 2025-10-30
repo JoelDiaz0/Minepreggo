@@ -3,7 +3,7 @@ package dev.dixmk.minepreggo.entity.preggo;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 
-public interface IPreggoMob {
+public interface ITamablePreggoMob {
 	
 	static final int HEAD_INVENTORY_SLOT = EquipmentSlot.HEAD.getFilterFlag();
 	static final int CHEST_INVENTORY_SLOT = EquipmentSlot.CHEST.getFilterFlag();
@@ -35,8 +35,6 @@ public interface IPreggoMob {
     
 	PreggoMobState getState();
 	void setState(PreggoMobState state);
-    
-	String getPreggoName();
 	
 	void setCinematicOwner(ServerPlayer player);
     

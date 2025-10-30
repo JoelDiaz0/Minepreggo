@@ -4,18 +4,18 @@ import java.util.Optional;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
+import dev.dixmk.minepreggo.entity.preggo.ITamablePreggoMob;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.inventory.preggo.AbstractPreggoMobInventaryGUIMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Inventory;
 
 public abstract class AbstractPreggoMobInventaryGUIScreen
-	<E extends TamableAnimal & IPreggoMob, C extends AbstractPreggoMobInventaryGUIMenu<E>> extends AbstractContainerScreen<C> {
+	<E extends PreggoMob & ITamablePreggoMob, C extends AbstractPreggoMobInventaryGUIMenu<E>> extends AbstractContainerScreen<C> {
 
 	protected final Optional<E> preggoMob;
 	protected final ResourceLocation inventoryTexture;

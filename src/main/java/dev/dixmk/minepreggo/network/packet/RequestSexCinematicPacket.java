@@ -3,7 +3,7 @@ package dev.dixmk.minepreggo.network.packet;
 import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
+import dev.dixmk.minepreggo.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.entity.preggo.PreggoMobState;
 import dev.dixmk.minepreggo.server.ServerSexCinematicManager;
 import net.minecraft.network.FriendlyByteBuf;
@@ -17,14 +17,8 @@ import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public class RequestSexCinematicPacket {
-	private final int mobId;
-	 
-	 
-	public RequestSexCinematicPacket(int mobId) {
-		this.mobId = mobId;	
-	}
-		
+public record RequestSexCinematicPacket(int mobId) {
+	
 	public static RequestSexCinematicPacket decode(FriendlyByteBuf buffer) {	
 		return new RequestSexCinematicPacket(
 				buffer.readVarInt());
@@ -44,7 +38,7 @@ public class RequestSexCinematicPacket {
             		
             if (level.getEntity(message.mobId) instanceof TamableAnimal tamableAnimal 
             		&& player.distanceToSqr(tamableAnimal) <= 4
-            		&& tamableAnimal instanceof IPreggoMob preggoMob) {
+            		&& tamableAnimal instanceof ITamablePreggoMob preggoMob) {
             		      		
                     ServerSexCinematicManager.start(player);   
                                     

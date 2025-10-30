@@ -3,7 +3,7 @@ package dev.dixmk.minepreggo.network.packet;
 import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
-import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
+import dev.dixmk.minepreggo.entity.preggo.ITamablePreggoMob;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -11,16 +11,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public class PreggoMobWaitPacket {
+public record PreggoMobWaitPacket(int preggoMobId, boolean isWaiting) {
 
-	private final int preggoMobId;
-	private final boolean wait;
-	
-	public PreggoMobWaitPacket(int preggoMobId, boolean wait) {
-		this.preggoMobId = preggoMobId;
-		this.wait = wait;
-	}
-	
 	public static PreggoMobWaitPacket decode(FriendlyByteBuf buffer) {	
 		return new PreggoMobWaitPacket(
 				buffer.readVarInt(),
@@ -29,7 +21,7 @@ public class PreggoMobWaitPacket {
 	
 	public static void encode(PreggoMobWaitPacket message, FriendlyByteBuf buffer) {
 		buffer.writeVarInt(message.preggoMobId);
-		buffer.writeBoolean(message.wait);
+		buffer.writeBoolean(message.isWaiting);
 	}
 	
 	public static void handler(PreggoMobWaitPacket message, Supplier<NetworkEvent.Context> contextSupplier) {
@@ -39,8 +31,8 @@ public class PreggoMobWaitPacket {
 			if (serverPlayer == null) return;		
 			var world = serverPlayer.level();
 			
-			if (!world.isClientSide() && world.getEntity(message.preggoMobId) instanceof IPreggoMob mob) {
-				mob.setWaiting(message.wait);	
+			if (!world.isClientSide() && world.getEntity(message.preggoMobId) instanceof ITamablePreggoMob mob) {
+				mob.setWaiting(message.isWaiting);	
 			}
 		});
 		context.setPacketHandled(true);

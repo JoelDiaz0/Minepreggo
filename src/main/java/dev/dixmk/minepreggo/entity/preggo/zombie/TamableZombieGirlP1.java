@@ -13,6 +13,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PlayMessages;
 
@@ -84,12 +85,17 @@ public class TamableZombieGirlP1 extends AbstractTamablePregnantZombieGirl<Pregn
 	}
 
 	@Override
-	public Craving getCravingChosen() {
+	public Craving getTypeOfCraving() {
 		return this.entityData.get(DATA_CRAVING_CHOSEN);
 	}
 	
 	@Override
-	public void setCravingChosen(Craving craving) {
+	public void setTypeOfCraving(Craving craving) {
 		this.entityData.set(DATA_CRAVING_CHOSEN, craving);
+	}
+
+	@Override
+	public boolean isValidCraving(Craving craving, Item item) {
+		return this.isCraving(craving, item);
 	}
 }

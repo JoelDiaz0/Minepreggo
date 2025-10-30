@@ -3,7 +3,7 @@ package dev.dixmk.minepreggo.entity.preggo.creeper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
+import dev.dixmk.minepreggo.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.entity.preggo.PreggoMobState;
 import dev.dixmk.minepreggo.entity.preggo.PreggoMobSystem;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
@@ -12,7 +12,7 @@ import dev.dixmk.minepreggo.init.MinepreggoModEntityDataSerializers;
 import dev.dixmk.minepreggo.utils.CreeperGirlGUIMenuFactory;
 import dev.dixmk.minepreggo.utils.PreggoAIHelper;
 import dev.dixmk.minepreggo.utils.PreggoMobHelper;
-
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -49,7 +49,7 @@ import net.minecraftforge.items.wrapper.EntityArmorInvWrapper;
 import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
 import net.minecraftforge.network.NetworkHooks;
 
-public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> extends AbstractCreeperGirl implements IPreggoMob {
+public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> extends AbstractCreeperGirl implements ITamablePreggoMob {
 
 	protected static final EntityDataAccessor<Integer> DATA_HUNGRY = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<PregnancyStage> DATA_MAX_PREGNANCY_STAGE = SynchedEntityData.defineId(AbstractTamableCreeperGirl.class, MinepreggoModEntityDataSerializers.PREGNANCY_STAGE);
@@ -72,7 +72,7 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	private int poweredTimer = 0; 
 	protected final S preggoMobSystem;
 	
-	protected AbstractTamableCreeperGirl(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_) {
+	protected AbstractTamableCreeperGirl(EntityType<? extends PreggoMob> p_21803_, Level p_21804_) {
 	      super(p_21803_, p_21804_);
 	      this.reassessTameGoals();	   
 	      this.preggoMobSystem = createPreggoMobSystem();
@@ -201,7 +201,7 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 	@Override
 	protected void dropEquipment() {
 		super.dropEquipment();
-		for (int i = IPreggoMob.FOOD_INVENTORY_SLOT; i < inventory.getSlots(); ++i) {
+		for (int i = ITamablePreggoMob.FOOD_INVENTORY_SLOT; i < inventory.getSlots(); ++i) {
 			ItemStack itemstack = inventory.getStackInSlot(i);
 			if (!itemstack.isEmpty() && !EnchantmentHelper.hasVanishingCurse(itemstack)) {
 				this.spawnAtLocation(itemstack);
@@ -240,11 +240,6 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 			PreggoMobHelper.onSuccessfulAttack(this);
 		}
 		return result;
-	}
-			
-	@Override
-	public String getPreggoName() {
-		return this.hasCustomName() ? this.getDisplayName().getString() : "Creeper Girl";
 	}
 	
 	@Override
@@ -424,7 +419,7 @@ public abstract class AbstractTamableCreeperGirl<S extends PreggoMobSystem<?>> e
 			}
 		}
 		else {
-			PreggoMobHelper.storeItemInSpecificRange(target, p_21471_, IPreggoMob.FOOD_INVENTORY_SLOT + 1, INVENTORY_SIZE - 1);	
+			PreggoMobHelper.storeItemInSpecificRange(target, p_21471_, ITamablePreggoMob.FOOD_INVENTORY_SLOT + 1, INVENTORY_SIZE - 1);	
 		}
 	}
 }

@@ -4,12 +4,12 @@ import javax.annotation.Nonnull;
 
 import dev.dixmk.minepreggo.MinepreggoModConfig;
 import dev.dixmk.minepreggo.entity.preggo.PreggoMobSystem.Result;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.TamableAnimal;
 
-public abstract class FertilitySystem<E extends TamableAnimal & IPreggoMob & IBreedable> {
+public abstract class FertilitySystem<E extends PreggoMob & ITamablePreggoMob & IBreedable> {
 
 	protected final RandomSource randomSource;	
 	protected final E preggoMob;

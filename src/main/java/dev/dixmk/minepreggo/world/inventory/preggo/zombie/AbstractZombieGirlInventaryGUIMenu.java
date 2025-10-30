@@ -1,6 +1,6 @@
 package dev.dixmk.minepreggo.world.inventory.preggo.zombie;
 
-import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
+import dev.dixmk.minepreggo.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.entity.preggo.PregnancyStage;
 import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractTamablePregnantZombieGirl;
 import dev.dixmk.minepreggo.entity.preggo.zombie.AbstractTamableZombieGirl;
@@ -25,14 +25,14 @@ public abstract class AbstractZombieGirlInventaryGUIMenu<E extends AbstractTamab
 	@Override
 	protected void createInventory(Inventory inv) {
 		this.preggoMob.ifPresent(zombieGirl -> {
-			this.customSlots.put(IPreggoMob.HEAD_INVENTORY_SLOT, this.addSlot(new SlotItemHandler(internal, 4, 8, 8) {
+			this.customSlots.put(ITamablePreggoMob.HEAD_INVENTORY_SLOT, this.addSlot(new SlotItemHandler(internal, 4, 8, 8) {
 				@Override
 				public boolean mayPlace(ItemStack itemstack) {
 					return PreggoArmorHelper.isHelmet(itemstack);
 				}
 			}));
 			
-			this.customSlots.put(IPreggoMob.CHEST_INVENTORY_SLOT, this.addSlot(new SlotItemHandler(internal, 3, 8, 26) {
+			this.customSlots.put(ITamablePreggoMob.CHEST_INVENTORY_SLOT, this.addSlot(new SlotItemHandler(internal, 3, 8, 26) {
 				@Override
 				public boolean mayPlace(ItemStack itemstack) {													
 					if (!PreggoArmorHelper.isChest(itemstack)) {
@@ -43,13 +43,13 @@ public abstract class AbstractZombieGirlInventaryGUIMenu<E extends AbstractTamab
 						stage = pregZombieGirl.getCurrentPregnancyStage();		
 					}			
 					if (!PreggoArmorHelper.canPreggoMobUseChestplate(itemstack, stage) && !player.level().isClientSide()) {                                               
-		                player.displayClientMessage(PreggoMessageHelper.getPreggoMobArmorChestMessage(stage, zombieGirl.getPreggoName()), true);        
+		                player.displayClientMessage(PreggoMessageHelper.getPreggoMobArmorChestMessage(stage, zombieGirl.getSimpleName()), true);        
 		                return false;
 					}				
 					return true;
 				}
 			}));
-			this.customSlots.put(IPreggoMob.LEGS_INVENTORY_SLOT, this.addSlot(new SlotItemHandler(internal, 2, 8, 44) {
+			this.customSlots.put(ITamablePreggoMob.LEGS_INVENTORY_SLOT, this.addSlot(new SlotItemHandler(internal, 2, 8, 44) {
 				@Override
 				public boolean mayPlace(ItemStack itemstack) {
 					if (!PreggoArmorHelper.isLegging(itemstack)) {
@@ -60,22 +60,22 @@ public abstract class AbstractZombieGirlInventaryGUIMenu<E extends AbstractTamab
 						stage = pregZombieGirl.getCurrentPregnancyStage();			
 					}
 					if (!PreggoArmorHelper.canPreggoMobUseLegging(itemstack, stage) && !player.level().isClientSide()) {            	
-		                player.displayClientMessage(PreggoMessageHelper.getPreggoMobArmorLeggingsMessage(zombieGirl.getPreggoName()), true);           
+		                player.displayClientMessage(PreggoMessageHelper.getPreggoMobArmorLeggingsMessage(zombieGirl.getSimpleName()), true);           
 		                return false;
 					}
 					return true;
 				}
 			}));
-			this.customSlots.put(IPreggoMob.FEET_INVENTORY_SLOT, this.addSlot(new SlotItemHandler(internal, 1, 8, 62) {
+			this.customSlots.put(ITamablePreggoMob.FEET_INVENTORY_SLOT, this.addSlot(new SlotItemHandler(internal, 1, 8, 62) {
 				@Override
 				public boolean mayPlace(ItemStack itemstack) {
 					return PreggoArmorHelper.isBoot(itemstack);
 				}
 			}));
 			
-			this.customSlots.put(IPreggoMob.MAINHAND_INVENTORY_SLOT, this.addSlot(new SlotItemHandler(internal, 0, 77, 62)));
-			this.customSlots.put(IPreggoMob.OFFHAND_INVENTORY_SLOT, this.addSlot(new SlotItemHandler(internal, 5, 95, 62)));
-			this.customSlots.put(IPreggoMob.FOOD_INVENTORY_SLOT, this.addSlot(new SlotItemHandler(internal, 6, 113, 62) {
+			this.customSlots.put(ITamablePreggoMob.MAINHAND_INVENTORY_SLOT, this.addSlot(new SlotItemHandler(internal, 0, 77, 62)));
+			this.customSlots.put(ITamablePreggoMob.OFFHAND_INVENTORY_SLOT, this.addSlot(new SlotItemHandler(internal, 5, 95, 62)));
+			this.customSlots.put(ITamablePreggoMob.FOOD_INVENTORY_SLOT, this.addSlot(new SlotItemHandler(internal, 6, 113, 62) {
 				@Override
 				public boolean mayPlace(ItemStack itemstack) {
 					return itemstack.is(PreggoTags.ZOMBIE_GIRL_FOOD);

@@ -6,11 +6,11 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
-import dev.dixmk.minepreggo.entity.preggo.IPreggoMob;
+import dev.dixmk.minepreggo.entity.preggo.ITamablePreggoMob;
 import dev.dixmk.minepreggo.utils.PreggoGUIHelper;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -27,7 +27,7 @@ import net.minecraftforge.items.IItemHandler;
 
 @Mod.EventBusSubscriber
 public abstract class AbstractPreggoMobInventaryGUIMenu
-	<E extends TamableAnimal & IPreggoMob> extends AbstractContainerMenu implements Supplier<Map<Integer, Slot>> {
+	<E extends PreggoMob & ITamablePreggoMob> extends AbstractContainerMenu implements Supplier<Map<Integer, Slot>> {
 
 	public final Level world;
 	public final Player player;
@@ -79,10 +79,7 @@ public abstract class AbstractPreggoMobInventaryGUIMenu
 			
 	@Override
 	public boolean stillValid(Player player) {	
-		if (this.preggoMob.isPresent() && this.bound) {
-			return this.preggoMob.get().isAlive();
-		}	
-		return false;
+		return this.preggoMob.isPresent() && this.preggoMob.get().isAlive();
 	}
 	
 	@Override

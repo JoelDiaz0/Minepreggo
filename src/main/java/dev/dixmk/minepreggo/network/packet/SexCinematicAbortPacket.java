@@ -11,13 +11,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public class SexCinematicAbortPacket {
-
-	private final int mobId;
-	
-	public SexCinematicAbortPacket(int mobId) {
-		this.mobId = mobId;
-	}
+public record SexCinematicAbortPacket(int mobId) {
 	
 	public static SexCinematicAbortPacket decode(FriendlyByteBuf buffer) {	
 		return new SexCinematicAbortPacket(buffer.readVarInt());

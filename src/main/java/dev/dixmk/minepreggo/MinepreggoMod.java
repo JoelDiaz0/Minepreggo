@@ -2,6 +2,8 @@ package dev.dixmk.minepreggo;
 
 import org.apache.logging.log4j.Logger;
 
+import dev.dixmk.minepreggo.client.gui.preggo.PreggoMobMedicalCheckUpGUIScreen;
+import dev.dixmk.minepreggo.client.gui.preggo.SelectPregnantEntityForMedicalCheckUpGUIScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.creeper.CreeperGirlP0InventaryGUIScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.creeper.CreeperGirlP0MainGUIScreen;
 import dev.dixmk.minepreggo.client.gui.preggo.creeper.CreeperGirlP1InventaryGUIScreen;
@@ -43,10 +45,10 @@ import dev.dixmk.minepreggo.client.model.armor.BellyShieldP6Model;
 import dev.dixmk.minepreggo.client.model.armor.BellyShieldP7Model;
 import dev.dixmk.minepreggo.client.model.armor.BellyShieldP8Model;
 import dev.dixmk.minepreggo.client.model.armor.FemaleChestPlateP0Model;
-import dev.dixmk.minepreggo.client.model.armor.FemaleChestPlateP1Model;
-import dev.dixmk.minepreggo.client.model.armor.FemaleChestPlateP2Model;
-import dev.dixmk.minepreggo.client.model.armor.FemaleChestPlateP3Model;
-import dev.dixmk.minepreggo.client.model.armor.FemaleChestPlateP4Model;
+import dev.dixmk.minepreggo.client.model.armor.MaternityChestPlateP1Model;
+import dev.dixmk.minepreggo.client.model.armor.MaternityChestPlateP2Model;
+import dev.dixmk.minepreggo.client.model.armor.MaternityChestPlateP3Model;
+import dev.dixmk.minepreggo.client.model.armor.MaternityChestPlateP4Model;
 import dev.dixmk.minepreggo.client.model.armor.KneeBraceModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.AbstractHumanoidCreeperGirlModel;
 import dev.dixmk.minepreggo.client.model.entity.preggo.creeper.quadruped.AbstractQueadrupedCreeperGirlModel;
@@ -335,10 +337,10 @@ public class MinepreggoMod {
 		event.registerLayerDefinition(BellyShieldP7Model.LAYER_LOCATION, BellyShieldP7Model::createBodyLayer);
 		event.registerLayerDefinition(BellyShieldP8Model.LAYER_LOCATION, BellyShieldP8Model::createBodyLayer);
 		event.registerLayerDefinition(FemaleChestPlateP0Model.LAYER_LOCATION, FemaleChestPlateP0Model::createBodyLayer);
-		event.registerLayerDefinition(FemaleChestPlateP1Model.LAYER_LOCATION, FemaleChestPlateP1Model::createBodyLayer);
-		event.registerLayerDefinition(FemaleChestPlateP2Model.LAYER_LOCATION, FemaleChestPlateP2Model::createBodyLayer);
-		event.registerLayerDefinition(FemaleChestPlateP3Model.LAYER_LOCATION, FemaleChestPlateP3Model::createBodyLayer);
-		event.registerLayerDefinition(FemaleChestPlateP4Model.LAYER_LOCATION, FemaleChestPlateP4Model::createBodyLayer);
+		event.registerLayerDefinition(MaternityChestPlateP1Model.LAYER_LOCATION, MaternityChestPlateP1Model::createBodyLayer);
+		event.registerLayerDefinition(MaternityChestPlateP2Model.LAYER_LOCATION, MaternityChestPlateP2Model::createBodyLayer);
+		event.registerLayerDefinition(MaternityChestPlateP3Model.LAYER_LOCATION, MaternityChestPlateP3Model::createBodyLayer);
+		event.registerLayerDefinition(MaternityChestPlateP4Model.LAYER_LOCATION, MaternityChestPlateP4Model::createBodyLayer);
 		event.registerLayerDefinition(KneeBraceModel.LAYER_LOCATION, KneeBraceModel::createBodyLayer);
 	}
 	
@@ -363,6 +365,7 @@ public class MinepreggoMod {
 			MenuScreens.register(MinepreggoModMenus.ZOMBIE_GIRL_P7_INVENTARY_GUI.get(), ZombieGirlP7InventaryGUIScreen::new);
 			MenuScreens.register(MinepreggoModMenus.ZOMBIE_GIRL_P8_MAIN_GUI.get(), ZombieGirlP8MainGUIScreen::new);
 			MenuScreens.register(MinepreggoModMenus.ZOMBIE_GIRL_P8_INVENTARY_GUI.get(), ZombieGirlP8InventaryGUIScreen::new);
+			
 			/*Creeper Girl*/
 			MenuScreens.register(MinepreggoModMenus.CREEPER_GIRL_P0_MAIN_GUI.get(), CreeperGirlP0MainGUIScreen::new);
 			MenuScreens.register(MinepreggoModMenus.CREEPER_GIRL_P0_INVENTARY_GUI.get(), CreeperGirlP0InventaryGUIScreen::new);
@@ -382,6 +385,9 @@ public class MinepreggoMod {
 			MenuScreens.register(MinepreggoModMenus.CREEPER_GIRL_P7_INVENTARY_GUI.get(), CreeperGirlP7InventaryGUIScreen::new);
 			MenuScreens.register(MinepreggoModMenus.CREEPER_GIRL_P8_MAIN_GUI.get(), CreeperGirlP8MainGUIScreen::new);
 			MenuScreens.register(MinepreggoModMenus.CREEPER_GIRL_P8_INVENTARY_GUI.get(), CreeperGirlP8InventaryGUIScreen::new);
+		
+			MenuScreens.register(MinepreggoModMenus.PREGGO_MOB_MEDICAL_CHECKUP.get(), PreggoMobMedicalCheckUpGUIScreen::new);
+			MenuScreens.register(MinepreggoModMenus.SELECT_PREGNANT_ENTITY_FOR_MEDICAL_CHECKUP.get(), SelectPregnantEntityForMedicalCheckUpGUIScreen::new);
 		});
 	}
 	

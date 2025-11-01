@@ -6,25 +6,32 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.entity.preggo.Craving;
+import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.PacketDistributor;
 
 public class PregnancyEffectsImpl implements IPregnancyEffectsHandler {
-	private int craving = 0;
+	// Server Data
 	private int cravingTimer = 0;
-	private int milking = 0;
 	private int milkingTimer = 0;
-	private int bellyRubs = 0;
 	private int bellyRubsTimer = 0;
-	private int horny = 0;
 	private int hornyTimer = 0;
+	
+	// Client Data
+	private int craving = 0;
+	private int milking = 0;
+	private int bellyRubs = 0;
+	private int horny = 0;
 	private Craving typeOfCraving = Craving.NONE;
 	
 	@Override
@@ -193,10 +200,29 @@ public class PregnancyEffectsImpl implements IPregnancyEffectsHandler {
 		hornyTimer = nbt.getInt("DataHornyTimer");
 	}
 	
+	public void copyFrom(@NonNull PregnancyEffectsImpl newData) {
+		this.bellyRubs = newData.bellyRubs;
+		this.bellyRubsTimer = newData.bellyRubsTimer;
+		this.craving = newData.craving;
+		this.cravingTimer = newData.cravingTimer;
+		this.horny = newData.horny;
+		this.hornyTimer = newData.hornyTimer;
+		this.milking = newData.milking;
+		this.milkingTimer = newData.milkingTimer;
+		this.typeOfCraving = newData.typeOfCraving;
+	}
+	
+	public void sync(ServerPlayer serverPlayer) {
+		MinepreggoModPacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), 
+				new SyncClientDataPacket(serverPlayer.getId(), this.craving, this.milking, this.bellyRubs, this.horny, this.typeOfCraving));
+	}
+	
+	
+	
 	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-	static record PregnancyEffectsClientSyncPacket(int targetId, int craving, int milking, int bellyRubs, int horny, Craving typeOfCraving) {		
-		public static PregnancyEffectsClientSyncPacket decode(FriendlyByteBuf buffer) {	
-			return new PregnancyEffectsClientSyncPacket(
+	public record SyncClientDataPacket(int targetId, int craving, int milking, int bellyRubs, int horny, Craving typeOfCraving) {		
+		public static SyncClientDataPacket decode(FriendlyByteBuf buffer) {	
+			return new SyncClientDataPacket(
 					buffer.readVarInt(),
 					buffer.readInt(),
 					buffer.readInt(),
@@ -205,7 +231,7 @@ public class PregnancyEffectsImpl implements IPregnancyEffectsHandler {
 					buffer.readEnum(Craving.class));
 		}
 		
-		public static void encode(PregnancyEffectsClientSyncPacket message, FriendlyByteBuf buffer) {
+		public static void encode(SyncClientDataPacket message, FriendlyByteBuf buffer) {
 			buffer.writeVarInt(message.targetId);
 			buffer.writeInt(message.craving);
 			buffer.writeInt(message.milking);
@@ -214,13 +240,17 @@ public class PregnancyEffectsImpl implements IPregnancyEffectsHandler {
 			buffer.writeEnum(message.typeOfCraving);
 		}
 		
-		public static void handler(PregnancyEffectsClientSyncPacket message, Supplier<NetworkEvent.Context> contextSupplier) {
+		public static void handler(SyncClientDataPacket message, Supplier<NetworkEvent.Context> contextSupplier) {
 			NetworkEvent.Context context = contextSupplier.get();
 			context.enqueueWork(() -> {			
-				if (!context.getDirection().getReceptionSide().isServer()) {
-					
-					
-					
+				if (context.getDirection().getReceptionSide().isClient()) {
+					Minecraft.getInstance().player.level().getEntity(message.targetId).getCapability(MinepreggoCapabilities.PLAYER_PREGNANCY_EFFECTS, null).ifPresent(c -> {					
+						c.craving = message.craving;
+						c.milking = message.milking;
+						c.bellyRubs = message.bellyRubs;
+						c.horny = message.horny;
+						c.typeOfCraving = message.typeOfCraving;
+					});										
 				}			
 			});
 			context.setPacketHandled(true);
@@ -228,7 +258,7 @@ public class PregnancyEffectsImpl implements IPregnancyEffectsHandler {
 		
 		@SubscribeEvent
 		public static void registerMessage(FMLCommonSetupEvent event) {
-			MinepreggoModPacketHandler.addNetworkMessage(PregnancyEffectsClientSyncPacket.class, PregnancyEffectsClientSyncPacket::encode, PregnancyEffectsClientSyncPacket::decode, PregnancyEffectsClientSyncPacket::handler);
+			MinepreggoModPacketHandler.addNetworkMessage(SyncClientDataPacket.class, SyncClientDataPacket::encode, SyncClientDataPacket::decode, SyncClientDataPacket::handler);
 		}
 	}
 }

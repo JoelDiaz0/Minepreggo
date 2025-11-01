@@ -50,40 +50,51 @@ public class MinepreggoModTabs {
                 output.accept(MinepreggoModItems.ACTIVATED_GUNPOWDER_WITH_HOT_SAUCE.get());
                 output.accept(MinepreggoModItems.SOUR_ACTIVATED_GUNPOWDER.get());
                
-                output.accept(MinepreggoModItems.FEMALE_CHAINMAIL_CHEST_PLATE_P0_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_IRON_CHEST_PLATE_P0_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_IRON_CHEST_PLATE_P0_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_DIAMOND_CHEST_PLATE_P0_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_NETHERITE_CHEST_PLATE_P0_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_CHAINMAIL_CHEST_PLATE_P1_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_IRON_CHESTPLATE_P1_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_GOLDEN_CHEST_PLATE_P1_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_DIAMOND_CHEST_PLATE_P1_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_NETHERITE_CHEST_PLATE_P1_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_CHAINMAIL_CHEST_PLATE_P2_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_IRON_CHESTPLATE_P2_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_GOLDEN_CHEST_PLATE_P2_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_DIAMOND_CHEST_PLATE_P2_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_NETHERITE_CHEST_PLATE_P2_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_CHAINMAIL_CHEST_PLATE_P3_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_IRON_CHESTPLATE_P3_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_GOLDEN_CHEST_PLATE_P3_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_DIAMOND_CHEST_PLATE_P3_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_NETHERITE_CHEST_PLATE_P3_CHESTPLATE.get());               
-                output.accept(MinepreggoModItems.FEMALE_CHAINMAIL_CHEST_PLATE_P4_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_IRON_CHESTPLATE_P4_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_GOLDEN_CHEST_PLATE_P4_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_DIAMOND_CHEST_PLATE_P4_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.FEMALE_NETHERITE_CHEST_PLATE_P4_CHESTPLATE.get());
-
-                output.accept(MinepreggoModItems.IRON_KNEE_BRACE_LEGGINGS.get());
-                output.accept(MinepreggoModItems.GOLD_KNEE_BRACE_LEGGINGS.get());
-                output.accept(MinepreggoModItems.DIAMOND_KNEE_BRACE_LEGGINGS.get());
-                output.accept(MinepreggoModItems.NETHERITE_KNEE_BRACE_LEGGINGS.get());
-                output.accept(MinepreggoModItems.BELLY_SHIELD_P5_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.BELLY_SHIELD_P6_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.BELLY_SHIELD_P7_CHESTPLATE.get());
-                output.accept(MinepreggoModItems.BELLY_SHIELD_P8_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_CHAINMAIL_P0_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_IRON_P0_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_IRON_P0_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_DIAMOND_P0_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_NETHERITE_P0_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.FEMALE_LEATHER_P0_CHESTPLATE.get());
+                
+                output.accept(MinepreggoModItems.MATERNITY_CHAINMAIL_P1_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.MATERNITY_IRON_P1_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.MATERNITY_GOLDEN_P1_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.MATERNITY_DIAMOND_P1_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.MATERNITY_NETHERITE_P1_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.MATERNITY_LEATHER_P1_CHESTPLATE.get());
+                
+                output.accept(MinepreggoModItems.MATERNITY_CHAINMAIL_P2_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.MATERNITY_IRON_P2_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.MATERNITY_GOLDEN_P2_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.MATERNITY_DIAMOND_P2_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.MATERNITY_NETHERITE_P2_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.MATERNITY_LEATHER_P2_CHESTPLATE.get());
+                
+                output.accept(MinepreggoModItems.MATERNITY_CHAINMAIL_P3_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.MATERNITY_IRON_P3_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.MATERNITY_GOLDEN_P3_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.MATERNITY_DIAMOND_P3_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.MATERNITY_NETHERITE_P3_CHESTPLATE.get());  
+                output.accept(MinepreggoModItems.MATERNITY_LEATHER_P3_CHESTPLATE.get());
+                
+                output.accept(MinepreggoModItems.MATERNITY_CHAINMAIL_P4_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.MATERNITY_IRON_P4_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.MATERNITY_GOLDEN_P4_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.MATERNITY_DIAMOND_P4_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.MATERNITY_NETHERITE_P4_CHESTPLATE.get());
+                output.accept(MinepreggoModItems.MATERNITY_LEATHER_P4_CHESTPLATE.get());
+                         
+                output.accept(MinepreggoModItems.IRON_KNEE_BRACE.get());
+                output.accept(MinepreggoModItems.GOLD_KNEE_BRACE.get());
+                output.accept(MinepreggoModItems.DIAMOND_KNEE_BRACE.get());
+                output.accept(MinepreggoModItems.NETHERITE_KNEE_BRACE.get());
+                output.accept(MinepreggoModItems.LEATHER_KNEE_BRACE.get());
+                
+                output.accept(MinepreggoModItems.BELLY_SHIELD_P5.get());
+                output.accept(MinepreggoModItems.BELLY_SHIELD_P6.get());
+                output.accept(MinepreggoModItems.BELLY_SHIELD_P7.get());
+                output.accept(MinepreggoModItems.BELLY_SHIELD_P8.get());
                 
                 output.accept(MinepreggoModItems.ZOMBIE_LIFE_SUBSTANCE.get());
                 output.accept(MinepreggoModItems.SPECIMEN_TUBE.get());

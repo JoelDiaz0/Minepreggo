@@ -1,10 +1,11 @@
 {
   "replace": false,
   "values": [
-	"minepreggo:female_chainmail_chest_plate_p4_chestplate",
-	"minepreggo:female_iron_chestplate_p4_chestplate",
-	"minepreggo:female_golden_chest_plate_p4_chestplate",
-	"minepreggo:female_diamond_chest_plate_p4_chestplate",
-	"minepreggo:female_netherite_chest_plate_p4_chestplate"
+	"minepreggo:maternity_chainmail_p4_chestplate",
+	"minepreggo:maternity_iron_p4_chestplate",
+	"minepreggo:maternity_golden_p4_chestplate",
+	"minepreggo:maternity_diamond_p4_chestplate",
+	"minepreggo:maternity_netherite_p4_chestplate",
+	"minepreggo:maternity_leather_p4_chestplate"
   ]
 }

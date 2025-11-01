@@ -3,9 +3,6 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "minecraft:string"
-    },
-    {
       "item": "minecraft:shield"
     },
     {
@@ -19,7 +16,7 @@
     }
   ],
   "result": {
-    "item": "minepreggo:belly_shield_p8_chestplate",
+    "item": "minepreggo:belly_shield_p7",
     "count": 1
   }
 }

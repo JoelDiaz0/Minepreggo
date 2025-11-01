@@ -7,13 +7,10 @@
     },
     {
       "item": "minecraft:string"
-    },
-    {
-      "item": "minecraft:string"
     }
   ],
   "result": {
-    "item": "minepreggo:belly_shield_p6_chestplate",
+    "item": "minepreggo:belly_shield_p5",
     "count": 1
   }
 }

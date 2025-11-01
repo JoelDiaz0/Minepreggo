@@ -5,6 +5,7 @@ import dev.dixmk.minepreggo.MinepreggoModPacketHandler;
 import dev.dixmk.minepreggo.client.SexCinematicManager;
 import dev.dixmk.minepreggo.client.screen.effect.SexOverlayManager;
 import dev.dixmk.minepreggo.network.packet.SexCinematicAbortPacket;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -16,7 +17,7 @@ import net.minecraftforge.fml.common.Mod;
 public class ClientEventHandler {
 	
 	private ClientEventHandler() {}
-	
+
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
@@ -48,4 +49,5 @@ public class ClientEventHandler {
             }
         }
     } 
+ 
 }

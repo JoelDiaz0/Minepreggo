@@ -18,7 +18,7 @@ public class PregnancySystemProvider implements ICapabilitySerializable<Tag> {
 	@Override
 	public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if (cap == MinepreggoCapabilities.PLAYER_PREGNANCY_SYSTEM) {
-            return LazyOptional.of(() -> instance).cast();
+            return instance.cast();
         }
         return LazyOptional.empty();	
 	}

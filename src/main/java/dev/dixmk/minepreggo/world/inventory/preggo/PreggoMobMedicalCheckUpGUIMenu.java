@@ -16,7 +16,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class PreggoMobMedicalCheckUpGUIMenu extends AbstractMedicalCheckUpGUIMenu<PreggoMob, ScientificIllager> {
 
-	private final boolean isSourcePresent;
+	private final boolean valid;
 	private final Optional<IPregnancySystem> pregnancySystem;
 	
 	public PreggoMobMedicalCheckUpGUIMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
@@ -47,7 +47,7 @@ public class PreggoMobMedicalCheckUpGUIMenu extends AbstractMedicalCheckUpGUIMen
 		this.target = Optional.ofNullable(t);
 		this.source = Optional.ofNullable(s);	
 		this.pregnancySystem = Optional.ofNullable(p);
-		this.isSourcePresent = this.source.isPresent() && this.pregnancySystem.isPresent();	
+		this.valid = this.source.isPresent() && this.pregnancySystem.isPresent() && this.target.isPresent();	
 		this.numOfEmerald = 30;
 	}
 	
@@ -71,46 +71,46 @@ public class PreggoMobMedicalCheckUpGUIMenu extends AbstractMedicalCheckUpGUIMen
 
 	@Override
 	public String getName() {		
-		return this.isSourcePresent ? this.source.get().getSimpleName() : null;
+		return this.valid ? this.source.get().getSimpleName() : null;
 	}
 
 	@Override
 	public PregnancyStage getCurrentStage() {
-		return this.isSourcePresent ? this.pregnancySystem.get().getCurrentPregnancyStage() : null;
+		return this.valid ? this.pregnancySystem.get().getCurrentPregnancyStage() : null;
 	}
 
 	@Override
 	public int getPregnancyHealth() {
-		return this.isSourcePresent ? this.pregnancySystem.get().getPregnancyHealth() : -1;
+		return this.valid ? this.pregnancySystem.get().getPregnancyHealth() : -1;
 	}
 
 	@Override
 	public int getNumberOfChildren() {
-		return this.isSourcePresent ? this.pregnancySystem.get().getPregnancyHealth() : -1;
+		return this.valid ? this.pregnancySystem.get().getPregnancyHealth() : -1;
 	}
 
 	@Override
 	public BabyType getBabyType() {
-		return this.isSourcePresent ? this.pregnancySystem.get().getBabyType() : null;
+		return this.valid ? this.pregnancySystem.get().getBabyType() : null;
 	}
 
 	@Override
 	public int getDaysToGiveBirth() {
-		return this.isSourcePresent ? this.pregnancySystem.get().getDaysToGiveBirth() : -1;
+		return this.valid ? this.pregnancySystem.get().getDaysToGiveBirth() : -1;
 	}
 
 	@Override
 	public int getDaysPassed() {
-		return this.isSourcePresent ? this.pregnancySystem.get().getDaysPassed() : -1;
+		return this.valid ? this.pregnancySystem.get().getDaysPassed() : -1;
 	}
 
 	@Override
 	public int getDaysToNextStage() {
-		return this.isSourcePresent ? this.pregnancySystem.get().getDaysByStage() - this.pregnancySystem.get().getDaysPassed(): -1;
+		return this.valid ? this.pregnancySystem.get().getDaysByStage() - this.pregnancySystem.get().getDaysPassed(): -1;
 	}
 
 	@Override
 	public boolean isValid() {
-		return this.isSourcePresent;
+		return this.valid;
 	}
 }

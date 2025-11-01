@@ -1,5 +1,7 @@
 package dev.dixmk.minepreggo.utils;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import dev.dixmk.minepreggo.MinepreggoMod;
 import dev.dixmk.minepreggo.entity.preggo.Craving;
 import dev.dixmk.minepreggo.entity.preggo.IBreedable;
@@ -60,10 +62,7 @@ public class PreggoGUIHelper {
 	public static final ResourceLocation ICONS_TEXTURE = ResourceLocation.fromNamespaceAndPath(MinepreggoMod.MODID, "textures/screens/icons.png");
 	
 
-	public static<T extends PreggoMob & ITamablePreggoMob> void syncPreggoMobInventaryOnStart(T preggoEntity) {
-	    if (preggoEntity == null)
-	        return;
-	    
+	public static<T extends PreggoMob & ITamablePreggoMob> void syncPreggoMobInventaryOnStart(@NonNull T preggoEntity) {
         preggoEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> {
             if (capability instanceof IItemHandlerModifiable modHandlerEntSetSlot) {
                 modHandlerEntSetSlot.setStackInSlot(ITamablePreggoMob.HEAD_INVENTORY_SLOT, preggoEntity.getItemBySlot(EquipmentSlot.HEAD));
@@ -77,10 +76,7 @@ public class PreggoGUIHelper {
 	}
 	
 
-	public static<T extends PreggoMob & ITamablePreggoMob> void syncPreggoMobInventaryOnTick(Level world, T preggoEntity) {
-	    if (preggoEntity == null)
-	        return;
-	    
+	public static<T extends PreggoMob & ITamablePreggoMob> void syncPreggoMobInventaryOnTick(Level world, @NonNull T preggoEntity) {
 	    if (!world.isClientSide()) {
 		    preggoEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> {   	
 		        preggoEntity.setItemInHand(InteractionHand.MAIN_HAND, capability.getStackInSlot(ITamablePreggoMob.MAINHAND_INVENTORY_SLOT));

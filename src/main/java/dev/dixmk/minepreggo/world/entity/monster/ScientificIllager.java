@@ -1,15 +1,20 @@
 package dev.dixmk.minepreggo.world.entity.monster;
 
+import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
 
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.entity.monster.AbstractIllager;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.raid.Raid;
 import net.minecraft.world.entity.raid.Raider;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -41,28 +46,40 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
 import com.google.common.collect.Maps;
 
 import dev.dixmk.minepreggo.MinepreggoMod;
+import dev.dixmk.minepreggo.entity.preggo.IPregnancySystem;
+import dev.dixmk.minepreggo.init.MinepreggoCapabilities;
 import dev.dixmk.minepreggo.init.MinepreggoModEntities;
 import dev.dixmk.minepreggo.world.entity.ScientificIllagerTrades;
+import dev.dixmk.minepreggo.world.entity.preggo.PreggoMob;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.creeper.IllQuadrupedCreeperGirl;
 import dev.dixmk.minepreggo.world.entity.preggo.zombie.IllZombieGirl;
+import dev.dixmk.minepreggo.world.inventory.preggo.SelectPregnantEntityForMedicalCheckUpGUIMenu;
+import io.netty.buffer.Unpooled;
 import dev.dixmk.minepreggo.world.entity.preggo.ender.IllEnderGirl;
 
 public class ScientificIllager extends AbstractIllager implements Merchant {
@@ -174,10 +191,52 @@ public class ScientificIllager extends AbstractIllager implements Merchant {
     
     @Override
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
-        if (!this.level().isClientSide && !player.isShiftKeyDown()) {      	
-            this.setTradingPlayer(player);
-            this.openTradingScreen(player, this.getDisplayName(), 1);      
-        }             
+        
+    	if (!(player instanceof ServerPlayer serverPlayer)) return InteractionResult.FAIL;
+    	
+    	
+    	if (!serverPlayer.isShiftKeyDown()) {
+            this.setTradingPlayer(serverPlayer);
+            this.openTradingScreen(serverPlayer, this.getDisplayName(), 1); 
+    	}
+    	else {
+    		serverPlayer.getCapability(MinepreggoCapabilities.PLAYER_DATA).ifPresent(cap -> {   			  		 		
+        		final var blockPos = serverPlayer.blockPosition();
+        		final var scientificIllagerId = this.getId();   		
+    			final Vec3 center = new Vec3(serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ());	
+        		final List<Integer> list = serverPlayer.level().getEntitiesOfClass(PreggoMob.class, new AABB(center, center).inflate(16D), e -> e.isOwnedBy(serverPlayer) && e instanceof IPregnancySystem)
+        					.stream()
+        					.map(e -> e.getId())
+        					.collect(Collectors.toCollection(ArrayList::new));
+        	    		   		    		
+        		if (cap.isPregnant()) {
+            		list.add(serverPlayer.getId());		
+        		}
+        				
+    			NetworkHooks.openScreen(serverPlayer, new MenuProvider() {
+    	            @Override
+    	            public Component getDisplayName() {
+    	                return Component.literal("CreeperGirlInventoryGUI");
+    	            }
+    	            
+    	            @Override
+    	            public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
+    	                FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
+    	                packetBuffer.writeBlockPos(blockPos);
+    	                packetBuffer.writeVarInt(scientificIllagerId);
+    	                packetBuffer.writeCollection(list, FriendlyByteBuf::writeVarInt);              
+    	                return new SelectPregnantEntityForMedicalCheckUpGUIMenu(id, inventory, packetBuffer);
+    	            }
+    			}
+    						
+    			,buf -> {
+    				buf.writeBlockPos(blockPos);
+    			    buf.writeVarInt(scientificIllagerId);
+    			    buf.writeCollection(list, FriendlyByteBuf::writeVarInt); 
+    			}); 		
+    		});	
+    	}          
+        
         return InteractionResult.sidedSuccess(this.level().isClientSide);
     }
   
